@@ -5,8 +5,8 @@
 
 #define V 2
 #define P 1024
-#define N 8
 #define Q 2
+#define N Q*Q*Q
 
 
 typedef struct  {
@@ -26,6 +26,8 @@ MP s={0};
 
 unsigned char gf[N]={0,1,2,4,5,7,3,6};
 unsigned char fg[N]={0,1,2,6,3,4,7,5};
+//unsigned char gf[N]={0,1,2,4,8,9,11,15,7,14,5,10,13,3,6,12};
+//unsigned char fg[N]={0,1,2,13,3,10,14,8,4,5,11,6,15,12,9,7};
 
 /*
 unsigned char gf[64]={
@@ -73,19 +75,9 @@ return k;
 
 unsigned short otrace(mterm a,int j,unsigned short k){
     int i;
-    unsigned short u=1,f1,f2,f3,f4,c,d;
+    unsigned short u,f1,f2,f3,f4,c,d,v=1;
 
-  //  for(i=0;i<V;i++)
-      u=mlt(mltn(a.n[0],fg[j]),mltn(a.n[1],fg[k]));
-      /*
-      if(a.n[0]==0)
-      c=fg[j];
-      if(a.n[1]==0)
-      d=fg[k];
-      */
-//      if(c>0 && d>0)
-//         u=mlt(c,d);
-//   }
+      u=mlt(mltn(a.n[0],j),mltn(a.n[1],k));
 
 return gf[u];
 }
@@ -95,29 +87,20 @@ int i,j,k;
 unsigned int u,count=0,f1,f2,f3,f4;
 mterm o[4];
 
-
+ u=0;
 for(i=0;i<terms(f);i++){
     o[i]=term(f,i);
 }
 
-/*
-for(i=0;i<N;i++){
-    for(j=0;j<N;j++){
-	f1=gf[mlt(mltn(3,i),mltn(2,j))];
-	f2=gf[mlt(mltn(2,i),mltn(4,j))];
-	f3=gf[j];
-	f4=gf[mltn(4,i)];
-    if(f1^f2^f3^f4==0)
-    count++;
-    }
-}
-*/
 
 for(i=0;i<N;i++){
     for(j=0;j<N;j++){
-        u=otrace(o[0],i,j)^otrace(o[1],i,j)^otrace(o[2],i,j)^otrace(o[3],i,j);
-    if(u==0)
-    count++;
+        for(k=0;k<terms(f);k++)
+            u^=otrace(o[k],i,j);
+        if(u==0){
+            printf("%d %d\n",i,j);
+            count++;
+        }
     u=0;
     }
 }
@@ -141,17 +124,57 @@ s.x[2].n[1]=1;
 s.x[3].n[0]=Q*Q;
 s.x[3].n[1]=0;
 
+/*
+s.x[0].n[0]=1;
+s.x[1].n[0]=4;
+s.x[2].n[1]=3;
+*/
+
 }
 
 int main(void){
-int i,j,k=0;
+int i,j,k=0,f1,f2,f3,f4,count=0;
 unsigned short u=0;
 
 
 define_curve();
 
 u=mtrace(s);
-printf("count=%d",u);
+printf("count=%d\n\n",u);
+//exit(1);
+
+
+count=0;
+
+for(i=0;i<N;i++){
+    for(j=0;j<N;j++){
+	f1=gf[mlt(mltn(Q*Q-1,i),mltn(Q,j))];
+	f2=gf[mlt(mltn(Q,i),mltn(Q*Q,j))];
+	f3=gf[j];
+	f4=gf[mltn(Q*Q,i)];
+	if((f1^f2^f3^f4)==0){
+        printf("%d %d\n",i,j);
+        count++;
+    }
+    }
+}
+
+
+/*
+ for(i=0;i<N;i++){
+    for(j=0;j<N;j++){
+	f1=gf[mltn(4,i)];
+	f2=gf[mltn(1,i)];
+	f3=gf[mltn(5,j)];
+    if(f1^f2^f3==0)
+    count++;
+    }
+}
+*/
+
+ 
+printf("count=%d\n",count);
+
 
 return 0;
 }
