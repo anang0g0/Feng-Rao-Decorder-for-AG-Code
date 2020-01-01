@@ -132,7 +132,14 @@ mterm o[4];
    count++;
 
  }
-
+ /*
+ i=0;j=0;k=0;u=0;
+ for(ii=0;ii<n;ii++)
+   u^=otrace(f.x[ii],i,j,k);
+ if(u==0)
+   count++;
+ */
+ 
  k=0;i=1;u=0;
  for(j=0;j<N;j++){
    for(ii=0;ii<n;ii++)
@@ -195,12 +202,12 @@ s.x[3].n[2]=2;
  return s;
 }
 
-MP set_curve(unsigned char a[3][3]){
+MP set_curve(unsigned char a[4][3],int x){
   MP s;
   int i,j;
 
   
-  for(i=0;i<3;i++){
+  for(i=0;i<x;i++){
     for(j=0;j<V;j++){
       s.x[i].n[j]=a[i][j];
     }
@@ -215,10 +222,11 @@ int main(void){
   unsigned int u=0;
   MP s;
   unsigned char hl[3][3]={{Q+1,0,0},{0,Q+1,0},{0,0,Q+1}};
+  unsigned char el[4][3]={{0,2,1},{1,1,1},{3,0,0},{0,0,3}};
   
   
   //s=define_curve();
-  s=set_curve(hl);
+  s=set_curve(el,4);
   
   u=mtrace(s);
   
