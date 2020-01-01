@@ -41,6 +41,8 @@ unsigned char gf[64]={
 unsigned char fg[64]={0,1,2,59,3,54,60,40,4,35,55,19,61,32,41,49,5,44,36,23,56,16,20,27,62,52,33,30,42,14,50,12,6,7,45,8,37,46,24,9,57,38,17,47,21,25,28,10,63,58,53,39,34,18,31,48,43,22,15,26,51,29,13,11};
 */
 
+int cnt=0;
+
 mterm term(MP f,unsigned int i){
 
 return f.x[i];
@@ -112,6 +114,23 @@ return count;
 }
 
 
+int sc(int x,int y){
+  int i,j,k,f1,f2,f3,f4,count=0;
+
+	f1=gf[mlt(mltn(Q*Q-1,x),mltn(Q,y))];
+	f2=gf[mlt(mltn(Q,x),mltn(Q*Q,y))];
+	f3=gf[y];
+	f4=gf[mltn(Q,x)];
+
+	if((f1^f2^f3^f4)==0){
+	  //l[0][count]=x;
+	  //l[1][count++]=y;
+	  cnt++;
+	  printf("%d %d\n",gf[x],gf[y]);
+	}
+	//	return count;
+}
+
 void define_curve(void){
 int i,j,k;
 
@@ -143,15 +162,25 @@ u=mtrace(s);
 printf("count=%d\n\n",u);
 //exit(1);
 
-
+/*
 count=0;
+ for(i=0;i<N;i++){
+   for(j=0;j<N;j++)
+     sc(i,j);
+ }
+ printf("count=%d\n",cnt);
 
+ exit(1);
+*/
+ 
 for(i=0;i<N;i++){
     for(j=0;j<N;j++){
+      
 	f1=gf[mlt(mltn(Q*Q-1,i),mltn(Q,j))];
 	f2=gf[mlt(mltn(Q,i),mltn(Q*Q,j))];
 	f3=gf[j];
 	f4=gf[mltn(Q*Q,i)];
+      
 	if((f1^f2^f3^f4)==0){
         printf("%d %d\n",i,j);
         count++;
@@ -178,3 +207,5 @@ printf("count=%d\n",count);
 
 return 0;
 }
+
+
