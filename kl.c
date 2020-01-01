@@ -19,13 +19,13 @@ main(){
   unsigned char x,y,z;
   
 
-  scanf("%d",&m);
-
+  //  scanf("%d",&m);
+  /*
   if(m<2 || m>5){
     printf("1<m<6\n");
     exit(0);
   }
-
+  */
 z=1;
   for(x=0;x<N;x++){
     for(y=0;y<N;y++){
@@ -38,6 +38,10 @@ z=1;
   }
 printf("%d\n",count);
 
+ exit(1);
+
+
+ 
   for(j=0;j<2*(m*2-1);j++){
     for(i=0;i<count;i++)
       printf("%u ",bs[j][i]);
