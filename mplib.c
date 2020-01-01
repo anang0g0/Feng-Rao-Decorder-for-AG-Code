@@ -22,6 +22,11 @@ mterm x[P];
 
 } MP;
 
+typedef struct {
+
+  unsigned int z[V][Q*Q*Q+1];
+
+} PO;
 
 
 //unsigned char gf[N]={0,1,2,4,5,7,3,6};
@@ -42,7 +47,7 @@ unsigned char fg[64]={0,1,2,59,3,54,60,40,4,35,55,19,61,32,41,49,5,44,36,23,56,1
 */
 
 unsigned int cnt=0;
-
+PO p;
 
 
 
@@ -118,65 +123,49 @@ mterm o[4];
 
  i=0;j=1;k=0;
  for(ii=0;ii<n;ii++)
-   u^=otrace(f.x[ii],i,j,k); //^otrace(o[1],i,j,k)^otrace(o[2],i,j,k); //^otrace(o[3],i,j,k);
- if(u==0)
+   u^=otrace(f.x[ii],i,j,k);
+ if(u==0){
+   printf("%d %d %d\n",i,j,k);
+   p.z[0][count]=i;
+   p.z[1][count]=j;
+   p.z[2][count]=k;
    count++;
 
+ }
 
  k=0;i=1;u=0;
  for(j=0;j<N;j++){
    for(ii=0;ii<n;ii++)
-   u^=otrace(f.x[ii],i,j,k); //^otrace(o[1],i,j,k)^otrace(o[2],i,j,k); //^otrace(o[3],i,j,k);
-  if(u==0)
-    count++;
+   u^=otrace(f.x[ii],i,j,k);
+   if(u==0){
+     printf("%d %d %d\n",i,j,k);
+     p.z[0][count]=i;
+     p.z[1][count]=j;
+     p.z[2][count]=k;
+     count++;
+   }
   u=0;
  }
  k=1;u=0;
 for(i=0;i<N;i++){
     for(j=0;j<N;j++){
         for(ii=0;ii<n;ii++)
-      u^=otrace(f.x[ii],i,j,k); //^otrace(o[1],i,j,k)^otrace(o[2],i,j,k); //^otrace(o[3],i,j,k);
+      u^=otrace(f.x[ii],i,j,k);
         if(u==0){
-	  printf("%d %d %d\n",i,j,count);
+	  printf("%d %d %d\n",i,j,k);
+	     p.z[0][count]=i;
+	     p.z[1][count]=j;
+	     p.z[2][count]=k;
             count++;
         }
     u=0;    
     }
-
 }
-
-//printf("count=%d\n",count);
 
 
 return count;
 }
 
-int hl(int x,int y,int z){
-  int i,j,k,f1,f2,f3;
-
-  f1=gf[mltn(17,x)];
-  f2=gf[mltn(17,y)];
-  f3=gf[mltn(17,z)];
-  if((f1^f2^f3)==0)
-    cnt++;
-}
-
-int sc(int x,int y){
-  int i,j,k,f1,f2,f3,f4,count=0;
-
-	f1=gf[mlt(mltn(Q*Q-1,x),mltn(Q,y))];
-	f2=gf[mlt(mltn(Q,x),mltn(Q*Q,y))];
-	f3=gf[y];
-	f4=gf[mltn(Q,x)];
-
-	if((f1^f2^f3^f4)==0){
-	  //l[0][count]=x;
-	  //l[1][count++]=y;
-	  cnt++;
-	  printf("%d %d\n",gf[x],gf[y]);
-	}
-	//	return count;
-}
 
 
 MP define_curve(void){
