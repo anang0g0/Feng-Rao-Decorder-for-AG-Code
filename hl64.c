@@ -80,11 +80,13 @@ bin(int x,int y,int z)
 {
   int i,j,f1,f2,f3,h;
 
-  f1=gf[mlt(mlt(mlt(mlt(x,x),mlt(x,x)),mlt(mlt(x,x),mlt(x,x))),x)];
-  f2=gf[mlt(mlt(mlt(mlt(y,y),mlt(y,y)),mlt(mlt(y,y),mlt(y,y))),y)];
-  f3=gf[mlt(mlt(mlt(mlt(z,z),mlt(z,z)),mlt(mlt(z,z),mlt(z,z))),z)];
+  //f1=gf[mlt(mlt(mlt(mlt(x,x),mlt(x,x)),mlt(mlt(x,x),mlt(x,x))),x)];
+  //f2=gf[mlt(mlt(mlt(mlt(y,y),mlt(y,y)),mlt(mlt(y,y),mlt(y,y))),y)];
+  //f3=gf[mlt(mlt(mlt(mlt(z,z),mlt(z,z)),mlt(mlt(z,z),mlt(z,z))),z)];
+  f1=gf[mltn(9,x)];
+  f2=gf[mltn(9,y)];
+  f3=gf[mltn(9,z)];
   
-
   if((f1^f2^f3)==0){
     lx[k]=x;
     ly[k]=y;
@@ -253,9 +255,10 @@ printf("%d\n",count);
 main(){
   int x,y,z,d[513][16],l;
 
-
+  /*
   gh();
   exit(1);
+  */
   
   k=0;
   z=0;x=0;y=1;
