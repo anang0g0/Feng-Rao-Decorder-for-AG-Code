@@ -1,12 +1,16 @@
 #include <stdio.h>
-#define N 64
+#define N 8
 
-
+/*
 static int gf[N] = 
   {0, 1, 2, 4, 8, 16, 32, 3, 6, 12, 24, 48, 35, 5, 10, 20, 40, 19, 38, 15, 
    30, 60, 59, 53, 41, 17, 34, 7, 14, 28, 56, 51, 37, 9, 18, 36, 11, 22, 44, 
    27, 54, 47, 29, 58, 55, 45, 25, 50, 39, 13, 26, 52, 43, 21, 42, 23, 46, 
    31, 62, 63, 61, 57, 49, 33};
+*/
+
+unsigned char gf[N]={0,1,2,4,5,7,3,6};
+unsigned char fg[8]={0,1,2,6,3,4,7,5};
 
 int count=0,l[3][113],b[16][113],ml[10][10],i0=0,i1=0,i2=0,i3=0,i4=0,i5=0,i6=0,i7=0,i8=0,i9=0,id[10];
 
@@ -102,7 +106,22 @@ l[2][count++]=z;
 
 }
 
+int sc(int x,int y){
+	int i,j,k,f1,f2,f3,f4;
 
+	f1=gf[mlt(mltn(3,x),mltn(2,y))];
+	f2=gf[mlt(mltn(2,x),mltn(4,y))];
+	f3=gf[y];
+	f4=gf[mltn(4,x)];
+
+if(f1^f2^f3^f4==0){
+l[0][count]=x;
+l[1][count++]=y;
+
+printf("%d %d\n",gf[x],gf[y]);
+}
+
+}
 
 
 
@@ -195,7 +214,7 @@ int add(int x,int y)
     return(z);
 }
 
-/* GF(N)ã‚Å‚ÌæZ */
+/* GF(N)ï¿½ï¿½Å‚Ìï¿½Z */
 int mlt(int x,int y)
 {
     if(x==0||y==0){
@@ -204,11 +223,11 @@ int mlt(int x,int y)
     return ((x+y-2)%(N-1))+1;
 }
 
-/* GF(16)ã‚Å‚ÌœZ */
+/* GF(16)ï¿½ï¿½Å‚Ìï¿½ï¿½Z */
 int div(int x,int y)
 {
     if(y==0){
-        printf("***ˆÙí”­¶I ‚O‚ÅœZ***\n");
+        printf("***ï¿½Ùí”­ï¿½ï¿½ï¿½I ï¿½Oï¿½Åï¿½ï¿½Z***\n");
 return -1;
         /* exit(1); */
     }
@@ -236,6 +255,7 @@ return i;
 main(){
 int x,y,z,e,n,ii,jj;
 
+/*
 x=0;y=1;z=0;
 f1bin(x,y,z);
 
@@ -243,14 +263,18 @@ f1bin(x,y,z);
 z=0;x=1;
 for(y=0;y<N;y++)
 f1bin(x,y,z);
-
+*/
 
 z=1;
 for(x=0;x<N;x++)
 {
   for(y=0;y<N;y++)
-	f1bin(x,y,z);
+	sc(x,y);
 }
+printf("count=%d\n",count);
+
+exit(1);
+
 
 /*
 id[0]=i0;id[1]=i1;id[2]=i2;id[3]=i3;id[4]=i4;id[5]=i5;id[6]=i6;id[7]=i7;id[8]=i8;id[9]=i9;
