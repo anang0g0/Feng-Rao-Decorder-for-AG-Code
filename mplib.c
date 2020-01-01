@@ -105,8 +105,8 @@ return k;
 }
 
 
-unsigned short otrace(mterm a,int i,int j,unsigned short k){
-    unsigned short u,f1,f2,f3,f4,c,d,v=1;
+unsigned short otrace(mterm a,int i,int j,int k){
+    unsigned short u;
 
     u=mlt(mlt(mltn(a.n[0],i),mltn(a.n[1],j)),mltn(a.n[2],k));
 
