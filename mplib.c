@@ -195,13 +195,29 @@ s.x[3].n[2]=2;
  return s;
 }
 
+MP set_curve(unsigned char a[3][3]){
+  MP s;
+  int i,j;
+
+  
+  for(i=0;i<3;i++){
+    for(j=0;j<V;j++){
+      s.x[i].n[j]=a[i][j];
+    }
+  }
+
+  return s;
+}
+
+
 int main(void){
 int i,j,k=0,f1,f2,f3,f4,count=0;
 unsigned int u=0;
  MP s;
-
-s=define_curve();
-
+ unsigned char c[3][3]={{Q+1,0,0},{0,Q+1,0},{0,0,Q+1}};
+ 
+ //s=define_curve();
+ s=set_curve(c);
 
 u=mtrace(s);
 printf("count=%d\n\n",u);
