@@ -8,6 +8,8 @@ static int gf[N] =
    27, 54, 47, 29, 58, 55, 45, 25, 50, 39, 13, 26, 52, 43, 21, 42, 23, 46, 
    31, 62, 63, 61, 57, 49, 33};
 */
+//unsigned char gf[N]={0,1,2,4,8,9,11,15,7,14,5,10,13,3,6,12};
+//unsigned char fg[N]={0,1,2,13,3,10,14,8,4,5,11,6,15,12,9,7};
 
 unsigned char gf[N]={0,1,2,4,5,7,3,6};
 unsigned char fg[8]={0,1,2,6,3,4,7,5};
@@ -114,7 +116,7 @@ int sc(int x,int y){
 	f3=gf[y];
 	f4=gf[mltn(4,x)];
 
-if(f1^f2^f3^f4==0){
+	if((f1^f2^f3^f4)==0){
 l[0][count]=x;
 l[1][count++]=y;
 
@@ -123,7 +125,16 @@ printf("%d %d\n",gf[x],gf[y]);
 
 }
 
+int hl(int x,int y,int z){
+int f1,f2,f3;
 
+ f1=gf[mltn(5,x)];
+ f2=gf[mltn(5,y)];
+ f3=gf[mltn(5,z)];
+ if((f1^f2^f3)==0)
+   count++;
+
+}
 
 
 
@@ -255,21 +266,21 @@ return i;
 main(){
 int x,y,z,e,n,ii,jj;
 
-/*
+ count=0;
+ /*
 x=0;y=1;z=0;
-f1bin(x,y,z);
+hl(x,y,z);
 
 
 z=0;x=1;
 for(y=0;y<N;y++)
-f1bin(x,y,z);
-*/
+hl(x,y,z);
+ */
 
 z=1;
-for(x=0;x<N;x++)
-{
+for(x=0;x<N;x++){
   for(y=0;y<N;y++)
-	sc(x,y);
+    sc(x,y);
 }
 printf("count=%d\n",count);
 
