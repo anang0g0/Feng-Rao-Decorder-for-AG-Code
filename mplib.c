@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "gf256.h"
+//#include "gf256.h"
 
 
 #define V 3
 #define P 1024
 #define Q 2
-#define N Q*Q*Q*Q*Q*Q*Q*Q
+#define N Q*Q*Q*Q
 
 
 typedef struct  {
@@ -31,8 +31,8 @@ typedef struct {
 
 //unsigned char gf[N]={0,1,2,4,5,7,3,6};
 //unsigned char fg[N]={0,1,2,6,3,4,7,5};
-//unsigned char gf[N]={0,1,2,4,8,9,11,15,7,14,5,10,13,3,6,12};
-//unsigned char fg[N]={0,1,2,13,3,10,14,8,4,5,11,6,15,12,9,7};
+unsigned char gf[N]={0,1,2,4,8,9,11,15,7,14,5,10,13,3,6,12};
+unsigned char fg[N]={0,1,2,13,3,10,14,8,4,5,11,6,15,12,9,7};
 /*
 unsigned char gf[32]={
 0,1,2,4,8,16,23,25,5,10,20,
@@ -250,27 +250,29 @@ int main(void){
   unsigned int u=0;
   MP s;
   //gfQ*Q
-  unsigned char hl[3][3]={{Q+1,0,0},{0,Q+1,0},{0,0,Q+1}};
+  unsigned short hl[3][3]={{Q+1,0,0},{0,Q+1,0},{0,0,Q+1}};
   //gf256
-  unsigned char el[4][3]={{0,2,1},{1,1,1},{3,0,0},{0,0,3}};
+  unsigned short el[4][3]={{0,2,1},{1,1,1},{3,0,0},{0,0,3}};
   //gf256
-  unsigned char el2[5][3]={{0,2,1},{1,1,1},{3,0,0},{0,0,3},{2,0,1}};
+  unsigned short el2[5][3]={{0,2,1},{1,1,1},{3,0,0},{0,0,3},{2,0,1}};
   //gf8
-  unsigned char sc[4][3]={{3,2,1},{2,4,0},{0,1,5},{4,0,2}};
+  unsigned short sc[4][3]={{3,2,1},{2,4,0},{0,1,5},{4,0,2}};
   //gfQ*Q
-  unsigned char he[3][3]={{Q,0,0},{0,Q+1,0},{1,0,0}};
-  //gf?
-  unsigned char gh[3][3]={{0,Q,0},{0,1,0},{Q*Q+1,0,0}};
+  unsigned short he[3][3]={{Q,0,0},{0,Q+1,0},{1,0,0}};
+  //gfQ*Q
+  unsigned short gh[3][3]={{0,Q,0},{0,1,0},{Q*Q+1,0,0}};
   //gf16
-  unsigned char gs[5][3]={{15,2,0},{14,4,0},{12,8,0},{8,1,0},{16,0,0}};
+  unsigned short gs[5][3]={{15,2,0},{14,4,0},{12,8,0},{8,1,0},{16,0,0}};
   //gf32
-  unsigned char gc[6][3]={{31,2,0},{30,4,0},{28,8,0},{24,16,0},{16,1,0},{32,0,0}};
+  unsigned short gc[6][3]={{31,2,0},{30,4,0},{28,8,0},{24,16,0},{16,1,0},{32,0,0}};
   //gf64
-  unsigned char gg[7][3]={{63,4,0},{62,8,0},{60,16,0},{56,32,0},{48,1,0},{32,2,0},{64,0,0}};
+  unsigned short gg[7][3]={{63,4,0},{62,8,0},{60,16,0},{56,32,0},{48,1,0},{32,2,0},{64,0,0}};
   //gf256
   unsigned short gd[9][3]={{255,8,0},{254,16,0},{252,32,0},{248,64,0},{240,128,0},{224,1,0},{192,2,0},{128,4,0},{256,0,0}};
+
+  
   //s=define_curve();
-  s=set_curve(gd,9);
+  s=set_curve(gs,5);
   
   u=mtrace(s);
   
