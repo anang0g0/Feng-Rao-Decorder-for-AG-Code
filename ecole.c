@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 
-#define O 16
+#define O 128
 
 /* generate Galois Field over GF(2^?) */
 static const char *normal[14]={
