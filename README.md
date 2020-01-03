@@ -7,3 +7,12 @@ Stichtenothらによる一般化エルミート曲線を使って幾何学的ゴ
 C(x,y)=x^15y^2+x^14y^4+x^12y^8+x^8y　over GF(16)　#N=137
 
 今のところこんな曲線がいくつも見つかっています。
+
+
+参考文献は以下のとおりです。
+
+1.Multi-point Codes from Generalized Hermitian Curves arXiv 2015
+
+2.Simplified Understanding and Efficient Decoding of a Class of Algebraic-Geometric Codes 1994 IEEE
+
+3.A Simple Apploach for Construction of Algebraic-Geometric Codes from Affine Plane Curves 1994 IEEE
