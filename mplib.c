@@ -26,7 +26,7 @@ mterm x[P];
 
 typedef struct {
 
-  unsigned short z[V][100000];
+  unsigned short z[V][50000];
 
 } PO;
 
@@ -63,8 +63,8 @@ unsigned char gf[128]={
 26,52,104,17,34,68,73,83,103,15,
 30,60,120,49,98,5,10,20,40,80,
 97,3,6,12,24,48,96};
+unsigned short fg[N]={0};
 */
-
 
 unsigned int cnt=0;
 PO p;
@@ -213,34 +213,6 @@ mterm obase(int a,int b){
 
 int bases(int a){
   int i=0,j=0,count=0;
-
-  /*  
-  base[0].n[0]=0;
-  base[0].n[1]=0;
-  base[1].n[0]=0;
-  base[1].n[1]=0;
-  base[2].n[0]=1;
-  base[2].n[1]=0;
-  base[3].n[0]=0;
-  base[3].n[1]=1;
-  base[4].n[0]=2;
-  base[4].n[1]=0;
-  base[5].n[0]=1;
-  base[5].n[1]=1;
-  base[6].n[0]=3;
-  base[6].n[1]=0;
-  base[7].n[0]=0;
-  base[7].n[1]=2;
-  base[8].n[0]=2;
-  base[8].n[1]=1;
-  base[9].n[0]=1;
-  base[9].n[1]=2;
-  base[10].n[0]=0;
-  base[10].n[1]=3;
-  base[11].n[0]=4;
-  base[11].n[1]=0;
-  */
- 
   
 
     for(i=0;i<20;i++){
@@ -261,6 +233,7 @@ int bases(int a){
 
 unsigned short oinv(unsigned short a){
   int i;
+
 
   for(i=0;i<N;i++){
     if(gf[mlt(fg[a],i)]==1)
@@ -343,7 +316,7 @@ int main(void){
   //gf256
   unsigned short gd[9][3]={{127,2,0},{126,4,0},{124,8,0},{120,16,0},{112,32,0},{96,64,0},{64,128,0},{0,1,0},{128,0,0}};
   //gf128
-  unsigned short cc[7][3]={{127,4,0},{126,8,0},{124,16,0},{120,32,0},{112,64,0},{96,1,0},{64,2,0}};
+  unsigned short cc[8][3]={{63,2,0},{62,4,0},{60,8,0},{56,16,0},{48,32,0},{32,64,0},{0,1,0},{64,0,0}};
 
 
   
@@ -365,7 +338,7 @@ int main(void){
   u=mtrace(s);
   //a=u;
   printf("count=%d\n\n",u);
-  //    exit(1);
+  //   exit(1);
 
   /*  
   count=0;

@@ -124,7 +124,7 @@ printf("%d\n",n);
   L=(L>>1);
   N=pol^L;
   M=pol;
-  printf("%u %u %u\n",N,L,M);
+  //  printf("%u %u %u\n",N,L,M);
 
   gf[0]=0;
   bit=1;
@@ -136,11 +136,10 @@ printf("%d\n",n);
     gf[i]=bit;
     bit=(bit<<1);
   }
-  for(i=0;i<L;i++){
+  printf("unsigned short gf[%d]={",O);
+  for(i=0;i<L;i++)
     printf("%u,",gf[i]);
-    if(i % 10==0 && i>0)
-      printf("\n");
-  }
+  
   printf("};\n");
 
 }
