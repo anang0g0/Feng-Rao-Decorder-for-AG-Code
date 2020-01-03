@@ -7,6 +7,8 @@
 #define P 1024
 #define Q 2
 #define N Q*Q*Q*Q
+#define K 2048
+
 
 
 typedef struct  {
@@ -24,7 +26,7 @@ mterm x[P];
 
 typedef struct {
 
-  unsigned int z[V][Q*Q*Q+1];
+  unsigned short z[V][10000];
 
 } PO;
 
@@ -41,18 +43,11 @@ unsigned char gf[32]={
 27};
 //unsigned char fg[32]={0,1,2,20,3,8,21,24,4,12,9,29,22,18,25,27,5,15,13,14,10,16,30,6,23,7,19,31,26,17,28,11};
 */
-/*
-unsigned char gf[64]={
-    0,1,2,4,8,16,32,33,35,39,47,
-63,31,62,29,58,21,42,53,11,22,
-44,57,19,38,45,59,23,46,61,27,
-54,13,26,52,9,18,36,41,51,7,
-14,28,56,17,34,37,43,55,15,30,
-60,25,50,5,10,20,40,49,3,6,
-12,24,48};
 
-unsigned char fg[64]={0,1,2,59,3,54,60,40,4,35,55,19,61,32,41,49,5,44,36,23,56,16,20,27,62,52,33,30,42,14,50,12,6,7,45,8,37,46,24,9,57,38,17,47,21,25,28,10,63,58,53,39,34,18,31,48,43,22,15,26,51,29,13,11};
-*/
+//unsigned char gf[64]={0,1,2,4,8,16,32,33,35,39,47,63,31,62,29,58,21,42,53,11,22,44,57,19,38,45,59,23,46,61,27,54,13,26,52,9,18,36,41,51,7,14,28,56,17,34,37,43,55,15,30,60,25,50,5,10,20,40,49,3,6,12,24,48};
+
+//unsigned char fg[64]={0,1,2,59,3,54,60,40,4,35,55,19,61,32,41,49,5,44,36,23,56,16,20,27,62,52,33,30,42,14,50,12,6,7,45,8,37,46,24,9,57,38,17,47,21,25,28,10,63,58,53,39,34,18,31,48,43,22,15,26,51,29,13,11};
+
 /*
 unsigned char gf[128]={
 0,1,2,4,8,16,32,64,65,67,71,
@@ -73,7 +68,7 @@ unsigned char gf[128]={
 
 unsigned int cnt=0;
 PO p;
-
+mterm base[K]={0};
 
 
 int mlt(int x, int y){
@@ -111,11 +106,11 @@ unsigned short c=0;
 
     z=term(f,i);
     for(j=0;j<V;j++){
-    if(z.n[j]>0)
-    c++;
+      if(z.n[j]>0)
+	c+=z.n[j];
     }
-
-return c;
+    
+    return c;
 }
 
 unsigned int terms(MP f){
@@ -151,12 +146,12 @@ mterm o[4];
    u^=otrace(f.x[ii],i,j,k);
  //u^=1;
  if(u==0){
-   printf("%d %d %d\n",i,j,k);
-   /*
+   //   printf("%d %d %d\n",i,j,k);
+   
    p.z[0][count]=i;
    p.z[1][count]=j;
    p.z[2][count]=k;
-   */
+   
    count++;
 
  }
@@ -170,9 +165,9 @@ mterm o[4];
    if(u==0){
      printf("%d %d %d\n",i,j,k);
      
-     //p.z[0][count]=i;
-     //p.z[1][count]=j;
-     //p.z[2][count]=k;
+     p.z[0][count]=i;
+     p.z[1][count]=j;
+     p.z[2][count]=k;
      
      count++;
    }
@@ -187,12 +182,12 @@ for(i=0;i<N;i++){
       u^=otrace(f.x[ii],i,j,k);
 	//u^=1;
         if(u==0){
-	  printf("%d %d %d\n",i,j,k);
-	  /*
+	  //  printf("%d %d %d\n",i,j,k);
+	  
 	     p.z[0][count]=i;
 	     p.z[1][count]=j;
 	     p.z[2][count]=k;
-	  */
+	  
             count++;
         }
     u=0;    
@@ -202,6 +197,69 @@ for(i=0;i<N;i++){
 
 return count;
 }
+
+
+mterm obase(int a,int b){
+  int i,j,k;
+  mterm c;
+
+  c.n[0]=a;
+  c.n[1]=b;
+  
+  return c;
+
+
+}
+
+int bases(int a){
+  int i=0,j=0,count=0;
+
+  /*  
+  base[0].n[0]=0;
+  base[0].n[1]=0;
+  base[1].n[0]=0;
+  base[1].n[1]=0;
+  base[2].n[0]=1;
+  base[2].n[1]=0;
+  base[3].n[0]=0;
+  base[3].n[1]=1;
+  base[4].n[0]=2;
+  base[4].n[1]=0;
+  base[5].n[0]=1;
+  base[5].n[1]=1;
+  base[6].n[0]=3;
+  base[6].n[1]=0;
+  base[7].n[0]=0;
+  base[7].n[1]=2;
+  base[8].n[0]=2;
+  base[8].n[1]=1;
+  base[9].n[0]=1;
+  base[9].n[1]=2;
+  base[10].n[0]=0;
+  base[10].n[1]=3;
+  base[11].n[0]=4;
+  base[11].n[1]=0;
+  */
+ 
+  
+
+    for(i=0;i<20;i++){
+      for(j=0;j<20;j++){
+	if(i+j<a){
+	  base[count].n[0]=i;
+	  base[count++].n[1]=j;
+	  }
+	if(count>400)
+	  break;
+      }
+    }
+
+    printf("bases=%d\n",count);
+
+    return count;
+}
+
+
 
 
 
@@ -247,10 +305,15 @@ MP set_curve(unsigned short a[9][3],int x){
 }
 
 
+
+
 int main(void){
-  int i,j,k=0,f1,f2,f3,f4,count=0;
+  int i,j,k=0,a,b,count=0;
   unsigned int u=0;
   MP s;
+  unsigned short H[65][137]={0};
+  
+  
   //gfQ*Q
   unsigned short hl[3][3]={{Q+1,0,0},{0,Q+1,0},{0,0,Q+1}};
   //gf256
@@ -271,16 +334,36 @@ int main(void){
   unsigned short gg[6][3]={{63,4,0},{62,8,0},{60,16,0},{56,32,0},{48,1,0},{32,2,0}};
   //gf256
   unsigned short gd[8][3]={{255,8,0},{254,16,0},{252,32,0},{248,64,0},{240,128,0},{224,1,0},{192,2,0},{128,4,0}};
-  //gf127
+  //gf128
   unsigned short cc[7][3]={{127,4,0},{126,8,0},{124,16,0},{120,32,0},{112,64,0},{96,1,0},{64,2,0}};
+
+
   
   //s=define_curve();
   s=set_curve(gs,4);
   
   u=mtrace(s);
-  
+  a=u;
   printf("count=%d\n\n",u);
+  for(i=0;i<u;i++)
+    printf("%d,%d\n",p.z[0][i],p.z[1][i]);
+  count=bases(10);
+  b=count;
+  //    exit(1);
+  for(i=0;i<count;i++)
+    printf("(%d,%d)\n",base[i].n[0],base[i].n[1]);
+  //  exit(1);
+  for(i=0;i<55;i++){
+    for(j=0;j<137;j++){
+      H[i][j]=otrace(base[i],p.z[0][j],p.z[1][j],1);
 
+    }
+  }
+  for(i=0;i<count;i++){
+    for(j=0;j<u;j++)
+      printf("%d ",H[i][j]);
+    printf("\n");
+  }
 
   
   return 0;
