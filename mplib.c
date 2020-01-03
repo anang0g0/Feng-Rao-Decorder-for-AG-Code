@@ -1,6 +1,3 @@
-//20200101:began Feng-Rao decorder for AG code
-//auther:the queer who think about altanative cryptograpy
-
 #include <stdio.h>
 #include <stdlib.h>
 //#include "gf256.h"
@@ -257,7 +254,6 @@ int bases(int a){
       }
     }
 
-    printf("bases=%d\n",count);
 
     return count;
 }
@@ -346,12 +342,13 @@ int main(void){
   s=set_curve(gs,4);
   
   u=mtrace(s);
-  a=u;
+  //a=u;
   printf("count=%d\n\n",u);
   for(i=0;i<u;i++)
     printf("%d,%d\n",p.z[0][i],p.z[1][i]);
   count=bases(10);
-  b=count;
+  printf("bases=%d\n",count);
+  
   //    exit(1);
   for(i=0;i<count;i++)
     printf("(%d,%d)\n",base[i].n[0],base[i].n[1]);
