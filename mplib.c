@@ -26,7 +26,7 @@ mterm x[P];
 
 typedef struct {
 
-  unsigned short z[V][10000];
+  unsigned short z[V][100000];
 
 } PO;
 
@@ -259,6 +259,15 @@ int bases(int a){
 }
 
 
+unsigned short oinv(unsigned short a){
+  int i;
+
+  for(i=0;i<N;i++){
+    if(gf[mlt(fg[a],i)]==1)
+      return (unsigned short)i;
+  }
+
+}
 
 
 
@@ -290,7 +299,7 @@ s.x[3].n[2]=2;
 }
 
 MP set_curve(unsigned short a[9][3],int x){
-  MP s;
+  MP s={0};
   int i,j;
 
   
@@ -307,9 +316,9 @@ MP set_curve(unsigned short a[9][3],int x){
 
 
 int main(void){
-  int i,j,k=0,a,b,count=0;
+  int i,j,k=0,a,b,count=0,x,y;
   unsigned int u=0;
-  MP s;
+  MP s={0};
   unsigned short H[65][137]={0};
   
   
@@ -320,30 +329,57 @@ int main(void){
   //gf256
   unsigned short el2[5][3]={{0,2,1},{1,1,1},{3,0,0},{0,0,3},{2,0,1}};
   //gf8
-  unsigned short sc[3][3]={{3,2,1},{2,4,0},{0,1,5}};
+  unsigned short sc[4][3]={{3,2,0},{2,4,0},{0,1,0},{4,0,0}};
   //gfQ*Q
   unsigned short he[3][3]={{Q,0,0},{0,Q+1,0},{1,0,0}};
   //gfQ*Q
   unsigned short gh[3][3]={{0,Q,0},{0,1,0},{Q*Q+1,0,0}};
   //gf16
-  unsigned short gs[4][3]={{15,2,0},{14,4,0},{12,8,0},{8,1,0}};
+  unsigned short gs[5][3]={{7,2,0},{6,4,0},{4,8,0},{0,1,0},{8,0,0}};
   //gf32
-  unsigned short gc[6][3]={{31,2,0},{30,4,0},{28,8,0},{24,16,0},{16,1,0}};
+  unsigned short gc[6][3]={{15,2,0},{14,4,0},{12,8,0},{8,16,0},{0,1,0},{16,0,0}};
   //gf64
-  unsigned short gg[6][3]={{63,4,0},{62,8,0},{60,16,0},{56,32,0},{48,1,0},{32,2,0}};
+  unsigned short gg[7][3]={{31,2,0},{30,4,0},{28,8,0},{24,16,0},{16,32,0},{0,1,0},{32,0,0}};
   //gf256
-  unsigned short gd[8][3]={{255,8,0},{254,16,0},{252,32,0},{248,64,0},{240,128,0},{224,1,0},{192,2,0},{128,4,0}};
+  unsigned short gd[9][3]={{127,2,0},{126,4,0},{124,8,0},{120,16,0},{112,32,0},{96,64,0},{64,128,0},{0,1,0},{128,0,0}};
   //gf128
   unsigned short cc[7][3]={{127,4,0},{126,8,0},{124,16,0},{120,32,0},{112,64,0},{96,1,0},{64,2,0}};
 
 
   
+  /*
+  for(x=0;x<N;x++){
+    for(y=0;y<N;y++){
+      if(gf[mlt(mltn(2,y),oinv(x))]^gf[mlt(mltn(4,y),oinv(mltn(2,x)))]^gf[mlt(mltn(8,y),oinv(mltn(4,x)))]^1==0)
+	count++;
+    }
+  }
+  printf("gs=%d\n",count);
+  //exit(1);
+  count=0;
+  */
+  
   //s=define_curve();
-  s=set_curve(gs,4);
+  s=set_curve(gs,5);
   
   u=mtrace(s);
   //a=u;
   printf("count=%d\n\n",u);
+  //    exit(1);
+
+  /*  
+  count=0;
+  for(x=0;x<N;x++){
+    for(y=0;y<N;y++){
+      if(gf[mlt(mltn(2,y),mltn(3,x))]^gf[mlt(mltn(4,y),mltn(2,x))]^gf[y]^gf[mltn(4,x)]==0)
+	count++;
+    }
+  }
+  printf("gs=%d\n",count);
+  */
+  //  exit(1);
+
+
   for(i=0;i<u;i++)
     printf("%d,%d\n",p.z[0][i],p.z[1][i]);
   count=bases(10);
@@ -354,7 +390,7 @@ int main(void){
     printf("(%d,%d)\n",base[i].n[0],base[i].n[1]);
   //  exit(1);
   for(i=0;i<55;i++){
-    for(j=0;j<137;j++){
+    for(j=0;j<121;j++){
       H[i][j]=otrace(base[i],p.z[0][j],p.z[1][j],1);
 
     }
