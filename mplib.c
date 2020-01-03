@@ -1,3 +1,6 @@
+//20200101:began Feng-Rao decorder for AG code
+//auther:the queer who think about altanative cryptograpy
+
 #include <stdio.h>
 #include <stdlib.h>
 //#include "gf256.h"
