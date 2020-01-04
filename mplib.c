@@ -207,7 +207,7 @@ return k;
 unsigned short otrace(mterm a,int i,int j,int k){
     unsigned short u;
 
-    u=mlt(mlt(mltn(a.n[0],i),mltn(a.n[1],j)),mltn(a.n[2],k));
+    u=mlt(mlt(mltn(a.n[0],i),mltn(a.n[1],j)),mlt(mltn(a.n[2],k),a.a));
 
 return gf[u];
 }
@@ -237,7 +237,7 @@ mterm o[4];
  
  /*
  k=0;i=1;u=0;
- for(j=0;j<N;j++){
+   for(j=0;j<N;j++){
    for(ii=0;ii<n;ii++)
    u^=otrace(f.x[ii],i,j,k);
    //u^=1;
@@ -250,9 +250,12 @@ mterm o[4];
      
      count++;
    }
-  u=0;
- }
+   u=0;
+   }
  */
+   
+
+ 
  
  k=1;u=0;
 for(i=0;i<N;i++){
@@ -316,7 +319,20 @@ int bases(int a){
     return count;
 }
 
+int test(unsigned short x,unsigned short y){
+  int count=0,f1,f2,f3;
 
+  f1=gf[mlt(x,x)];
+  f2=gf[mlt(3,x)];
+  f3=gf[mlt(6,y)];
+
+  if((f1^f2^f3)==0){
+    printf("%d %d\n",gf[x],gf[y]);
+    count++;
+  }
+    
+  return count;
+}
 
 
 
@@ -347,7 +363,7 @@ s.x[3].n[2]=2;
  return s;
 }
 
-MP set_curve(unsigned short a[9][3],int x){
+MP set_curve(unsigned short a[9][4],int x){
   MP s={0};
   int i,j;
 
@@ -356,7 +372,9 @@ MP set_curve(unsigned short a[9][3],int x){
     for(j=0;j<V;j++){
       s.x[i].n[j]=a[i][j];
     }
+    s.x[i].a=a[i][3];
   }
+ 
 
   return s;
 }
@@ -365,52 +383,87 @@ MP set_curve(unsigned short a[9][3],int x){
 
 
 int main(void){
-  int i,j,k=0,a,b,count=0,x,y;
+  int i,j,k=0,a,b,count=0,x,y,z;
   unsigned int u=0;
   MP s={0};
   unsigned short H[65][137]={0};
   
   
   //gfQ*Q
-  unsigned short hl[3][3]={{Q+1,0,0},{0,Q+1,0},{0,0,Q+1}};
+  unsigned short hl[3][4]={{Q+1,0,0,1},{0,Q+1,0,1},{0,0,Q+1,1}};
   //gf256
-  unsigned short el[4][3]={{0,2,1},{1,1,1},{3,0,0},{0,0,3}};
+  unsigned short el[4][4]={{0,2,1,1},{1,1,1,1},{3,0,0,1},{0,0,3,1}};
   //gf256
-  unsigned short el2[5][3]={{0,2,1},{1,1,1},{3,0,0},{0,0,3},{2,0,1}};
+  unsigned short el2[5][4]={{0,2,1,1},{1,1,1,1},{3,0,0,1},{0,0,3,1},{2,0,1,1}};
   //gf8
-  unsigned short sc[4][3]={{3,2,1},{2,4,0},{0,1,5},{4,0,2}};
+  unsigned short sc[4][4]={{3,2,1,1},{2,4,0,1},{0,1,5,1},{4,0,2,1}};
   //gf8
-  unsigned short kl[3][3]={{3,1,0},{0,3,1},{1,0,3}};
+  unsigned short kl[3][4]={{3,1,0,1},{0,3,1,1},{1,0,3,1}};
   //gfQ*Q
-  unsigned short he[3][3]={{Q+1,0,0},{0,Q,0},{0,1,0}};
+  unsigned short he[3][4]={{Q+1,0,0,1},{0,Q,0,1},{0,1,0,1}};
   //gfQ*Q
-  unsigned short gh[3][3]={{0,Q,0},{0,1,0},{Q*Q+1,0,0}};
+  unsigned short gh[3][4]={{0,Q,0,1},{0,1,0,1},{Q*Q+1,0,0,1}};
   //gf16
-  unsigned short gs[5][3]={{7,2,0},{6,4,0},{4,8,0},{0,1,0},{8,0,0}};
+  unsigned short gs[5][4]={{7,2,0,1},{6,4,0,1},{4,8,0,1},{0,1,0,1},{8,0,0,1}};
   //gf32
-  unsigned short gc[6][3]={{15,2,0},{14,4,0},{12,8,0},{8,16,0},{0,1,0},{16,0,0}};
+  unsigned short gc[6][4]={{15,2,0,1},{14,4,0,1},{12,8,0,1},{8,16,0,1},{0,1,0,1},{16,0,0,1}};
   //gf64
-  unsigned short gg[7][3]={{31,2,0},{30,4,0},{28,8,0},{24,16,0},{16,32,0},{0,1,0},{32,0,0}};
+  unsigned short gg[7][4]={{31,2,0,1},{30,4,0,1},{28,8,0,1},{24,16,0,1},{16,32,0,1},{0,1,0,1},{32,0,0,1}};
   //gf256
-  unsigned short gd[9][3]={{127,2,0},{126,4,0},{124,8,0},{120,16,0},{112,32,0},{96,64,0},{64,128,0},{0,1,0},{128,0,0}};
+  unsigned short gd[9][4]={{127,2,0,1},{126,4,0,1},{124,8,0,1},{120,16,0,1},{112,32,0,1},{96,64,0,1},{64,128,0,1},{0,1,0,1},{128,0,0,1}};
   //gf128
-  unsigned short cc[8][3]={{63,2,0},{62,4,0},{60,8,0},{56,16,0},{48,32,0},{32,64,0},{0,1,0},{64,0,0}};
+  unsigned short cc[8][4]={{63,2,0,1},{62,4,0,1},{60,8,0,1},{56,16,0,1},{48,32,0,1},{32,64,0,1},{0,1,0,1},{64,0,0,1}};
 
+  unsigned short lo[3][4]={{2,0,0,1},{1,0,0,3},{0,1,0,6}};
+  unsigned short lk[6][4]={{0,2,0,1},{0,1,0,3},{0,0,1,6},{3,1,0,1},{0,3,1,1},{1,0,3,1}};
 
-  
+  PO t={0};
 
   //s=define_curve();
-  s=set_curve(kl,3);
   
+  s=set_curve(kl,3);
+
   u=mtrace(s);
 
   printf("count=%d\n\n",u);
-  //  exit(1);
+  //    exit(1);
 
+  for(i=0;i<u;i++){
+    printf("%d,%d %d\n",gf[p.z[0][i]],gf[p.z[1][i]],gf[p.z[2][i]]);
+    t.z[0][i]=p.z[0][i];
+    t.z[1][i]=p.z[1][i];
+    t.z[2][i]=p.z[2][i];
+  }
+  /*
+  for(i=0;i<3;i++){
+    for(j=0;j<u;j++)
+      p.z[i][j]=0;
+  }
+  */
+  s=set_curve(lo,3);
 
+  u=mtrace(s);
+
+  printf("count=%d\n\n",u);
+  //    exit(1);
 
   for(i=0;i<u;i++)
-    printf("%d,%d\n",p.z[0][i],p.z[1][i]);
+    printf("%d,%d %d\n",gf[p.z[0][i]],gf[p.z[1][i]],gf[p.z[2][i]]);
+
+  count=0;
+  for(i=0;i<23;i++){
+    for(j=0;j<8;j++){
+      if(t.z[0][i]==p.z[0][j] && t.z[1][i]==p.z[1][j] && t.z[2][i]==p.z[2][j]){
+	printf("points=%d %d %d\n",gf[t.z[0][i]],gf[t.z[1][i]],gf[t.z[2][i]]);
+	  count++;
+      }
+    }
+  }
+  printf("%d\n",count);
+  exit(1);
+
+
+  
   count=bases(7);
   printf("bases=%d\n",count);
   
@@ -418,10 +471,9 @@ int main(void){
   for(i=0;i<count;i++)
     printf("(%d,%d)\n",base[i].n[0],base[i].n[1]);
   //  exit(1);
-  for(i=0;i<55;i++){
-    for(j=0;j<121;j++){
+  for(i=0;i<15;i++){
+    for(j=0;j<24;j++){
       H[i][j]=fg[otrace(base[i],p.z[0][j],p.z[1][j],1)];
-
     }
   }
   for(i=0;i<count;i++){
