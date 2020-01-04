@@ -4,11 +4,11 @@
 
 #include <stdio.h>
 
-#define O 128
+#define O 8
 
 /* generate Galois Field over GF(2^?) */
 static const char *normal[14]={
-  "1101",
+  "1011",
   "11001", /* GF(16) */
   "110111",
   "1100001",
