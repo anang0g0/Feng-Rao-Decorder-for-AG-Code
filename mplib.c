@@ -435,10 +435,10 @@ int main(void){
     //t.z[2][i]=p.z[2][i];
   }
 
-    v=bases(5);
+    v=bases(7);
   printf("bases=%d\n",v);
   //  u=count;
-  //exit(1);
+  exit(1);
   for(i=0;i<v;i++){
     printf("(%d,%d)\n",base[i].n[0],base[i].n[1]);
     base[i].a=1;
