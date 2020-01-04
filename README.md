@@ -3,6 +3,7 @@ Stichtenothらによる一般化エルミート曲線を使って幾何学的ゴ
 あわよくば多点生成AG符号にも挑戦してみたいです。
 このテーマは私の学生時代からの宿敵であり、私の、ふぐりすみえのような、しつこい執念でいま解決されようとしているのです。
 この符号を暗号に使うかどうかはまだ決めてません。
+自分には数学を理解する才能がないので、こうして具体例を作ることで理解に近づくことができるのではないかと思っています。趣味としての生涯学習ですね。
 
 C(x,y)=x^15y^2+x^14y^4+x^12y^8+x^8y+x^16　over GF(16)　#N=137
 
@@ -40,3 +41,5 @@ C”(x,y)=y^2/x+y^4/x^2+y^8/x^4+y/x^8=1
 2.Simplified Understanding and Efficient Decoding of a Class of Algebraic-Geometric Codes 1994 IEEE
 
 3.A Simple Apploach for Construction of Algebraic-Geometric Codes from Affine Plane Curves 1994 IEEE
+
+4.Construction and Decoding of a Class of Algebraic Geometry Codes 1989 IEEE
