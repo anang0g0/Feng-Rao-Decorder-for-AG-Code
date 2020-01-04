@@ -6,7 +6,7 @@
 #define V 3
 #define P 1024
 #define Q 2
-#define N Q*Q*Q*Q
+#define N Q*Q*Q
 #define K 2048
 
 
@@ -31,10 +31,11 @@ typedef struct {
 } PO;
 
 
-//unsigned char gf[N]={0,1,2,4,5,7,3,6};
-//unsigned char fg[N]={0,1,2,6,3,4,7,5};
-unsigned char gf[N]={0,1,2,4,8,9,11,15,7,14,5,10,13,3,6,12};
-unsigned char fg[N]={0,1,2,13,3,10,14,8,4,5,11,6,15,12,9,7};
+unsigned short gf[8]={0,1,2,4,3,6,7,5};
+unsigned short fg[8]={0,1,2,4,3,7,5,6};
+
+//unsigned char gf[N]={0,1,2,4,8,9,11,15,7,14,5,10,13,3,6,12};
+//unsigned char fg[N]={0,1,2,13,3,10,14,8,4,5,11,6,15,12,9,7};
 /*
 unsigned char gf[32]={
 0,1,2,4,8,16,23,25,5,10,20,
@@ -90,6 +91,84 @@ return 1;
       i=mlt(i,x);
 
   return i;
+}
+
+
+unsigned short oinv(unsigned short a){
+  int i;
+
+
+  for(i=0;i<N;i++){
+    if(gf[mlt(fg[a],i)]==1)
+      return (unsigned short)i;
+  }
+
+}
+
+
+void vec_diff(unsigned short a[N], unsigned short b[N]){
+    /* Calcurate the difference of two vectors. Be caution that b[N] changes.*/
+    for (int i = 0; i < N; i++){
+        b[i] ^= a[i];
+    }
+}
+
+int gauss(){
+  unsigned short m[N][N] = {{7,2,5}, {2,5,2},{5,2,7}};    // The matrix
+  unsigned short b[N] = {5,7,0};
+  unsigned short mm[N]={0};
+
+    printf("The coefficient matrix is : \n");
+    for (int i = 0; i < N; i++){
+        for (int j = 0; j < N; j++){
+            printf("%d ", m[i][j]);
+            if (j == N-1){
+                printf("\n");
+            }
+        }
+    }
+
+    printf("\nUse Gauss method to solve equations : \n");
+    for (int i = 0; i < N; i++){
+        for (int j = i+1; j < N; j++){
+	  unsigned short coef = mlt(fg[m[j][i]] , oinv(fg[m[i][i]]));
+            unsigned short del[N];
+
+            for (int k = 0; k < N; k++){
+	      del[k] = gf[mlt(fg[m[i][k]] , coef)];
+            }
+	    //for(int ii=0;ii<N;ii++)
+	    //mm[ii]=m[j][ii];
+            vec_diff(del, m[j]);
+            b[j] ^= gf[mlt(fg[b[i]] , coef)];
+        }
+    }
+
+    for (int i = N -1; i >= 0; i--){
+      unsigned short x = gf[oinv(fg[m[i][i]])];
+      m[i][i] = gf[mlt(fg[m[i][i]], fg[x])];
+      b[i] = gf[mlt(fg[b[i]],fg[x])];
+
+        for (int j = 0; j < i; j++){
+	  b[j] ^= gf[mlt(fg[b[i]],fg[m[j][i]])];
+            m[j][i] = 0;
+        }
+    }
+
+    for (int i = 0; i < N; i++){
+        for (int j = 0; j < N; j++){
+            printf("%d ", m[i][j]);
+            if (j == N - 1){
+                printf("\n");
+            }
+        }
+    }
+
+    for (int i = 0; i < N; i++){
+        printf("%d ", b[i]);
+    }
+
+    return 0;
 }
 
 
@@ -174,7 +253,7 @@ mterm o[4];
   u=0;
  }
  */
-
+ 
  k=1;u=0;
 for(i=0;i<N;i++){
     for(j=0;j<N;j++){
@@ -215,32 +294,29 @@ int bases(int a){
   int i=0,j=0,count=0;
   
 
-    for(i=0;i<20;i++){
-      for(j=0;j<20;j++){
-	if(i+j<a){
+    for(i=0;i<8;i++){
+      for(j=0;j<5;j++){
+	/*
+	if(i+j==6 && i<7 && j<3){
 	  base[count].n[0]=i;
 	  base[count++].n[1]=j;
-	  }
+	  }else */
+	if(i+j<4){
+	  base[count].n[0]=i;
+	  base[count++].n[1]=j;
+	}
 	if(count>400)
-	  break;
+	  break;	
       }
     }
-
-
+    
+    printf("count=%d\n",count);
+    //  exit(1);
+    
     return count;
 }
 
 
-unsigned short oinv(unsigned short a){
-  int i;
-
-
-  for(i=0;i<N;i++){
-    if(gf[mlt(fg[a],i)]==1)
-      return (unsigned short)i;
-  }
-
-}
 
 
 
@@ -302,9 +378,11 @@ int main(void){
   //gf256
   unsigned short el2[5][3]={{0,2,1},{1,1,1},{3,0,0},{0,0,3},{2,0,1}};
   //gf8
-  unsigned short sc[4][3]={{3,2,0},{2,4,0},{0,1,0},{4,0,0}};
+  unsigned short sc[4][3]={{3,2,1},{2,4,0},{0,1,5},{4,0,2}};
+  //gf8
+  unsigned short kl[3][3]={{3,1,0},{0,3,1},{1,0,3}};
   //gfQ*Q
-  unsigned short he[3][3]={{Q,0,0},{0,Q+1,0},{1,0,0}};
+  unsigned short he[3][3]={{Q+1,0,0},{0,Q,0},{0,1,0}};
   //gfQ*Q
   unsigned short gh[3][3]={{0,Q,0},{0,1,0},{Q*Q+1,0,0}};
   //gf16
@@ -320,42 +398,20 @@ int main(void){
 
 
   
-  /*
-  for(x=0;x<N;x++){
-    for(y=0;y<N;y++){
-      if(gf[mlt(mltn(2,y),oinv(x))]^gf[mlt(mltn(4,y),oinv(mltn(2,x)))]^gf[mlt(mltn(8,y),oinv(mltn(4,x)))]^1==0)
-	count++;
-    }
-  }
-  printf("gs=%d\n",count);
-  //exit(1);
-  count=0;
-  */
-  
+
   //s=define_curve();
-  s=set_curve(gs,5);
+  s=set_curve(kl,3);
   
   u=mtrace(s);
-  //a=u;
-  printf("count=%d\n\n",u);
-  //   exit(1);
 
-  /*  
-  count=0;
-  for(x=0;x<N;x++){
-    for(y=0;y<N;y++){
-      if(gf[mlt(mltn(2,y),mltn(3,x))]^gf[mlt(mltn(4,y),mltn(2,x))]^gf[y]^gf[mltn(4,x)]==0)
-	count++;
-    }
-  }
-  printf("gs=%d\n",count);
-  */
+  printf("count=%d\n\n",u);
   //  exit(1);
+
 
 
   for(i=0;i<u;i++)
     printf("%d,%d\n",p.z[0][i],p.z[1][i]);
-  count=bases(10);
+  count=bases(7);
   printf("bases=%d\n",count);
   
   //    exit(1);
@@ -364,16 +420,18 @@ int main(void){
   //  exit(1);
   for(i=0;i<55;i++){
     for(j=0;j<121;j++){
-      H[i][j]=otrace(base[i],p.z[0][j],p.z[1][j],1);
+      H[i][j]=fg[otrace(base[i],p.z[0][j],p.z[1][j],1)];
 
     }
   }
   for(i=0;i<count;i++){
+    printf("(%d,%d): ",base[i].n[0],base[i].n[1]);
     for(j=0;j<u;j++)
       printf("%d ",H[i][j]);
     printf("\n");
   }
 
+  printf("%d\n",fg[gf[5]^gf[2]^gf[6]]);
   
   return 0;
 }
