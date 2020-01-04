@@ -435,23 +435,24 @@ int main(void){
     //t.z[2][i]=p.z[2][i];
   }
 
-    v=bases(7);
+    v=bases(8);
   printf("bases=%d\n",v);
   //  u=count;
-  exit(1);
+  //  exit(1);
   for(i=0;i<v;i++){
     printf("(%d,%d)\n",base[i].n[0],base[i].n[1]);
     base[i].a=1;
   }
   //  exit(1);
   for(i=0;i<15;i++){
-    for(j=0;j<65;j++){
+    for(j=5;j<65;j++){
+      //      if(p.z[0][j]>0)
       H[i][j]=fg[otrace(base[i],p.z[0][j],p.z[1][j],1)];
     }
   }
   for(i=0;i<15;i++){
     printf("(%d,%d): ",base[i].n[0],base[i].n[1]);
-    for(j=0;j<65;j++)
+    for(j=5;j<65;j++)
       printf("%d ",H[i][j]);
     printf("\n");
   }
