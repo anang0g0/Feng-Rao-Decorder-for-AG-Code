@@ -5,8 +5,8 @@
 
 #define V 3
 #define P 1024
-#define Q 2
-#define N Q*Q*Q
+#define Q 4
+#define N Q*Q
 #define K 2048
 
 
@@ -31,11 +31,11 @@ typedef struct {
 } PO;
 
 
-unsigned short gf[8]={0,1,2,4,3,6,7,5};
-unsigned short fg[8]={0,1,2,4,3,7,5,6};
+//unsigned short gf[8]={0,1,2,4,3,6,7,5};
+//unsigned short fg[8]={0,1,2,4,3,7,5,6};
 
-//unsigned char gf[N]={0,1,2,4,8,9,11,15,7,14,5,10,13,3,6,12};
-//unsigned char fg[N]={0,1,2,13,3,10,14,8,4,5,11,6,15,12,9,7};
+unsigned char gf[N]={0,1,2,4,8,9,11,15,7,14,5,10,13,3,6,12};
+unsigned char fg[N]={0,1,2,13,3,10,14,8,4,5,11,6,15,12,9,7};
 /*
 unsigned char gf[32]={
 0,1,2,4,8,16,23,25,5,10,20,
@@ -304,7 +304,7 @@ int bases(int a){
 	  base[count].n[0]=i;
 	  base[count++].n[1]=j;
 	  }else */
-	if(i+j<4){
+	if(i+j<a){
 	  base[count].n[0]=i;
 	  base[count++].n[1]=j;
 	}
@@ -313,7 +313,7 @@ int bases(int a){
       }
     }
     
-    printf("count=%d\n",count);
+    //  printf("count=%d\n",count);
     //  exit(1);
     
     return count;
@@ -421,7 +421,7 @@ int main(void){
 
   //s=define_curve();
   
-  s=set_curve(kl,3);
+  s=set_curve(he,3);
 
   u=mtrace(s);
   v=u;
@@ -430,16 +430,40 @@ int main(void){
 
   for(i=0;i<u;i++){
     printf("%d,%d %d\n",gf[p.z[0][i]],gf[p.z[1][i]],gf[p.z[2][i]]);
-    t.z[0][i]=p.z[0][i];
-    t.z[1][i]=p.z[1][i];
-    t.z[2][i]=p.z[2][i];
+    //    t.z[0][i]=p.z[0][i];
+    //t.z[1][i]=p.z[1][i];
+    //t.z[2][i]=p.z[2][i];
   }
+
+    v=bases(5);
+  printf("bases=%d\n",v);
+  //  u=count;
+  //exit(1);
+  for(i=0;i<v;i++){
+    printf("(%d,%d)\n",base[i].n[0],base[i].n[1]);
+    base[i].a=1;
+  }
+  //  exit(1);
+  for(i=0;i<15;i++){
+    for(j=0;j<65;j++){
+      H[i][j]=fg[otrace(base[i],p.z[0][j],p.z[1][j],1)];
+    }
+  }
+  for(i=0;i<15;i++){
+    printf("(%d,%d): ",base[i].n[0],base[i].n[1]);
+    for(j=0;j<65;j++)
+      printf("%d ",H[i][j]);
+    printf("\n");
+  }
+
+  //  exit(1);
   /*
   for(i=0;i<3;i++){
     for(j=0;j<u;j++)
       p.z[i][j]=0;
   }
   */
+  /*
   s=set_curve(lo,3);
 
   u=mtrace(s);
@@ -461,27 +485,9 @@ int main(void){
   }
   printf("%d\n",count);
   exit(1);
-
+  */
 
   
-  count=bases(7);
-  printf("bases=%d\n",count);
-  
-  //    exit(1);
-  for(i=0;i<count;i++)
-    printf("(%d,%d)\n",base[i].n[0],base[i].n[1]);
-  //  exit(1);
-  for(i=0;i<15;i++){
-    for(j=0;j<24;j++){
-      H[i][j]=fg[otrace(base[i],p.z[0][j],p.z[1][j],1)];
-    }
-  }
-  for(i=0;i<count;i++){
-    printf("(%d,%d): ",base[i].n[0],base[i].n[1]);
-    for(j=0;j<u;j++)
-      printf("%d ",H[i][j]);
-    printf("\n");
-  }
 
   printf("%d\n",fg[gf[5]^gf[2]^gf[6]]);
   
