@@ -454,7 +454,7 @@ int main(void){
   for(i=0;i<v;i++){
     for(j=0;j<u;j++){
       if(t.z[0][i]==p.z[0][j] && t.z[1][i]==p.z[1][j] && t.z[2][i]==p.z[2][j]){
-	printf("points=%d %d %d\n",gf[t.z[0][i]],gf[t.z[1][i]],gf[t.z[2][i]]);
+	printf("intersection points=%d %d %d\n",gf[t.z[0][i]],gf[t.z[1][i]],gf[t.z[2][i]]);
 	  count++;
       }
     }
