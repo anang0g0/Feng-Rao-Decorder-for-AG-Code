@@ -41,3 +41,5 @@ C”(x,y)=y^2/x+y^4/x^2+y^8/x^4+y/x^8=1
 2.Simplified Understanding and Efficient Decoding of a Class of Algebraic-Geometric Codes 1994 IEEE
 
 3.A Simple Apploach for Construction of Algebraic-Geometric Codes from Affine Plane Curves 1994 IEEE
+
+4.Construction and Decoding of a Class of Algebraic Geometry Codes 1989 IEEE
