@@ -35,28 +35,30 @@ C”(x,y)=y^2/x+y^4/x^2+y^8/x^4+y/x^8=1
 
 20200105
 
+曲線をいじって遊んでます。
 曲線Cの規約性をsagemathで確認しました。既約です。すると次数は12もあるので、種数はg=(12-1)(12-2)/2=55もあるはずです。
 しかし曲線の点は121個しかないわけで素直に喜べません。いくら既約性があったとしても、既存の符号のパラメータとしては絶望的です。
-次元が１とかになってしまう。多分特異点があるんだと思うのですが、それもsagemathを使って確かめられるでしょうか・・・。
+次元が１とかになってしまう。ところが、Bassaらの原論文を見ると拡大次数が奇数のときしか成り立たないようで、
+偶数の場合は除外してあります。偶数の場合はどうなるんでしょうね。特異点があっても性能は悪いですが
+符号は作れるようなのでやってみようと思います。その場合曲線は、
 
 sage: x, y = AffineSpace(2, GF(2), 'xy').gens()
 
-sage: C3 = Curve(x^7*y^2 + x^6*y^4 + x^4*y^8 + y + x^8)
+sage: C1 = Curve(x^15*y^2 + x^14*y^4 + x^12*y^8 + x^8*y^16 + y + x^16)
 
-sage: C3
-
-Affine Plane Curve over Finite Field of size 2 defined by x^4*y^8 + x^6*y^4 + x^7*y^2 + x^8 + y
-
-sage: C3.irreducible_components()
+sage:  C1.irreducible_components()
 
 [
 
 Closed subscheme of Affine Space of dimension 2 over Finite Field of size 2 defined by:
 
-x^4*y^8 + x^6*y^4 + x^7*y^2 + x^8 + y
+x^8*y^16 + x^12*y^8 + x^14*y^4 + x^15*y^2 + x^16 + y
 
 ]
 
+この場合店の数はGF(32)上で４９７になります。
+文献１の例を見ても種数が明らかなので点の数の理論値を計算してみましたが、上限ではないようでした。
+それでもいい符号が見つかったのだから研究する価値はあるんですね。
 
 
 参考文献は以下のとおりです。
@@ -68,3 +70,5 @@ x^4*y^8 + x^6*y^4 + x^7*y^2 + x^8 + y
 3.A Simple Apploach for Construction of Algebraic-Geometric Codes from Affine Plane Curves 1994 IEEE
 
 4.Construction and Decoding of a Class of Algebraic Geometry Codes 1989 IEEE
+
+5.TOWERS OF FUNCTION FIELDS OVER NON-PRIME FINITE FIELDS 2015 https://backend.orbit.dtu.dk/ws/files/118440599/bassa_etal.pdf
