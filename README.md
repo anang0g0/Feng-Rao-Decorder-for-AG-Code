@@ -39,6 +39,23 @@ C”(x,y)=y^2/x+y^4/x^2+y^8/x^4+y/x^8=1
 しかし曲線の点は121個しかないわけで素直に喜べません。いくら既約性があったとしても、既存の符号のパラメータとしては絶望的です。
 次元が１とかになってしまう。多分特異点があるんだと思うのですが、それもsagemathを使って確かめられるでしょうか・・・。
 
+sage: x, y = AffineSpace(2, GF(2), 'xy').gens()
+
+sage: C2= Curve(x^3*y^2 + x^2*y^4 + y + x^4)
+
+sage: C2
+
+Affine Plane Curve over Finite Field of size 2 defined by x^2*y^4 + x^3*y^2 + x^4 + y
+
+sage:  C2.irreducible_components()
+
+[
+
+Closed subscheme of Affine Space of dimension 2 over Finite Field of size 2 defined by:
+
+x^2*y^4 + x^3*y^2 + x^4 + y
+
+]
 
 
 参考文献は以下のとおりです。
