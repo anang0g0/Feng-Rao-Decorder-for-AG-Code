@@ -56,7 +56,8 @@ x^8*y^16 + x^12*y^8 + x^14*y^4 + x^15*y^2 + x^16 + y
 
 ]
 
-この場合店の数はGF(32)上で４９７になります。
+この場合店の数はGF(32)上で４９７になります。これは、文献６にも乗っているようで正しいようです。
+論文にはありませんが、私は実際にGF(128)のものも作っています。拡大次数が偶数のときどうなるかは謎です。
 文献１の例を見ても種数が明らかなので点の数の理論値を計算してみましたが、上限ではないようでした。
 それでもいい符号が見つかったのだから研究する価値はあるんですね。
 
@@ -71,4 +72,4 @@ x^8*y^16 + x^12*y^8 + x^14*y^4 + x^15*y^2 + x^16 + y
 
 4.Construction and Decoding of a Class of Algebraic Geometry Codes 1989 IEEE
 
-5.TOWERS OF FUNCTION FIELDS OVER NON-PRIME FINITE FIELDS 2015 https://backend.orbit.dtu.dk/ws/files/118440599/bassa_etal.pdf
+5.Explicit Construction of AG Codes from Generalized Hermitian Curves arXiv
