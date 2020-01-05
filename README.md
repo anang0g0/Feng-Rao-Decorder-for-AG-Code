@@ -41,21 +41,22 @@ C”(x,y)=y^2/x+y^4/x^2+y^8/x^4+y/x^8=1
 
 sage: x, y = AffineSpace(2, GF(2), 'xy').gens()
 
-sage: C2= Curve(x^3*y^2 + x^2*y^4 + y + x^4)
+sage: C3 = Curve(x^7*y^2 + x^6*y^4 + x^4*y^8 + y + x^8)
 
-sage: C2
+sage: C3
 
-Affine Plane Curve over Finite Field of size 2 defined by x^2*y^4 + x^3*y^2 + x^4 + y
+Affine Plane Curve over Finite Field of size 2 defined by x^4*y^8 + x^6*y^4 + x^7*y^2 + x^8 + y
 
-sage:  C2.irreducible_components()
+sage: C3.irreducible_components()
 
 [
 
 Closed subscheme of Affine Space of dimension 2 over Finite Field of size 2 defined by:
 
-x^2*y^4 + x^3*y^2 + x^4 + y
+x^4*y^8 + x^6*y^4 + x^7*y^2 + x^8 + y
 
 ]
+
 
 
 参考文献は以下のとおりです。
