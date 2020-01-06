@@ -3,11 +3,15 @@
 //#include "gf256.h"
 
 
-#define V 3
+#define V 3 //変数の数
 #define P 1024
-#define Q 2
-#define N Q*Q*Q
-#define K 2048
+#define Q 4 //基礎体
+#define N Q*Q //定義体
+#define I 5 //曲線の次数
+#define J 3
+#define K I-2 //number h
+#define H (K+1)*(K+2)/2 //シンドローム行列の横ベクトルの長さ
+#define F (J-K+1)*(J-K+2)/2 //シンドローム行列の縦ベクトル
 
 
 
@@ -31,8 +35,11 @@ typedef struct {
 } PO;
 
 
-unsigned short gf[8]={0,1,2,4,3,6,7,5};
-unsigned short fg[8]={0,1,2,4,3,7,5,6};
+//unsigned short gf[8]={0,1,2,4,3,6,7,5};
+//unsigned short fg[8]={0,1,2,4,3,7,5,6};
+//sakata
+unsigned short gf[16]={0,1,2,4,8,3,6,12,11,5,10,7,14,15,13,9};
+unsigned short fg[16]={0,1,2,5,3,9,6,11,4,15,10,8,7,14,12,13};
 
 //unsigned char gf[N]={0,1,2,4,8,9,11,15,7,14,5,10,13,3,6,12};
 //unsigned char fg[N]={0,1,2,13,3,10,14,8,4,5,11,6,15,12,9,7};
@@ -69,7 +76,7 @@ unsigned short fg[N]={0};
 
 unsigned int cnt=0;
 PO p;
-mterm base[K]={0};
+mterm base[2048]={0};
 
 
 int mlt(int x, int y){
@@ -103,6 +110,34 @@ unsigned short oinv(unsigned short a){
       return (unsigned short)i;
   }
 
+}
+
+void param(int n,int g){
+  int i,j,h,ij,t;
+
+  //  g=6;
+  j=I-2;
+  //  ij=k+g-1;
+  //  ij=1;
+  //  exit(1);
+  //  n-=1;
+  while(j*I<n){
+    for(i=I-2;i<j-I+2+1;i++)
+      printf("h=%d :",i);
+    printf("\n");
+    printf("n=%d ",n);
+    printf("j=%d\n",j);
+    printf("k=%d\n",I*j-g+1);
+    //printf("k=%d\n",ij);
+    printf("d=%d\n",n-I*j);
+    //printf("d=%d\n",n-ij);
+    printf("t=%d\n",(n-I*j-1)/2);
+    //  printf("t=%d\n",t);
+    //      }
+    j++;
+    //    ij++;
+  }
+   
 }
 
 
@@ -204,6 +239,82 @@ return k;
 }
 
 
+int rank(int mat[][100], int n){    
+    int ltmp[100], tmp, a_tmp[100], b_tmp[100];
+    int i, j, k;
+    int count;
+    int all_zero;
+
+    for(i = 0; i < n; i++){
+        all_zero = 0;
+        if(mat[i][i] == 0){ 
+            for(j = 0; j < n; j++){
+                if(mat[j][i] != 0){
+                    for(k = 0; k < n; k++){
+                        tmp = mat[i][k];
+                        mat[i][k] = mat[j][k];
+                        mat[j][k] = tmp;
+                    }
+                } else if(j == n - 1)
+                    all_zero = 1;
+            }
+        }
+
+
+
+        if(!all_zero){      
+            for(j = i + 1; j < n; j++){
+                for(k = 0; k < n; k++){
+		  a_tmp[k] = mlt(mat[i][k] , mat[j][i]);
+		  b_tmp[k] = mlt(mat[j][k] , mat[i][i]);
+                }
+                for(k = 0; k < n; k++)
+                    mat[j][k] = fg[gf[b_tmp[k]]^gf[a_tmp[k]]];
+            }
+        }
+    }
+
+
+    count = 0;
+    for(i = 0; i < n; i++){
+        if(mat[i][n] == 0)
+            count++;
+    }
+
+    return (n - count);
+}
+
+
+int mdeg(MP f){
+  int i,tmp=0,j,k;
+
+  for(i=0;i<terms(f);i++){
+    k=0;
+    for(j=0;j<V;j++){
+      tmp+=f.x[i].n[j];
+      if(k<tmp)
+	k=tmp;
+      
+    }
+  }
+
+  return k;
+
+}
+
+MP mtermul(MP f,mterm o){
+  int i,j,k;
+
+  for(i=0;i<terms(f);i++){
+    for(j=0;j<V;j++)
+      f.x[i].n[j]+=o.n[j];
+    f.x[i].a=gf[mlt(fg[f.x[i].a],fg[o.a])];
+  }
+
+  return f;
+}
+
+
 unsigned short otrace(mterm a,int i,int j,int k){
     unsigned short u;
 
@@ -221,7 +332,7 @@ mterm o[4];
  n=terms(f);
 
 
-
+ /*
  i=0;j=1;k=0;
  for(ii=0;ii<n;ii++)
    u^=otrace(f.x[ii],i,j,k);
@@ -236,7 +347,7 @@ mterm o[4];
    count++;
 
  }
- 
+ */
  /* 
  k=0;i=1;u=0;
    for(j=0;j<N;j++){
@@ -300,7 +411,7 @@ int bases(int a){
   
 
     for(i=0;i<8;i++){
-      for(j=0;j<4;j++){
+      for(j=0;j<5;j++){
 	if(i+j<a){
 	  base[count].n[0]=i;
 	  base[count++].n[1]=j;
@@ -315,6 +426,7 @@ int bases(int a){
     
     return count;
 }
+
 
 int test(unsigned short x,unsigned short y){
   int count=0,f1,f2,f3;
@@ -380,21 +492,21 @@ MP set_curve(unsigned short a[9][4],int x){
 
 
 int main(void){
-  int i,j,k=0,a,b,count=0,x,y,z;
+  int i,j,k=0,a,b,count=0,x,y,z,g;
   unsigned int u=0,v=0;
   MP s={0};
-  unsigned short H[65][137]={0};
+  unsigned short HH[65][50000]={0};
   
   
   //gfQ*Q
   unsigned short hl[3][4]={{Q+1,0,0,1},{0,Q+1,0,1},{0,0,Q+1,1}};
-  //gf256
+  //gf256 g=1
   unsigned short el[4][4]={{0,2,1,1},{1,1,1,1},{3,0,0,1},{0,0,3,1}};
-  //gf256
+  //gf256 g=1
   unsigned short el2[5][4]={{0,2,1,1},{1,1,1,1},{3,0,0,1},{0,0,3,1},{2,0,1,1}};
-  //gf8
+  //gf8 g=6
   unsigned short sc[4][4]={{3,2,0,1},{2,4,0,1},{0,1,0,1},{4,0,0,1}};
-  //gf8
+  //gf8 g=3
   unsigned short kl[3][4]={{3,1,0,1},{0,3,1,1},{1,0,3,1}};
   //gfQ*Q
   unsigned short he[3][4]={{Q+1,0,0,1},{0,Q,0,1},{0,1,0,1}};
@@ -402,33 +514,46 @@ int main(void){
   unsigned short gu[5][4]={{7,4,0,1},{6,8,0,1},{4,1,0,1},{0,2,0,1},{8,0,0,1}};
   //gf32 g=75 #N=497
   unsigned short ge[6][4]={{15,8,0,1},{14,16,0,1},{12,1,0,1},{8,2,0,1},{0,4,0,1},{16,0,0,1}};
-  //gf64 g=217 #N=
+  //gf64 g=212 #N=
   unsigned short gg[7][4]={{31,8,0,1},{30,16,0,1},{28,32,0,1},{24,1,0,1},{16,2,0,1},{0,4,0,1},{32,0,0,1}};
-  //gf256
+  //gf256 g=2413
   unsigned short gd[9][4]={{127,8,0,1},{126,16,0,1},{124,32,0,1},{120,64,0,1},{112,128,0,1},{96,1,0,1},{64,2,0,1},{0,4,0,1},{128,0,0,1}};
-  //gf128 
+  //gf128 g=315
   unsigned short cc[8][4]={{63,8,0,1},{62,16,0,1},{60,32,0,1},{56,64,0,1},{48,1,0,1},{32,2,0,1},{0,4,0,1},{64,0,0,1}};
 
   unsigned short lo[3][4]={{2,0,0,1},{1,0,0,3},{0,1,0,6}};
   unsigned short lk[6][4]={{0,2,0,1},{0,1,0,3},{0,0,1,6},{3,1,0,1},{0,3,1,1},{1,0,3,1}};
-  //gf32
+  //gf32 g=26 #N=157
   unsigned short ts[3][4]={{2,2,5,1},{7,0,2,1},{0,9,0,1}};
-  //gf128
+  //gf128 g=78 #N=891
   unsigned short tt[3][4]={{3,1,10,1},{13,0,1,1},{0,14,0,1}};
   //gf512
   unsigned short gt[10][4]={{255,16,0,1},{254,32,0,1},{252,64,0,1},{248,128,0,1},{240,256,0,1},{224,1,0,1},{192,2,0,1},{128,4,0,1},{0,8,0,1},{256,0,0,1}};
 
+  unsigned short bb[22][2]={{0,0},{1,0},{0,1},{2,0},{1,1},{0,2},{3,0},{2,1},{1,2},{0,3},{3,1},{2,2},{1,3},{0,4},{5,0},{4,1},{3,2},{2,3},{1,4},{0,5},{6,0},{5,1}};
+  mterm aa[10]={0};
+  unsigned char e[28]={1,4,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+  unsigned char ee[64]={0,0,0,0,12,0,0,0,0,11,0,0,2,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0};
   PO t={0};
+  unsigned char ss[10]={0};
+  unsigned short M[K][K]={0};
+  unsigned short S[F][H]={0};
+
 
   //s=define_curve();
   
-  s=set_curve(sc,4);
+  s=set_curve(he,3);
 
   u=mtrace(s);
   v=u;
   printf("count=%d\n\n",u);
   //     exit(1);
-
+  for(i=0;i<21;i++){
+    printf("%d %d\n",bb[i][0],bb[i][1]);
+    for(j=0;j<2;j++)
+      aa[i]=obase(bb[i][0],bb[i][1]);
+  }
+  aa[21]=obase(5,1);
   for(i=0;i<u;i++){
     printf("%d,%d %d\n",gf[p.z[0][i]],gf[p.z[1][i]],gf[p.z[2][i]]);
     //    t.z[0][i]=p.z[0][i];
@@ -438,29 +563,41 @@ int main(void){
   //  exit(1);
 
   
-    v=bases(10);
-  printf("bases=%d\n",v);
+      v=bases(8);
+    printf("bases=%d\n",v);
   //  u=count;
   //  exit(1);
   for(i=0;i<22;i++){
-    printf("(%d,%d)\n",base[i].n[0],base[i].n[1]);
-    base[i].a=1;
+    printf("(%d,%d)\n",aa[i].n[0],aa[i].n[1]);
+    aa[i].a=1;
   }
-  //  exit(1);
+  // exit(1);
   for(i=0;i<22;i++){
-    for(j=0;j<29;j++){
+    for(j=0;j<u;j++){
       //      if(p.z[0][j]>0)
-      H[i][j]=fg[otrace(base[i],p.z[0][j],p.z[1][j],1)];
+      HH[i][j]=fg[otrace(aa[i],p.z[0][j],p.z[1][j],1)];
     }
   }
   for(i=0;i<22;i++){
-    printf("(%d,%d): ",base[i].n[0],base[i].n[1]);
-    for(j=1;j<29;j++)
-      printf("%d ",H[i][j]);
+    printf("(%d,%d): ",aa[i].n[0],aa[i].n[1]);
+    for(j=0;j<u;j++)
+      printf("%d ",HH[i][j]);
     printf("\n");
   }
-
+  for(i=0;i<22;i++){
+    for(j=0;j<u;j++)
+      ss[i]^=gf[mlt(fg[ee[j]],HH[i][j])];
+    printf("syn[%d,%d]=%d\n",aa[i].n[0],aa[i].n[1],ss[i]);
+  }
+  printf("\n");
   //  exit(1);
+
+  
+  g=(I-1)*(I-2)/2;
+  //  g=2413;
+  param(u,g);
+
+  //exit(1);
   /*
   for(i=0;i<3;i++){
     for(j=0;j<u;j++)
@@ -493,7 +630,7 @@ int main(void){
 
   
 
-  printf("%d\n",fg[gf[5]^gf[2]^gf[6]]);
+  //  printf("%d\n",fg[gf[5]^gf[2]^gf[6]]);
   
   return 0;
 }
