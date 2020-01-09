@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-//#include "gf256.h"
+#include "gf256.h"
 
 
 #define V 3 //変数の数
 #define P 1024
-#define Q 4 //基礎体
+#define Q 16 //基礎体
 #define N Q*Q //定義体
 #define I 5 //曲線の次数
 #define J 3
@@ -30,7 +30,7 @@ mterm x[P];
 
 typedef struct {
 
-  unsigned short z[V][9000];
+  unsigned char z[V][35000];
 
 } PO;
 
@@ -39,8 +39,8 @@ typedef struct {
 //unsigned short fg[8]={0,1,2,4,3,7,5,6};
 
 //sakata
-unsigned short gf[16]={0,1,2,4,8,3,6,12,11,5,10,7,14,15,13,9};
-unsigned short fg[16]={0,1,2,5,3,9,6,11,4,15,10,8,7,14,12,13};
+//unsigned short gf[16]={0,1,2,4,8,3,6,12,11,5,10,7,14,15,13,9};
+//unsigned short fg[16]={0,1,2,5,3,9,6,11,4,15,10,8,7,14,12,13};
 
 //nomal
 //unsigned char gf[N]={0,1,2,4,8,9,11,15,7,14,5,10,13,3,6,12};
@@ -64,7 +64,7 @@ unsigned char fg[32]={0,1,2,20,3,8,21,24,4,12,9,29,22,18,25,27,5,15,13,14,10,16,
 
 unsigned int cnt=0;
 PO p;
-mterm base[2048]={0};
+mterm base[N*N]={0};
 
 
 int mlt(int x, int y){
@@ -505,13 +505,13 @@ int bases(int a){
   int i=0,j=0,count=0;
   
 
-    for(i=0;i<15;i++){
-      for(j=0;j<15;j++){
+    for(i=0;i<N-1;i++){
+      for(j=0;j<N-1;j++){
 	//	if(i+j<a){
 	  base[count].n[0]=i;
 	  base[count++].n[1]=j;
 	  //	}
-	  if(count>400){
+	  if(count>N*N){
 	    printf("baka\n");
 	  break;
 	  }
@@ -592,7 +592,7 @@ int main(void){
   int i,j,k=0,a,b,count=0,x,y,z,g;
   unsigned int u=0,v=0;
   MP s={0};
-  unsigned char HH[1024][8096]={0};
+  unsigned char **HH;
   
   
   //gfQ*Q
@@ -628,16 +628,20 @@ int main(void){
   unsigned short gt[10][4]={{255,16,0,1},{254,32,0,1},{252,64,0,1},{248,128,0,1},{240,256,0,1},{224,1,0,1},{192,2,0,1},{128,4,0,1},{0,8,0,1},{256,0,0,1}};
 
   unsigned int bb[30][2]={{0,0},{1,0},{0,1},{2,0},{1,1},{0,2},{3,0},{2,1},{1,2},{0,3},{4,0},{3,1},{2,2},{1,3},{0,4},{5,0},{4,1},{3,2},{2,3},{1,4},{6,0},{5,1},{4,2},{3,3},{2,4},{7,0},{6,1},{5,2},{4,3},{3,4}};
-  mterm aa[10]={0};
+  mterm aa[100]={0};
   unsigned char e[28]={1,4,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-  unsigned char ee[64]={0,0,0,0,12,0,0,0,0,11,0,0,2,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0};
+  unsigned char ee[Q*Q*Q]={0,0,0,0,12,0,0,0,0,11,0,0,2,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0};
   PO t={0};
-  unsigned char ss[1000]={0};
+  unsigned char ss[N*N]={0};
   unsigned short M[K][K]={0};
   unsigned short S[F][H]={0};
 
 
   //s=define_curve();
+
+  HH=malloc(sizeof(unsigned char *)*N*N);
+  for(i=0;i<N*N;i++)
+    HH[i]=malloc(sizeof(unsigned char)*8200);
   
   s=set_curve(he,3);
 
@@ -645,7 +649,7 @@ int main(void){
   //  v=u;
   printf("count=%d\n\n",u);
   
-  //     exit(1);
+  //  exit(1);
   /*
   for(i=0;i<15*15+1;i++){
     printf("%d %d\n",bb[i][0],bb[i][1]);
@@ -663,14 +667,16 @@ int main(void){
   //  exit(1);
 
   
-  v=bases(29);
+  v=bases(2*N);
   printf("bases=%d\n",v);
+  //  exit(1);
+    
   for(i=0;i<v;i++){
     printf("%d %d\n",base[i].n[0],base[i].n[1]);
     base[i].a=1;
   }
   //  u=count;
-  //    exit(1);
+  
   /*
   for(i=0;i<30;i++){
     printf("(%d,%d)\n",aa[i].n[0],aa[i].n[1]);
@@ -678,7 +684,9 @@ int main(void){
   }
   */
   //exit(1);
+  
   for(i=0;i<v;i++){
+#pragma omp parallel for
     for(j=0;j<u;j++){
       //      if(p.z[0][j]>0)
       HH[i][j]=fg[otrace(base[i],p.z[0][j],p.z[1][j],1)];
@@ -692,12 +700,15 @@ int main(void){
     printf("\n");
   }
   */
+  //#pragma omp parallel for
   for(i=0;i<v;i++){
     for(j=0;j<u;j++)
       ss[i]^=gf[mlt(fg[ee[j]],HH[i][j])];
     printf("syn[%d,%d]=%d\n",base[i].n[0],base[i].n[1],ss[i]);
+    
   }
-  printf("\n");
+    printf("\n");
+    free(HH);
     exit(1);
 
   
