@@ -199,12 +199,28 @@ return f.x[i];
 
 }
 
-unsigned short degterm(MP f,int i){
+int terms(MP f){
+  int i,j,k=0,flg;
+
+  for(i=0;i<P;i++){
+    flg=0;
+    for(j=0;j<V;j++){
+      if(f.x[i].n[j]>0)
+	flg=1;
+    }
+    if(flg==1)
+      k++;
+  }
+  
+  return k;
+}
+
+unsigned short degterm(mterm z){
 int j,k;
-mterm z;
+//mterm z;
 unsigned short c=0;
 
-    z=term(f,i);
+//   z=term(f,i);
     for(j=0;j<V;j++){
       if(z.n[j]>0)
 	c+=z.n[j];
@@ -212,41 +228,18 @@ unsigned short c=0;
     
     return c;
 }
-
+/*
 unsigned int mdeg(MP f){
 int i,j,k=0;
 
 for(i=0;i<P;i++){
   if(j=degterm(f,i)>0 && k<j)
-        k=j;
-  
+        k=j; 
     }
 
 return k;
 }
-
-
-mterm mLT(OP f){
-  int i,j=0,k,l;
-  mterm m={0};
-
-  
-  for(i=0,i<terms(f);i++){
-    k=mdeg(f.x[i]);
-    if(j<K){
-      m=f.x[i];
-    }else if(j==k){
-      for(l=0;l<V;l++)
-	if(m.n[l]<f.x[i].n[l]){
-	  m=f.x[i];
-	  retuen m;
-	}
-      
-    }
-  }
-
-  return m;
-}
+*/
 
 
 MP mterml(MP f,mterm m){
@@ -261,17 +254,43 @@ MP mterml(MP f,mterm m){
   return f;
 }
 
+
+mterm mLT(MP f){
+  int i,j=0,k,l;
+  mterm m={0},mm;
+
+  
+  for(i=0;i<terms(f);i++){
+    mm=term(f,i);
+      k=degterm(mm);
+    if(j<K){
+      m=f.x[i];
+    }else if(j==k){
+      for(l=0;l<V;l++)
+	if(m.n[l]<f.x[i].n[l]){
+	  m=f.x[i];
+	  return m;
+	}
+      
+    }
+  }
+
+  return m;
+}
+
+
 MP mdivLT(MP f,mterm m){
   int i,j,k;
   MP g;
-
+  mterm mm;
 
   g=f;
   
   for(i=0;i<terms(f);i++){
-    if(termdeg(f.x[i])>=termdeg(m)){
+    m=term(f,i);
+    if(degterm(mm)>=degterm(m)){
       for(j=0;j<V;j++){
-	if(f.x[i].n[j]>=m.[j]){
+	if(f.x[i].n[j]>=m.n[j]){
 	f.x[i].n[j]-=m.n[j];
 	}else{
 	  return g;
@@ -290,7 +309,7 @@ MP mdel(MP f,mterm m){
   for(i=0;i<terms(f);i++){
     if(m.n[0]==f.x[i].n[0] && m.n[1]==f.x[i].n[1] && m.n[2]==f.x[i].n[1]){
       for(j=0;j<V;j++)
-	f.x[i].n[]=0;
+	f.x[i].n[j]=0;
     f.x[i].a^=m.a;
     }
   }
@@ -306,9 +325,9 @@ MP lex(MP f){
 
   
   for(i=0;i<terms(f);i++){
-    m[i]=mLT(f);
+    m=mLT(f);
     f=mdel(f,m);
-    g.x[i]=m;;
+    g.x[i]=m;
   }
 
   return g;
@@ -486,14 +505,16 @@ int bases(int a){
   int i=0,j=0,count=0;
   
 
-    for(i=0;i<8;i++){
-      for(j=0;j<5;j++){
-	if(i+j<a){
+    for(i=0;i<15;i++){
+      for(j=0;j<15;j++){
+	//	if(i+j<a){
 	  base[count].n[0]=i;
 	  base[count++].n[1]=j;
-	}
-	if(count>400)
-	  break;	
+	  //	}
+	  if(count>400){
+	    printf("baka\n");
+	  break;
+	  }
       }
     }
     
@@ -571,7 +592,7 @@ int main(void){
   int i,j,k=0,a,b,count=0,x,y,z,g;
   unsigned int u=0,v=0;
   MP s={0};
-  unsigned short HH[65][50000]={0};
+  unsigned short HH[300][5000]={0};
   
   
   //gfQ*Q
@@ -611,7 +632,7 @@ int main(void){
   unsigned char e[28]={1,4,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
   unsigned char ee[64]={0,0,0,0,12,0,0,0,0,11,0,0,2,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0};
   PO t={0};
-  unsigned char ss[10]={0};
+  unsigned char ss[1000]={0};
   unsigned short M[K][K]={0};
   unsigned short S[F][H]={0};
 
@@ -621,15 +642,16 @@ int main(void){
   s=set_curve(he,3);
 
   u=mtrace(s);
-  v=u;
+  //  v=u;
   printf("count=%d\n\n",u);
+  /*
   //   exit(1);
-  for(i=0;i<30;i++){
+  for(i=0;i<15*15+1;i++){
     printf("%d %d\n",bb[i][0],bb[i][1]);
     for(j=0;j<2;j++)
       aa[i]=obase(bb[i][0],bb[i][1]);
   }
-
+  */
 
   for(i=0;i<u;i++){
     printf("%d,%d %d\n",gf[p.z[0][i]],gf[p.z[1][i]],gf[p.z[2][i]]);
@@ -640,34 +662,42 @@ int main(void){
   //  exit(1);
 
   
-      v=bases(8);
-    printf("bases=%d\n",v);
+  v=bases(29);
+  printf("bases=%d\n",v);
+  for(i=0;i<v;i++){
+    printf("%d %d\n",base[i].n[0],base[i].n[1]);
+    base[i].a=1;
+  }
   //  u=count;
-  //  exit(1);
+  //    exit(1);
+  /*
   for(i=0;i<30;i++){
     printf("(%d,%d)\n",aa[i].n[0],aa[i].n[1]);
     aa[i].a=1;
   }
+  */
   //exit(1);
-  for(i=0;i<30;i++){
+  for(i=0;i<v;i++){
     for(j=0;j<u;j++){
       //      if(p.z[0][j]>0)
-      HH[i][j]=fg[otrace(aa[i],p.z[0][j],p.z[1][j],1)];
+      HH[i][j]=fg[otrace(base[i],p.z[0][j],p.z[1][j],1)];
     }
   }
+  /*
   for(i=0;i<20;i++){
     printf("(%d,%d): ",aa[i].n[0],aa[i].n[1]);
     for(j=0;j<u;j++)
       printf("%d ",HH[i][j]);
     printf("\n");
   }
-  for(i=0;i<20;i++){
+  */
+  for(i=0;i<v;i++){
     for(j=0;j<u;j++)
       ss[i]^=gf[mlt(fg[ee[j]],HH[i][j])];
-    printf("syn[%d,%d]=%d\n",aa[i].n[0],aa[i].n[1],ss[i]);
+    printf("syn[%d,%d]=%d\n",base[i].n[0],base[i].n[1],ss[i]);
   }
   printf("\n");
-  //  exit(1);
+    exit(1);
 
   
   g=(I-1)*(I-2)/2;
