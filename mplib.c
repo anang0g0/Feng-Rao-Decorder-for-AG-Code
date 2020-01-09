@@ -30,7 +30,7 @@ mterm x[P];
 
 typedef struct {
 
-  unsigned short z[V][150000];
+  unsigned short z[V][9000];
 
 } PO;
 
@@ -592,7 +592,7 @@ int main(void){
   int i,j,k=0,a,b,count=0,x,y,z,g;
   unsigned int u=0,v=0;
   MP s={0};
-  unsigned short HH[300][5000]={0};
+  unsigned char HH[1024][8096]={0};
   
   
   //gfQ*Q
@@ -644,8 +644,9 @@ int main(void){
   u=mtrace(s);
   //  v=u;
   printf("count=%d\n\n",u);
+  
+  //     exit(1);
   /*
-  //   exit(1);
   for(i=0;i<15*15+1;i++){
     printf("%d %d\n",bb[i][0],bb[i][1]);
     for(j=0;j<2;j++)
