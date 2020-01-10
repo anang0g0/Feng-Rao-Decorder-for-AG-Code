@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "gf256.h"
+#include <string.h>
+//#include "gf256.h"
 
 
 #define V 3 //変数の数
 #define P 1024
-#define Q 16 //基礎体
+#define Q 4 //基礎体
 #define N Q*Q //定義体
-#define I 5 //曲線の次数
+#define I Q+1 //曲線の次数
 #define J 3
 #define K I-2 //number h
 #define H (K+1)*(K+2)/2 //シンドローム行列の横ベクトルの長さ
@@ -30,7 +31,7 @@ mterm x[P];
 
 typedef struct {
 
-  unsigned char z[V][35000];
+  unsigned char z[V][150000];
 
 } PO;
 
@@ -39,8 +40,8 @@ typedef struct {
 //unsigned short fg[8]={0,1,2,4,3,7,5,6};
 
 //sakata
-//unsigned short gf[16]={0,1,2,4,8,3,6,12,11,5,10,7,14,15,13,9};
-//unsigned short fg[16]={0,1,2,5,3,9,6,11,4,15,10,8,7,14,12,13};
+unsigned short gf[16]={0,1,2,4,8,3,6,12,11,5,10,7,14,15,13,9};
+unsigned short fg[16]={0,1,2,5,3,9,6,11,4,15,10,8,7,14,12,13};
 
 //nomal
 //unsigned char gf[N]={0,1,2,4,8,9,11,15,7,14,5,10,13,3,6,12};
@@ -78,14 +79,19 @@ int mlt(int x, int y){
 
 int mltn(int n,int x){
   int i,j;
-
-if(n==0)
-return 1;
+  
+  if(n==0){
+    return 1;
+  }
+  if(x==0){
+    return 0;
+  }else{
   i=x;
-    for(j=0;j<n-1;j++)
-      i=mlt(i,x);
-
+  for(j=0;j<n-1;j++)
+    i=mlt(i,x);
+  
   return i;
+  }
 }
 
 
@@ -413,9 +419,19 @@ MP mtermul(MP f,mterm o){
 unsigned short otrace(mterm a,int i,int j,int k){
     unsigned short u;
 
+      
     u=mlt(mlt(mltn(a.n[0],i),mltn(a.n[1],j)),mlt(mltn(a.n[2],k),a.a));
 
 return gf[u];
+}
+
+
+unsigned short itrace(mterm a,int i,int j,int k){
+    unsigned short u;
+
+    u=mlt(mlt(oinv(mltn(a.n[0],i)),oinv(mltn(a.n[1],j))),mlt(mltn(a.n[2],k),a.a));
+
+return u;
 }
 
 unsigned int mtrace(MP f){
@@ -629,19 +645,28 @@ int main(void){
 
   unsigned int bb[30][2]={{0,0},{1,0},{0,1},{2,0},{1,1},{0,2},{3,0},{2,1},{1,2},{0,3},{4,0},{3,1},{2,2},{1,3},{0,4},{5,0},{4,1},{3,2},{2,3},{1,4},{6,0},{5,1},{4,2},{3,3},{2,4},{7,0},{6,1},{5,2},{4,3},{3,4}};
   mterm aa[100]={0};
-  unsigned char e[28]={1,4,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-  unsigned char ee[Q*Q*Q]={0,0,0,0,12,0,0,0,0,11,0,0,2,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0};
+  unsigned char e[64]={0,0,0,0,0,2,0,0,0,4,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+		       
+  unsigned char ee[150000]={0,0,0,0,12,0,0,0,0,11,0,0,2,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0};
   PO t={0};
-  unsigned char ss[N*N]={0};
+  unsigned short ss[Q*Q]={0};
   unsigned short M[K][K]={0};
-  unsigned short S[F][H]={0};
+  unsigned short S[F][H];
+  unsigned short sy[Q*Q]={0};
 
 
+  memset(S,0,sizeof(S));
+  /*
+  for(i=0;i<F;i++){
+    for(j=0;j<H;j++)
+      S[i][j]=0;
+  }
+  */
   //s=define_curve();
 
-  HH=malloc(sizeof(unsigned char *)*N*N);
+  HH=malloc(sizeof(unsigned short *)*N*N);
   for(i=0;i<N*N;i++)
-    HH[i]=malloc(sizeof(unsigned char)*8200);
+    HH[i]=malloc(sizeof(unsigned short)*150000);
   
   s=set_curve(he,3);
 
@@ -649,7 +674,7 @@ int main(void){
   //  v=u;
   printf("count=%d\n\n",u);
   
-  //  exit(1);
+  //exit(1);
   /*
   for(i=0;i<15*15+1;i++){
     printf("%d %d\n",bb[i][0],bb[i][1]);
@@ -672,7 +697,7 @@ int main(void){
   //  exit(1);
     
   for(i=0;i<v;i++){
-    printf("%d %d\n",base[i].n[0],base[i].n[1]);
+     printf("%d %d\n",base[i].n[0],base[i].n[1]);
     base[i].a=1;
   }
   //  u=count;
@@ -692,22 +717,58 @@ int main(void){
       HH[i][j]=fg[otrace(base[i],p.z[0][j],p.z[1][j],1)];
     }
   }
-  /*
-  for(i=0;i<20;i++){
-    printf("(%d,%d): ",aa[i].n[0],aa[i].n[1]);
+  
+  for(i=0;i<v;i++){
+    // printf("(%d,%d): ",aa[i].n[0],aa[i].n[1]);
     for(j=0;j<u;j++)
       printf("%d ",HH[i][j]);
     printf("\n");
   }
-  */
-  //#pragma omp parallel for
+  
+  //
   for(i=0;i<v;i++){
-    for(j=0;j<u;j++)
+    ss[i]=0;
+    //#pragma omp parallel for
+        for(j=0;j<u;j++){
       ss[i]^=gf[mlt(fg[ee[j]],HH[i][j])];
+          }
+    if(ss[i]>0)
     printf("syn[%d,%d]=%d\n",base[i].n[0],base[i].n[1],ss[i]);
     
   }
     printf("\n");
+    //exit(1);
+    //    a=0;
+    x=0;
+    j=0;
+    printf("%d %d\n",p.z[0][0],p.z[1][0]);
+    //    exit(1);
+    
+    for(j=0;j<u;j++){
+      sy[j]=0;
+      x=0;
+      for(i=0;i<v;i++){
+	//x=0;
+	//  x=gf[mlt(mlt(fg[ss[i]],mltn(oinv(gf[mlt(base[i].n[0],p.z[0][4])]),2)),mltn(oinv(gf[mlt(base[i].n[1],p.z[1][4])]),2))];
+	x^=gf[mlt(fg[ss[i]],oinv(otrace(base[i], p.z[0][j],p.z[1][j],1)))];
+	      
+	//sy[i]=mlt(mlt(base[i].n[0],p.z[0][4]),
+	//	  mlt(base[i].n[1],p.z[1][4]));
+	//	printf("ss=%d\n",ss[i]);
+      }
+      printf("e=%d %d %d %d\n",x,j,p.z[0][j],p.z[1][j]);
+    }
+
+      exit(1);
+      //printf("e=%d %d\n",x,j);
+      //    }
+      //    for(j=0;j<u;j++){
+      for(i=0;i<v;i++){
+	printf("sy[%d]=%d %d\n",i,sy[i],HH[i][4]);
+      }
+      //printf("e=%d %d\n",x,j);
+      //    }
+    
     free(HH);
     exit(1);
 
