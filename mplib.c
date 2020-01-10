@@ -65,7 +65,7 @@ unsigned char fg[32]={0,1,2,20,3,8,21,24,4,12,9,29,22,18,25,27,5,15,13,14,10,16,
 
 unsigned int cnt=0;
 PO p;
-mterm base[N*N]={0};
+mterm base[1024]={0};
 
 
 int mlt(int x, int y){
@@ -419,6 +419,8 @@ MP mtermul(MP f,mterm o){
 unsigned short otrace(mterm a,int i,int j,int k){
     unsigned short u;
 
+    if(i==0 && j==0)
+      return 0;
       
     u=mlt(mlt(mltn(a.n[0],i),mltn(a.n[1],j)),mlt(mltn(a.n[2],k),a.a));
 
@@ -649,10 +651,10 @@ int main(void){
 		       
   unsigned char ee[150000]={0,0,0,0,12,0,0,0,0,11,0,0,2,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0};
   PO t={0};
-  unsigned short ss[Q*Q]={0};
+  unsigned short ss[N*N]={0};
   unsigned short M[K][K]={0};
   unsigned short S[F][H];
-  unsigned short sy[Q*Q]={0};
+  unsigned short sy[N*N]={0};
 
 
   memset(S,0,sizeof(S));
@@ -732,7 +734,7 @@ int main(void){
         for(j=0;j<u;j++){
       ss[i]^=gf[mlt(fg[ee[j]],HH[i][j])];
           }
-    if(ss[i]>0)
+	//    if(ss[i]>0)
     printf("syn[%d,%d]=%d\n",base[i].n[0],base[i].n[1],ss[i]);
     
   }
@@ -742,21 +744,22 @@ int main(void){
     x=0;
     j=0;
     printf("%d %d\n",p.z[0][0],p.z[1][0]);
+    printf("v=%d\n",v);
     //    exit(1);
     
-    for(j=0;j<u;j++){
+    for(j=0;j<64;j++){
       sy[j]=0;
       x=0;
       for(i=0;i<v;i++){
-	//x=0;
-	//  x=gf[mlt(mlt(fg[ss[i]],mltn(oinv(gf[mlt(base[i].n[0],p.z[0][4])]),2)),mltn(oinv(gf[mlt(base[i].n[1],p.z[1][4])]),2))];
+
 	x^=gf[mlt(fg[ss[i]],oinv(otrace(base[i], p.z[0][j],p.z[1][j],1)))];
 	      
 	//sy[i]=mlt(mlt(base[i].n[0],p.z[0][4]),
 	//	  mlt(base[i].n[1],p.z[1][4]));
 	//	printf("ss=%d\n",ss[i]);
+	//printf("e=%d %d %d %d %d %d\n",x,j,otrace(base[i],p.z[0][j],p.z[1][j],1),ss[i],base[i].n[0],base[i].n[1]);
       }
-      printf("e=%d %d %d %d\n",x,j,p.z[0][j],p.z[1][j]);
+      printf("e=%d %d %d %d\n",x,j,otrace(base[i],p.z[0][j],p.z[1][j],1),ss[i]);
     }
 
       exit(1);
