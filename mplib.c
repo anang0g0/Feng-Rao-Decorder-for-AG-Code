@@ -230,18 +230,6 @@ unsigned short c=0;
     
     return c;
 }
-/*
-unsigned int mdeg(MP f){
-int i,j,k=0;
-
-for(i=0;i<P;i++){
-  if(j=degterm(f,i)>0 && k<j)
-        k=j; 
-    }
-
-return k;
-}
-*/
 
 
 MP mterml(MP f,mterm m){
@@ -424,13 +412,6 @@ return gf[u];
 }
 
 
-unsigned short itrace(mterm a,int i,int j,int k){
-    unsigned short u;
-
-    u=mlt(mlt(oinv(mltn(a.n[0],i)),oinv(mltn(a.n[1],j))),mlt(mltn(a.n[2],k),a.a));
-
-return u;
-}
 
 unsigned int mtrace(MP f){
   int i,j,k,ii;
@@ -509,11 +490,11 @@ mterm obase(int a,int b){
 
   c.n[0]=a;
   c.n[1]=b;
+
   
   return c;
-
-
 }
+
 
 int bases(int a){
   int i=0,j=0,count=0;
@@ -538,6 +519,44 @@ int bases(int a){
     return count;
 }
 
+int mkbase(mterm *aa){
+  int i,j,k,l,count;
+  int d[256][2]={0};
+  int bb[256][2]={0};
+
+
+count=1;
+
+  for(i=0;i<30;i++){
+    k=0;j=i;
+    while((d[i][0]+d[i][1])<i && d[i][0]<I){
+      d[k][1]=k;
+      d[k][0]=j-k;      
+      k++;     
+    }
+    for(l=0;l<k;l++){
+      bb[count][0]=d[l][0];
+      bb[count++][1]=d[l][1];
+      //    printf("a%d %d\n",d[l][0],d[l][1]);
+    }
+  }
+  for(i=0;i<30;i++)
+    printf("d=%d %d\n",bb[i][0],bb[i][1]);
+  //  exit(1);
+
+  
+  for(i=0;i<30;i++){
+    printf("%d %d\n",bb[i][0],bb[i][1]);
+    //for(j=0;j<N-1;j++){
+      if(bb[i][0]+bb[i][1]<10){
+      aa[i]=obase(bb[i][0],bb[i][1]);
+      aa[i].a=1;
+      //      }
+    }
+  }
+  
+  return count;
+}
 
 int test(unsigned short x,unsigned short y){
   int count=0,f1,f2,f3;
@@ -641,25 +660,31 @@ int main(void){
   //gf512
   unsigned short gt[10][4]={{255,16,0,1},{254,32,0,1},{252,64,0,1},{248,128,0,1},{240,256,0,1},{224,1,0,1},{192,2,0,1},{128,4,0,1},{0,8,0,1},{256,0,0,1}};
 
-  unsigned int bb[30][2]={{0,0},{1,0},{0,1},{2,0},{1,1},{0,2},{3,0},{2,1},{1,2},{0,3},{4,0},{3,1},{2,2},{1,3},{0,4},{5,0},{4,1},{3,2},{2,3},{1,4},{6,0},{5,1},{4,2},{3,3},{2,4},{7,0},{6,1},{5,2},{4,3},{3,4}};
-  mterm aa[100]={0};
+  unsigned int bb[256][2]={0};//{{0,0},{1,0},{0,1},{2,0},{1,1},{0,2},{3,0},{2,1},{1,2},{0,3},{4,0},{3,1},{2,2},{1,3},{0,4},{5,0},{4,1},{3,2},{2,3},{1,4},{6,0},{5,1},{4,2},{3,3},{2,4},{7,0},{6,1},{5,2},{4,3},{3,4}};
+  mterm aa[256]={0};
+  unsigned int d[256][2]={0};
   unsigned char e[64]={0,0,0,0,0,2,0,0,0,4,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 		       
   unsigned char ee[150000]={0,0,0,0,12,0,0,0,0,11,0,0,2,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0};
   PO t={0};
   unsigned short ss[N*N]={0};
   unsigned short M[K][K]={0};
-  unsigned short S[F][H];
+  unsigned short S[256][256]={0};
   unsigned short sy[N*N]={0};
-
-
+  unsigned short SS[256][256]={0};
+  unsigned short dd[30][2]={0};
+  int l;
+  
   memset(S,0,sizeof(S));
-  /*
-  for(i=0;i<F;i++){
-    for(j=0;j<H;j++)
+  //    memset(SS,0,sizeof(SS));
+  
+  for(i=0;i<256;i++){
+    for(j=0;j<256;j++){
+      SS[i][j]=0;
       S[i][j]=0;
+      }
   }
-  */
+  
   //s=define_curve();
 
   HH=malloc(sizeof(unsigned short *)*N*N);
@@ -671,15 +696,19 @@ int main(void){
   u=mtrace(s);
   //  v=u;
   printf("count=%d\n\n",u);
-  
-  //exit(1);
   /*
-  for(i=0;i<15*15+1;i++){
-    printf("%d %d\n",bb[i][0],bb[i][1]);
-    for(j=0;j<2;j++)
-      aa[i]=obase(bb[i][0],bb[i][1]);
+  for(i=0;i<20;i++){
+    for(j=0;j<2;j++){
+      dd[i][j]=bb[i][j];
+    printf("%d ",dd[i][j]);
+    }
+    printf("\n");
   }
+  printf("\n");
   */
+  //  exit(1);
+
+  v=mkbase(aa);
 
   for(i=0;i<u;i++){
     printf("%d,%d %d\n",gf[p.z[0][i]],gf[p.z[1][i]],gf[p.z[2][i]]);
@@ -690,48 +719,46 @@ int main(void){
   //  exit(1);
 
   
-  v=bases(2*N);
+  //  v=bases(2*N);
   printf("bases=%d\n",v);
+
   //  exit(1);
-    
+
+  /*
   for(i=0;i<v;i++){
      printf("%d %d\n",base[i].n[0],base[i].n[1]);
     base[i].a=1;
   }
+  */
   //  u=count;
   
-  /*
-  for(i=0;i<30;i++){
-    printf("(%d,%d)\n",aa[i].n[0],aa[i].n[1]);
-    aa[i].a=1;
-  }
-  */
+  
   //exit(1);
   
-  for(i=0;i<v;i++){
+  for(i=0;i<26;i++){
 #pragma omp parallel for
     for(j=0;j<u;j++){
       //      if(p.z[0][j]>0)
-      HH[i][j]=fg[otrace(base[i],p.z[0][j],p.z[1][j],1)];
+      HH[i][j]=fg[otrace(aa[i],p.z[0][j],p.z[1][j],1)];
     }
   }
   
-  for(i=0;i<v;i++){
-    // printf("(%d,%d): ",aa[i].n[0],aa[i].n[1]);
+  for(i=0;i<26;i++){
+    printf("(%d,%d): ",aa[i].n[0],aa[i].n[1]);
     for(j=0;j<u;j++)
       printf("%d ",HH[i][j]);
     printf("\n");
   }
-  
+  //exit(1);
   //
-  for(i=0;i<v;i++){
+  for(i=0;i<26;i++){
     ss[i]=0;
     //#pragma omp parallel for
         for(j=0;j<u;j++){
       ss[i]^=gf[mlt(fg[ee[j]],HH[i][j])];
           }
 	//    if(ss[i]>0)
-    printf("syn[%d,%d]=%d\n",base[i].n[0],base[i].n[1],ss[i]);
+	printf("syn[%d,%d]=%d\n",aa[i].n[0],aa[i].n[1],ss[i]);
     
   }
     printf("\n");
@@ -739,10 +766,38 @@ int main(void){
     //    a=0;
     x=0;
     j=0;
-    printf("%d %d\n",p.z[0][0],p.z[1][0]);
+    //printf("%d %d\n",p.z[0][0],p.z[1][0]);
     printf("v=%d\n",v);
     //    exit(1);
+
+
     
+    //    exit(1);
+
+    for(i=0;i<26;i++){
+    S[aa[i].n[0]][aa[i].n[1]]=ss[i];
+    //    for(j=0;j<2;j++)
+      printf("%d",ss[i]);
+    printf("\n");
+    }
+    //    exit(1);
+
+    
+    for(i=0;i<26;i++){
+      for(k=0;k<26;k++)
+	SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
+      
+    }
+    //    exit(1);
+    for(i=0;i<26;i++){
+      for(j=0;j<26;j++)
+	printf("%d ",SS[i][j]);
+      printf("\n");
+    }
+    exit(1);
+
+    
+
     for(j=0;j<64;j++){
       sy[j]=0;
       x=0;
