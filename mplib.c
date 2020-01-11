@@ -528,18 +528,41 @@ int mkbase(mterm *aa){
 count=1;
 
   for(i=0;i<30;i++){
-    k=0;j=i;
-    while((d[i][0]+d[i][1])<i && d[i][0]<I){
-      d[k][1]=k;
-      d[k][0]=j-k;      
-      k++;     
+    k=0;
+    j=i;
+    while((d[i][0]+d[i][1])<i && i<5){
+      	d[k][1]=k;
+	d[k][0]=j-k;
+	k++;
+	printf("k1=%d\n",k);
     }
     for(l=0;l<k;l++){
       bb[count][0]=d[l][0];
       bb[count++][1]=d[l][1];
       //    printf("a%d %d\n",d[l][0],d[l][1]);
     }
+    if(i>4){
+      l=i-4;
+      j=4;
+      while(d[i][0]+d[i][1]<i){
+	d[k][0]=j;
+	d[k][1]=l;
+	k++;
+	j--;
+	l++;
+	printf("k2=%d",k);
+	if(j<0)
+	  break;
+      }
+          for(l=0;l<k;l++){
+      bb[count][0]=d[l][0];
+      bb[count++][1]=d[l][1];
+      //    printf("a%d %d\n",d[l][0],d[l][1]);
+    }
+    }
+    
   }
+    
   for(i=0;i<30;i++)
     printf("d=%d %d\n",bb[i][0],bb[i][1]);
   //  exit(1);
@@ -743,7 +766,7 @@ int main(void){
     }
   }
   
-  for(i=0;i<26;i++){
+  for(i=0;i<30;i++){
     printf("(%d,%d): ",aa[i].n[0],aa[i].n[1]);
     for(j=0;j<u;j++)
       printf("%d ",HH[i][j]);
@@ -751,7 +774,7 @@ int main(void){
   }
   //exit(1);
   //
-  for(i=0;i<26;i++){
+  for(i=0;i<30;i++){
     ss[i]=0;
     //#pragma omp parallel for
         for(j=0;j<u;j++){
@@ -789,8 +812,8 @@ int main(void){
       
     }
     //    exit(1);
-    for(i=0;i<26;i++){
-      for(j=0;j<26;j++)
+    for(i=0;i<27;i++){
+      for(j=0;j<27;j++)
 	printf("%d ",SS[i][j]);
       printf("\n");
     }
