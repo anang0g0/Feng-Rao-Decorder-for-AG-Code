@@ -530,7 +530,7 @@ count=1;
   for(i=0;i<30;i++){
     k=0;
     j=i;
-    while((d[i][0]+d[i][1])<i && i<5){
+    while((d[i][0]+d[i][1])<i){// && i<5){
       	d[k][1]=k;
 	d[k][0]=j-k;
 	k++;
@@ -541,6 +541,7 @@ count=1;
       bb[count++][1]=d[l][1];
       //    printf("a%d %d\n",d[l][0],d[l][1]);
     }
+    /*
     if(i>4){
       l=i-4;
       j=4;
@@ -560,6 +561,7 @@ count=1;
       //    printf("a%d %d\n",d[l][0],d[l][1]);
     }
     }
+    */
     
   }
     
