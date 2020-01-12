@@ -537,7 +537,7 @@ int mkbase(mterm *aa){
 
 count=1;
 
-  for(i=0;i<40;i++){
+  for(i=0;i<30;i++){
     k=0;
     j=i;
     while((d[i][0]+d[i][1])<i && i<5){
@@ -806,7 +806,7 @@ int main(void){
   }
   //exit(1);
   //
-  for(i=0;i<27;i++){
+  for(i=0;i<26;i++){
     ss[i]=0;
     //#pragma omp parallel for
         for(j=0;j<u;j++){
@@ -817,7 +817,7 @@ int main(void){
     
   }
     printf("\n");
-    //    exit(1);
+    //exit(1);
 
     //    a=0;
     x=0;
@@ -882,6 +882,7 @@ int main(void){
       printf("\n");
     }
     printf("%d %d %d %d %d\n",S[3][4],S[8][0],SS[13][7],SS[14][6],SS[10][10]);
+    printf("(8,0)=%d\n",S[3][1]^13);
     exit(1);
     
     
