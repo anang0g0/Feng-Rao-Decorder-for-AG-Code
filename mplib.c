@@ -102,6 +102,16 @@ unsigned short oinv(unsigned short a){
 
 }
 
+int inv2(int a,int b){
+  int i=0;
+
+  for(i=0;i<N;i++){
+    if(b==gf[mlt(fg[a],i)])
+      return i;
+  }
+    
+}
+
 void param(int n,int g){
   int i,j,h,ij,t;
 
@@ -527,10 +537,10 @@ int mkbase(mterm *aa){
 
 count=1;
 
-  for(i=0;i<30;i++){
+  for(i=0;i<40;i++){
     k=0;
     j=i;
-    while((d[i][0]+d[i][1])<i){// && i<5){
+    while((d[i][0]+d[i][1])<i && i<5){
       	d[k][1]=k;
 	d[k][0]=j-k;
 	k++;
@@ -541,7 +551,7 @@ count=1;
       bb[count++][1]=d[l][1];
       //    printf("a%d %d\n",d[l][0],d[l][1]);
     }
-    /*
+    
     if(i>4){
       l=i-4;
       j=4;
@@ -561,7 +571,7 @@ count=1;
       //    printf("a%d %d\n",d[l][0],d[l][1]);
     }
     }
-    */
+    
     
   }
     
@@ -570,7 +580,7 @@ count=1;
   //  exit(1);
 
   
-  for(i=0;i<30;i++){
+  for(i=0;i<40;i++){
     printf("%d %d\n",bb[i][0],bb[i][1]);
     //for(j=0;j<N-1;j++){
       if(bb[i][0]+bb[i][1]<10){
@@ -627,6 +637,23 @@ s.x[3].n[2]=2;
  return s;
 }
 
+int more(int a,int b,unsigned short **S){
+  int i,j,k;
+
+
+  if(b>=I-1){
+    return S[a][b]^S[a][b-I+2];
+  }else{
+    if(b+I-1<0){
+      printf("baka\n");
+      exit(1);
+    }
+    return S[a][b+I-1]^S[a][b+1];
+  }
+  
+}
+
+
 MP set_curve(unsigned short a[9][4],int x){
   MP s={0};
   int i,j;
@@ -651,7 +678,7 @@ int main(void){
   unsigned int u=0,v=0;
   MP s={0};
   unsigned char **HH;
-  
+  unsigned short tmp[256][1]={0};
   
   //gfQ*Q
   unsigned short hl[3][4]={{Q+1,0,0,1},{0,Q+1,0,1},{0,0,Q+1,1}};
@@ -699,7 +726,10 @@ int main(void){
   unsigned short SS[256][256]={0};
   unsigned short dd[30][2]={0};
   int l;
-  
+  unsigned short *B[256];
+  unsigned short G[256][256]={0};
+    
+    
   memset(S,0,sizeof(S));
   //    memset(SS,0,sizeof(SS));
   
@@ -760,7 +790,7 @@ int main(void){
   
   //exit(1);
   
-  for(i=0;i<26;i++){
+  for(i=0;i<40;i++){
 #pragma omp parallel for
     for(j=0;j<u;j++){
       //      if(p.z[0][j]>0)
@@ -768,7 +798,7 @@ int main(void){
     }
   }
   
-  for(i=0;i<30;i++){
+  for(i=0;i<40;i++){
     printf("(%d,%d): ",aa[i].n[0],aa[i].n[1]);
     for(j=0;j<u;j++)
       printf("%d ",HH[i][j]);
@@ -776,7 +806,7 @@ int main(void){
   }
   //exit(1);
   //
-  for(i=0;i<30;i++){
+  for(i=0;i<27;i++){
     ss[i]=0;
     //#pragma omp parallel for
         for(j=0;j<u;j++){
@@ -787,7 +817,7 @@ int main(void){
     
   }
     printf("\n");
-    //exit(1);
+    exit(1);
     //    a=0;
     x=0;
     j=0;
@@ -799,24 +829,107 @@ int main(void){
     
     //    exit(1);
 
-    for(i=0;i<26;i++){
+    for(i=0;i<30;i++){
     S[aa[i].n[0]][aa[i].n[1]]=ss[i];
     //    for(j=0;j<2;j++)
-      printf("%d",ss[i]);
+          printf("%d",ss[i]);
     printf("\n");
     }
-    //    exit(1);
+    for(i=0;i<27;i++){
+      for(j=0;j<27;j++)
+	printf("%d ",S[i][j]);
+      printf("\n");
+    }
+    // exit(1);
+    
+    for(i=0;i<27;i++){
+      for(k=0;k<27;k++){
+	SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
+	printf("%d ",SS[i][k]);
+      }
+      printf("\n");
+    }
 
+    //gauss    
+    for(i=0;i<27;i++){
+      printf("i=%d\n",i);
+      for(j=0;j<27;j++){
+	for(k=0;k<27;k++){
+	  printf("%d ",SS[j][k]);
+	}
+	printf("\n");
+      }
+      printf("\n");
+      for(k=i+1;k<27;k++){
+	/*
+	if(SS[i][i]==0){
+	  printf("baka %d\n",i);
+	  exit(1);
+	}
+	*/
+	b=inv2(SS[i][i],SS[i][k]);
+	for(j=0;j<27;j++)
+	  SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
+	
+      }
+    }
+    
+    printf("\n\n");
+    for(i=0;i<27;i++){
+      for(j=0;j<27;j++)
+	printf("%d ",SS[i][j]);
+      printf("\n");
+    }
+    printf("%d %d %d %d %d\n",S[3][4],S[8][0],SS[13][7],SS[14][6],SS[10][10]);
+    exit(1);
+    
+    
+    for(i=0;i<256;i++){
+      for(j=0;j<256;j++)
+	G[i][j]=SS[i][j];
+    }
+    
+    for (i=0;i<256;i++) B[i] = S[i];
+
+    
+    for(a=0;a<7;a++){
+      for(b=0;b<4;b++){
+	if(S[a+I][b]==0){
+	  S[a+I][b]=more(a,b,B);
+	  printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
+	}else{
+	  printf("baka\n");
+	  exit(1);
+	}
+      }
+    }
+    // exit(1);
+
+	
+    for(i=0;i<16;i++){
+      for(j=0;j<16;j++)
+	printf("%d ",S[i][j]);
+      printf("\n");
+    }
+    printf("\n\n");
+    // exit(1);
+    
     
     for(i=0;i<26;i++){
       for(k=0;k<26;k++)
 	SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
       
     }
+
+    // for(i-0;i<27;i++)
+    //printf("%d ",ss[i]);
+    //printf("\n\n");
     //    exit(1);
     for(i=0;i<27;i++){
-      for(j=0;j<27;j++)
+      for(j=0;j<27;j++){
+	//printf("%d ",SS[i][j]);
 	printf("%d ",SS[i][j]);
+      }
       printf("\n");
     }
     exit(1);
