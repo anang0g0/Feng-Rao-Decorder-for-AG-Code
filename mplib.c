@@ -817,7 +817,8 @@ int main(void){
     
   }
     printf("\n");
-    exit(1);
+    //    exit(1);
+
     //    a=0;
     x=0;
     j=0;
