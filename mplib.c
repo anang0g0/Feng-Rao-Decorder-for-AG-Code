@@ -59,6 +59,7 @@ unsigned char fg[32]={0,1,2,20,3,8,21,24,4,12,9,29,22,18,25,27,5,15,13,14,10,16,
 //unsigned short fg[128]={0,1,2,122,3,116,123,74,4,68,117,41,124,100,75,110,5,104,69,24,118,20,42,94,125,65,101,62,76,35,111,85,6,79,105,46,70,90,25,29,119,38,21,59,43,56,95,51,126,114,66,98,102,18,63,33,77,88,36,54,112,16,86,14,7,8,80,9,106,81,47,10,71,107,91,82,26,48,30,11,120,72,39,108,22,92,60,83,44,27,57,49,96,31,52,12,127,121,115,73,67,40,99,109,103,23,19,93,64,61,34,84,78,45,89,28,37,58,55,50,113,97,17,32,87,53,15,13};
 
 
+unsigned short S[256][256]={0};
 unsigned int cnt=0;
 PO p;
 mterm base[1024]={0};
@@ -537,7 +538,7 @@ int mkbase(mterm *aa){
 
 count=1;
 
-  for(i=0;i<30;i++){
+  for(i=0;i<90;i++){
     k=0;
     j=i;
     while((d[i][0]+d[i][1])<i && i<5){
@@ -556,7 +557,7 @@ count=1;
     if(i>4){
       l=i-4;
       j=4;
-      while(d[i][0]+d[i][1]<i){
+      while(d[i][0]+d[i][1]<i && l<16){
 	d[k][0]=j;
 	d[k][1]=l;
 	k++;
@@ -576,12 +577,12 @@ count=1;
     
   }
     
-  for(i=0;i<60;i++)
+  for(i=0;i<90;i++)
     printf("d=%d %d\n",bb[i][0],bb[i][1]);
   // exit(1);
 
   
-  for(i=0;i<66;i++){
+  for(i=0;i<90;i++){
     printf("%d %d\n",bb[i][0],bb[i][1]);
     //for(j=0;j<N-1;j++){
     //  if(bb[i][0]+bb[i][1]<10){
@@ -639,21 +640,20 @@ s.x[3].n[2]=2;
  return s;
 }
 
-int more(int a,int b,unsigned short **S){
+int more(int a,int b){
   int i,j,k;
 
-
+  printf("in more\n");
   if(b>=I-1){
     return S[a][b]^S[a][b-I+2];
   }else{
-    if(b+I-1<0){
-      printf("baka\n");
-      exit(1);
-    }
+    printf("%d %d\n",S[a][b+I-1],S[a][b+1]);
     return S[a][b+I-1]^S[a][b+1];
-  }
-  
+    }
+
 }
+  
+
 
 
 MP set_curve(unsigned short a[9][4],int x){
@@ -723,7 +723,7 @@ int main(void){
   PO t={0};
   unsigned short ss[N*N]={0};
   unsigned short M[K][K]={0};
-  unsigned short S[256][256]={0};
+  
   unsigned short sy[N*N]={0};
   unsigned short SS[256][256]={0};
   unsigned short dd[30][2]={0};
@@ -776,7 +776,7 @@ int main(void){
   //  exit(1);
 
   
-  //    v=bases(2*N);
+  v=bases(2*N);
   printf("bases=%d\n",v);
 
   //  exit(1);
@@ -792,7 +792,7 @@ int main(void){
   
   //exit(1);
   
-  for(i=0;i<66;i++){
+  for(i=0;i<80;i++){
 #pragma omp parallel for
     for(j=0;j<u;j++){
       //      if(p.z[0][j]>0)
@@ -800,7 +800,7 @@ int main(void){
     }
   }
   
-  for(i=0;i<90;i++){
+  for(i=0;i<80;i++){
     printf("(%d,%d): ",aa[i].n[0],aa[i].n[1]);
     for(j=0;j<u;j++)
       printf("%d ",HH[i][j]);
@@ -815,25 +815,30 @@ int main(void){
       ss[i]^=gf[mlt(fg[ee[j]],HH[i][j])];
           }
 	//    if(ss[i]>0)
-	printf("syn[%d,%d]=%d\n",aa[i].n[0],aa[i].n[1],ss[i]);
-    
+	printf("syn[%d,%d]=%d\n",base[i].n[0],base[i].n[1],ss[i]);
+	if(aa[i].n[0]==4){
+	  S[aa[i].n[0]+I][aa[i].n[1]]=S[aa[i].n[0]][aa[i].n[1]-I+1]^S[aa[i].n[0]][aa[i].n[1]-I+2];
+	  //  printf("S[%d,%d]=%d\n",aa[i].n[0],aa[i].n[1],S[aa[i].n[0]][aa[i].n[1]]);
+	}
   }
     printf("\n");
     //    printf("6=%d\n",13^4);
-    //     exit(1);
+    //   exit(1);
 
+
+	 
     //    a=0;
     x=0;
     j=0;
     //printf("%d %d\n",p.z[0][0],p.z[1][0]);
     printf("v=%d\n",v);
-    //    exit(1);
+    // exit(1);
 
 
     
     //    exit(1);
 
-    for(i=0;i<30;i++){
+    for(i=0;i<26;i++){
     S[aa[i].n[0]][aa[i].n[1]]=ss[i];
     //    for(j=0;j<2;j++)
           printf("%d",ss[i]);
@@ -845,10 +850,13 @@ int main(void){
       printf("\n");
     }
     printf("\n\n");
-    //exit(1);
+
+    //   exit(1);
+
+
     
-    for(i=0;i<28;i++){
-      for(k=0;k<28;k++){
+    for(i=0;i<26;i++){
+      for(k=0;k<26;k++){
 	SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
 	//printf("%d %d %d %d|",i,k,aa[i].n[i]+aa[k].n[0],aa[i].n[1]+aa[k].n[1]);
 	printf("%2d,%2d ",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1]);
@@ -903,9 +911,29 @@ int main(void){
 	printf("%d ",S[i][j]);
       printf("\n");
     }
-
     //exit(1);
 
+ for(a=0;a<7;a++){
+      for(b=0;b<5;b++){
+	if(U>(I-1)*(I-2)/2){
+	    S[a+I][b]=more(a,b);
+	  printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
+	  if(delta-2*I+2+ips>=0 && (S[I-1-ips][delta-I+1+ips]>0 && S[I-1-ips][delta-2*I+3+ips]>0)){
+	    S[2*I-1-ips][delta-2*I+2+ips]=S[I-1-ips][delta-I+1+ips]^S[I-1-ips][delta-2*I+3+ips];
+	    printf("Ha!\n");
+	    //exit(1);
+	  }
+	}else{
+	  printf("baka\n");
+	  break;
+	  // exit(1);
+	}
+      }
+      if(S[a+I][b]!=0 || U<=(I-1)*(I-2)/2)
+	break;
+    }
+ // exit(1);
+    
     for(i=0;i<256;i++){
       for(j=0;j<256;j++)
 	G[i][j]=SS[i][j];
@@ -918,29 +946,32 @@ int main(void){
 
     
     count=26;
-    for(l=0;l<20;l++){
+    for(l=0;l<52;l++){
       count++;
       
     //begin
-    for(a=0;a<10;a++){
-      for(b=0;b<15;b++){
-	if(S[a+I][b]==0 && U>(I-1)*(I-2)/2){
-	  S[a+I][b]=more(a,b,B);
+      // for(a=0;a<15;a++){
+      //for(b=0;b<15;b++){
+      a=aa[count].n[0];
+      b=aa[count].n[1];
+	if(U>(I-1)*(I-2)/2){
+	  S[a+I][b]=more(a,b);
 	  printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
 	  if(delta-2*I+2+ips>=0 && (S[I-1-ips][delta-I+1+ips]>0 && S[I-1-ips][delta-2*I+3+ips]>0)){
 	    S[2*I-1-ips][delta-2*I+2+ips]=S[I-1-ips][delta-I+1+ips]^S[I-1-ips][delta-2*I+3+ips];
 	    printf("Ha!\n");
-	    exit(1);
+	    //exit(1);
 	  }
 	}else{
 	  printf("baka\n");
 	  break;
 	  // exit(1);
-	}
-      }
+	  //}
+	//}
       if(S[a+I][b]!=0 || U<=(I-1)*(I-2)/2)
 	break;
-    }
+	}
+    
     
     // exit(1);
 
@@ -1004,6 +1035,11 @@ int main(void){
       printf("\n");
     }
     //    count=27;
+    for(i=0;i<16;i++){
+      for(j=0;j<16;j++)
+	printf("%d ",S[i][j]);
+      printf("\n");
+    }
     for(i=0;i<28+l;i++){
       for(k=0;k<28+l;k++){
 	// SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
@@ -1016,8 +1052,57 @@ int main(void){
     }
     scanf("%d",&n);
     S[aa[count].n[0]][aa[count].n[1]]=n;
+    S[aa[count].n[0]+I][aa[count].n[1]]=S[aa[count].n[0]][aa[count].n[1]-I+1]^S[aa[count].n[0]][aa[count].n[1]-I+2];
+    printf("S=%d\n",S[aa[count].n[0]+I][aa[count].n[1]]);
     printf("%d %d\n",S[7][1],S[2][2]^8);
     //    S[7][5]=15;
+    S[5][3]=S[0][7]^S[0][4];
+    S[5][4]=S[0][8]^S[0][5];
+    S[5][5]=S[0][9]^S[0][6];
+    S[5][6]=S[0][10]^S[0][7];
+    S[5][7]=S[0][11]^S[0][8];
+    S[5][8]=S[0][12]^S[0][9];
+    S[5][9]=S[0][13]^S[0][10];
+    S[5][10]=S[0][14]^S[0][11];
+
+    S[6][2]=S[1][6]^S[1][3];
+    S[6][3]=S[1][7]^S[1][4];
+    S[6][4]=S[1][8]^S[1][5];
+    S[6][5]=S[1][9]^S[1][6];
+    S[6][6]=S[1][10]^S[1][7];
+    S[6][7]=S[1][11]^S[1][8];
+    S[6][8]=S[1][12]^S[1][9];
+    S[6][9]=S[1][13]^S[1][10];
+    S[6][10]=S[1][14]^S[1][11];
+    
+    S[7][1]=S[2][5]^S[2][2];
+    S[7][2]=S[2][6]^S[1][3];
+    S[7][3]=S[2][7]^S[1][4];
+    S[7][4]=S[2][8]^S[1][5];
+    S[7][5]=S[2][9]^S[1][6];
+    S[7][6]=S[2][10]^S[1][7];
+    S[7][7]=S[2][11]^S[1][8];
+    S[7][8]=S[2][12]^S[1][9];
+    S[7][9]=S[2][13]^S[1][10];
+    S[7][10]=S[2][14]^S[1][11];
+    
+    S[8][1]=S[3][5]^S[3][2];
+    S[8][2]=S[3][6]^S[3][3];
+    S[8][3]=S[3][7]^S[3][4];
+    S[8][4]=S[3][8]^S[3][5];
+    
+    S[9][0]=S[4][4]^S[4][1];
+    S[9][1]=S[4][5]^S[4][2];
+    S[9][2]=S[4][6]^S[4][3];
+    S[9][3]=S[4][7]^S[4][4];
+    S[9][4]=S[4][8]^S[4][5];
+    S[9][5]=S[4][9]^S[4][6];
+    S[9][6]=S[4][10]^S[4][7];
+    S[9][7]=S[4][11]^S[4][8];
+    S[9][8]=S[4][12]^S[4][9];
+    S[9][9]=S[4][13]^S[4][10];
+    S[9][10]=S[4][14]^S[4][11];
+    S[9][11]=S[4][7]^S[4][8];
     for(i=0;i<16;i++){
       for(j=0;j<16;j++)
 	printf("%d ",S[i][j]);
@@ -1026,1504 +1111,22 @@ int main(void){
     //if(aa[count].n[0]==0 && aa[count].n[1]==9)
     //break;
     }
+    printf("%d %d %d\n",S[9][1],S[9][2],S[9][3]);
+    printf("%d %d %d\n",S[4][5],S[4][6],S[4][7]);
+    printf("%d %d %d\n",S[4][2],S[4][3],S[4][4]);
     exit(1);
 
-    
-    //begin
-    for(a=0;a<10;a++){
-      for(b=0;b<15;b++){
-	if(S[a+I][b]==0 && U>(I-1)*(I-2)/2){
-	  S[a+I][b]=more(a,b,B);
-	  printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
-	  if(delta-2*I+2+ips>=0 && (S[I-1-ips][delta-I+1+ips]>0 && S[I-1-ips][delta-2*I+3+ips]>0)){
-	    S[2*I-1-ips][delta-2*I+2+ips]=S[I-1-ips][delta-I+1+ips]^S[I-1-ips][delta-2*I+3+ips];
-	    printf("Ha!\n");
-	    exit(1);
-	  }
-	}else{
-	  printf("baka\n");
-	  break;
-	  // exit(1);
-	}
-      }
-      if(S[a+I][b]!=0 || U<=(I-1)*(I-2)/2)
-	break;
-    }
-    
-    // exit(1);
-
-	
-    for(i=0;i<16;i++){
-      for(j=0;j<16;j++)
-	printf("%d ",S[i][j]);
-      printf("\n");
-    }
-    printf("\n\n");
-    
-    //    exit(1);
-    
-    
-    for(i=0;i<29;i++){
-      for(k=0;k<29;k++)
-	SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-      
-    }
-
-    // for(i-0;i<27;i++)
-    //printf("%d ",ss[i]);
-    //printf("\n\n");
-    //    exit(1);
-    for(i=0;i<29;i++){
-      for(j=0;j<29;j++){
-	//printf("%d ",SS[i][j]);
-	printf("%d ",SS[i][j]);
-      }
-      printf("\n");
-    }
-    //    exit(1);
-    //gauss    
-    for(i=0;i<29;i++){
-      printf("i=%d\n",i);
-      for(j=0;j<29;j++){
-	for(k=0;k<29;k++){
-	  printf("%d ",SS[j][k]);
-	}
-	printf("\n");
-      }
-      printf("\n");
-      for(k=i+1;k<29;k++){
-	/*
-	if(SS[i][i]==0){
-	  printf("baka %d\n",i);
-	  exit(1);
-	}
-	*/
-	b=inv2(SS[i][i],SS[i][k]);
-	for(j=0;j<29;j++)
-	  SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
-	
-      }
-    }
-    
-    printf("\n\n");
-    for(i=0;i<29;i++){
-      for(j=0;j<29;j++)
-	printf("%d ",SS[i][j]);
-      printf("\n");
-    }
-    
-    for(i=0;i<29;i++){
-      for(k=0;k<29;k++){
-	// SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	if(aa[i].n[0]+aa[k].n[0]==1 && aa[i].n[1]+aa[k].n[1]==6)
-	  printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	//	if(aa[i].n[0]+aa[k].n[0]==7 && aa[i].n[1]+aa[k].n[1]==5)
-	//printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	    }
-      printf("\n");
-    }
-        S[1][6]=1;
-    //printf("%d %d\n",S[7][1],S[2][2]^8);
-    //    S[7][5]=15;
-    for(i=0;i<16;i++){
-      for(j=0;j<16;j++)
-	printf("%d ",S[i][j]);
-      printf("\n");
-    }
-
-
-    //begin
-    for(a=0;a<10;a++){
-      for(b=0;b<15;b++){
-	if(S[a+I][b]==0 && U>(I-1)*(I-2)/2){
-	  S[a+I][b]=more(a,b,B);
-	  printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
-	  if(delta-2*I+2+ips>=0 && (S[I-1-ips][delta-I+1+ips]>0 && S[I-1-ips][delta-2*I+3+ips]>0)){
-	    S[2*I-1-ips][delta-2*I+2+ips]=S[I-1-ips][delta-I+1+ips]^S[I-1-ips][delta-2*I+3+ips];
-	    printf("Ha!\n");
-	    exit(1);
-	  }
-	}else{
-	  printf("baka\n");
-	  break;
-	  // exit(1);
-	}
-      }
-      if(S[a+I][b]!=0 || U<=(I-1)*(I-2)/2)
-	break;
-    }
-    
-    // exit(1);
-
-	
-    for(i=0;i<16;i++){
-      for(j=0;j<16;j++)
-	printf("%d ",S[i][j]);
-      printf("\n");
-    }
-    printf("\n\n");
-    
-    //    exit(1);
-    
-    
-    for(i=0;i<30;i++){
-      for(k=0;k<30;k++)
-	SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-      
-    }
-
-    // for(i-0;i<27;i++)
-    //printf("%d ",ss[i]);
-    //printf("\n\n");
-    //    exit(1);
-    for(i=0;i<30;i++){
-      for(j=0;j<30;j++){
-	//printf("%d ",SS[i][j]);
-	printf("%d ",SS[i][j]);
-      }
-      printf("\n");
-    }
-    //    exit(1);
-    //gauss    
-    for(i=0;i<30;i++){
-      printf("i=%d\n",i);
-      for(j=0;j<30;j++){
-	for(k=0;k<30;k++){
-	  printf("%d ",SS[j][k]);
-	}
-	printf("\n");
-      }
-      printf("\n");
-      for(k=i+1;k<30;k++){
-	/*
-	if(SS[i][i]==0){
-	  printf("baka %d\n",i);
-	  exit(1);
-	}
-	*/
-	b=inv2(SS[i][i],SS[i][k]);
-	for(j=0;j<30;j++)
-	  SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
-	
-      }
-    }
-    
-    printf("\n\n");
-    for(i=0;i<30;i++){
-      for(j=0;j<30;j++)
-	printf("%d ",SS[i][j]);
-      printf("\n");
-    }
-    
-    for(i=0;i<30;i++){
-      for(k=0;k<30;k++){
-	// SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	if(aa[i].n[0]+aa[k].n[0]==0 && aa[i].n[1]+aa[k].n[1]==7)
-	  printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	//	if(aa[i].n[0]+aa[k].n[0]==7 && aa[i].n[1]+aa[k].n[1]==5)
-	//printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	    }
-      printf("\n");
-    }
-        S[0][7]=15;
-    //printf("%d %d\n",S[7][1],S[2][2]^8);
-    //    S[7][5]=15;
-    for(i=0;i<16;i++){
-      for(j=0;j<16;j++)
-	printf("%d ",S[i][j]);
-      printf("\n");
-    }
-
-
-
-    //begin
-    for(a=0;a<10;a++){
-      for(b=0;b<15;b++){
-	if(S[a+I][b]==0 && U>(I-1)*(I-2)/2){
-	  S[a+I][b]=more(a,b,B);
-	  printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
-	  if(delta-2*I+2+ips>=0 && (S[I-1-ips][delta-I+1+ips]>0 && S[I-1-ips][delta-2*I+3+ips]>0)){
-	    S[2*I-1-ips][delta-2*I+2+ips]=S[I-1-ips][delta-I+1+ips]^S[I-1-ips][delta-2*I+3+ips];
-	    printf("Ha!\n");
-	    exit(1);
-	  }
-	}else{
-	  printf("baka\n");
-	  break;
-	  // exit(1);
-	}
-      }
-      if(S[a+I][b]!=0 || U<=(I-1)*(I-2)/2)
-	break;
-    }
-    
-    // exit(1);
-
-	
-    for(i=0;i<16;i++){
-      for(j=0;j<16;j++)
-	printf("%d ",S[i][j]);
-      printf("\n");
-    }
-    printf("\n\n");
-    
-    //    exit(1);
-    
-    
-    for(i=0;i<31;i++){
-      for(k=0;k<31;k++)
-	SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-      
-    }
-
-    // for(i-0;i<27;i++)
-    //printf("%d ",ss[i]);
-    //printf("\n\n");
-    //    exit(1);
-    for(i=0;i<31;i++){
-      for(j=0;j<31;j++){
-	//printf("%d ",SS[i][j]);
-	printf("%d ",SS[i][j]);
-      }
-      printf("\n");
-    }
-    //    exit(1);
-    //gauss    
-    for(i=0;i<31;i++){
-      printf("i=%d\n",i);
-      for(j=0;j<31;j++){
-	for(k=0;k<31;k++){
-	  printf("%d ",SS[j][k]);
-	}
-	printf("\n");
-      }
-      printf("\n");
-      for(k=i+1;k<31;k++){
-	/*
-	if(SS[i][i]==0){
-	  printf("baka %d\n",i);
-	  exit(1);
-	}
-	*/
-	b=inv2(SS[i][i],SS[i][k]);
-	for(j=0;j<31;j++)
-	  SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
-	
-      }
-    }
-    
-    printf("\n\n");
-    for(i=0;i<31;i++){
-      for(j=0;j<31;j++)
-	printf("%d ",SS[i][j]);
-      printf("\n");
-    }
-    
-    for(i=0;i<31;i++){
-      for(k=0;k<31;k++){
-	// SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	if(aa[i].n[0]+aa[k].n[0]==4 && aa[i].n[1]+aa[k].n[1]==4)
-	  printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	//	if(aa[i].n[0]+aa[k].n[0]==7 && aa[i].n[1]+aa[k].n[1]==5)
-	//printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	    }
-      printf("\n");
-    }
-    //    S[2][5]=8;
-    //printf("%d %d\n",S[7][1],S[2][2]^8);
-    //    S[7][5]=15;
-    for(i=0;i<16;i++){
-      for(j=0;j<16;j++)
-	printf("%d ",S[i][j]);
-      printf("\n");
-    }
-    S[4][4]=8;
-
-
-    //begin
-    for(a=0;a<10;a++){
-      for(b=0;b<15;b++){
-	if(S[a+I][b]==0 && U>(I-1)*(I-2)/2){
-	  S[a+I][b]=more(a,b,B);
-	  printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
-	  if(delta-2*I+2+ips>=0 && (S[I-1-ips][delta-I+1+ips]>0 && S[I-1-ips][delta-2*I+3+ips]>0)){
-	    S[2*I-1-ips][delta-2*I+2+ips]=S[I-1-ips][delta-I+1+ips]^S[I-1-ips][delta-2*I+3+ips];
-	    printf("Ha!\n");
-	    exit(1);
-	  }
-	}else{
-	  printf("baka\n");
-	  break;
-	  // exit(1);
-	}
-      }
-      if(S[a+I][b]!=0 || U<=(I-1)*(I-2)/2)
-	break;
-    }
-    
-    // exit(1);
-
-	
-    for(i=0;i<16;i++){
-      for(j=0;j<16;j++)
-	printf("%d ",S[i][j]);
-      printf("\n");
-    }
-    printf("\n\n");
-    
-    //    exit(1);
-    
-    
-    for(i=0;i<32;i++){
-      for(k=0;k<32;k++)
-	SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-      
-    }
-
-    // for(i-0;i<27;i++)
-    //printf("%d ",ss[i]);
-    //printf("\n\n");
-    //    exit(1);
-    for(i=0;i<32;i++){
-      for(j=0;j<32;j++){
-	//printf("%d ",SS[i][j]);
-	printf("%d ",SS[i][j]);
-      }
-      printf("\n");
-    }
-    //    exit(1);
-    //gauss    
-    for(i=0;i<32;i++){
-      printf("i=%d\n",i);
-      for(j=0;j<32;j++){
-	for(k=0;k<32;k++){
-	  printf("%d ",SS[j][k]);
-	}
-	printf("\n");
-      }
-      printf("\n");
-      for(k=i+1;k<32;k++){
-	/*
-	if(SS[i][i]==0){
-	  printf("baka %d\n",i);
-	  exit(1);
-	}
-	*/
-	b=inv2(SS[i][i],SS[i][k]);
-	for(j=0;j<32;j++)
-	  SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
-	
-      }
-    }
-    
-    printf("\n\n");
-    for(i=0;i<32;i++){
-      for(j=0;j<32;j++)
-	printf("%d ",SS[i][j]);
-      printf("\n");
-    }
-    
-    for(i=0;i<32;i++){
-      for(k=0;k<32;k++){
-	// SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	if(aa[i].n[0]+aa[k].n[0]==3 && aa[i].n[1]+aa[k].n[1]==5)
-	  printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	//	if(aa[i].n[0]+aa[k].n[0]==7 && aa[i].n[1]+aa[k].n[1]==5)
-	//printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	    }
-      printf("\n");
-    }
-    //    S[2][5]=8;
-    //printf("%d %d\n",S[7][1],S[2][2]^8);
-    //    S[7][5]=15;
-    for(i=0;i<16;i++){
-      for(j=0;j<16;j++)
-	printf("%d ",S[i][j]);
-      printf("\n");
-    }
-    S[3][5]=10;
-
-
-        //begin
-    for(a=0;a<10;a++){
-      for(b=0;b<15;b++){
-	if(S[a+I][b]==0 && U>(I-1)*(I-2)/2){
-	  S[a+I][b]=more(a,b,B);
-	  printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
-	  if(delta-2*I+2+ips>=0 && (S[I-1-ips][delta-I+1+ips]>0 && S[I-1-ips][delta-2*I+3+ips]>0)){
-	    S[2*I-1-ips][delta-2*I+2+ips]=S[I-1-ips][delta-I+1+ips]^S[I-1-ips][delta-2*I+3+ips];
-	    printf("Ha!\n");
-	    exit(1);
-	  }
-	}else{
-	  printf("baka\n");
-	  break;
-	  // exit(1);
-	}
-      }
-      if(S[a+I][b]!=0 || U<=(I-1)*(I-2)/2)
-	break;
-    }
-    
-    // exit(1);
-
-	
-    for(i=0;i<16;i++){
-      for(j=0;j<16;j++)
-	printf("%d ",S[i][j]);
-      printf("\n");
-    }
-    printf("\n\n");
-    
-    //    exit(1);
-    
-    
-    for(i=0;i<33;i++){
-      for(k=0;k<33;k++)
-	SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-      
-    }
-
-    // for(i-0;i<27;i++)
-    //printf("%d ",ss[i]);
-    //printf("\n\n");
-    //    exit(1);
-    for(i=0;i<33;i++){
-      for(j=0;j<33;j++){
-	//printf("%d ",SS[i][j]);
-	printf("%d ",SS[i][j]);
-      }
-      printf("\n");
-    }
-    //    exit(1);
-    //gauss    
-    for(i=0;i<33;i++){
-      printf("i=%d\n",i);
-      for(j=0;j<33;j++){
-	for(k=0;k<33;k++){
-	  printf("%d ",SS[j][k]);
-	}
-	printf("\n");
-      }
-      printf("\n");
-      for(k=i+1;k<33;k++){
-	/*
-	if(SS[i][i]==0){
-	  printf("baka %d\n",i);
-	  exit(1);
-	}
-	*/
-	b=inv2(SS[i][i],SS[i][k]);
-	for(j=0;j<33;j++)
-	  SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
-	
-      }
-    }
-    
-    printf("\n\n");
-    for(i=0;i<33;i++){
-      for(j=0;j<33;j++)
-	printf("%d ",SS[i][j]);
-      printf("\n");
-    }
-    
-    for(i=0;i<33;i++){
-      for(k=0;k<33;k++){
-	// SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	if(aa[i].n[0]+aa[k].n[0]==2 && aa[i].n[1]+aa[k].n[1]==6)
-	  printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	//	if(aa[i].n[0]+aa[k].n[0]==7 && aa[i].n[1]+aa[k].n[1]==5)
-	//printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	    }
-      printf("\n");
-    }
-        S[2][6]=6;
-    //printf("%d %d\n",S[7][1],S[2][2]^8);
-    //    S[7][5]=15;
-    for(i=0;i<16;i++){
-      for(j=0;j<16;j++)
-	printf("%d ",S[i][j]);
-      printf("\n");
-    }
-
-
-        //begin
-      for(a=0;a<10;a++){
-	for(b=0;b<15;b++){
-	  if(S[a+I][b]==0 && U>(I-1)*(I-2)/2){
-	    S[a+I][b]=more(a,b,B);
-	    printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
-	    if(delta-2*I+2+ips>=0 && (S[I-1-ips][delta-I+1+ips]>0 && S[I-1-ips][delta-2*I+3+ips]>0)){
-	      S[2*I-1-ips][delta-2*I+2+ips]=S[I-1-ips][delta-I+1+ips]^S[I-1-ips][delta-2*I+3+ips];
-	      printf("Ha!\n");
-	      exit(1);
-	    }
-	  }else{
-	    printf("baka\n");
-	    break;
-	    // exit(1);
-	  }
-	}
-	if(S[a+I][b]!=0 || U<=(I-1)*(I-2)/2)
-	  break;
-      }
-      
-      // exit(1);
-      
-      
-      for(i=0;i<16;i++){
-	for(j=0;j<16;j++)
-	  printf("%d ",S[i][j]);
-	printf("\n");
-      }
-      printf("\n\n");
-      
-      //    exit(1);
-      
-      
-      for(i=0;i<34;i++){
-	for(k=0;k<34;k++)
-	  SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-      
-    }
-
-    // for(i-0;i<27;i++)
-    //printf("%d ",ss[i]);
-    //printf("\n\n");
-    //    exit(1);
-    for(i=0;i<34;i++){
-      for(j=0;j<34;j++){
-	//printf("%d ",SS[i][j]);
-	printf("%d ",SS[i][j]);
-      }
-      printf("\n");
-    }
-    //    exit(1);
-    //gauss    
-    for(i=0;i<34;i++){
-      printf("i=%d\n",i);
-      for(j=0;j<34;j++){
-	for(k=0;k<34;k++){
-	  printf("%d ",SS[j][k]);
-	}
-	printf("\n");
-      }
-      printf("\n");
-      for(k=i+1;k<34;k++){
-	/*
-	if(SS[i][i]==0){
-	  printf("baka %d\n",i);
-	  exit(1);
-	}
-	*/
-	b=inv2(SS[i][i],SS[i][k]);
-	for(j=0;j<34;j++)
-	  SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
-	
-      }
-    }
-    
-    printf("\n\n");
-    for(i=0;i<34;i++){
-      for(j=0;j<34;j++)
-	printf("%d ",SS[i][j]);
-      printf("\n");
-    }
-    
-    for(i=0;i<34;i++){
-      for(k=0;k<34;k++){
-	// SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	if(aa[i].n[0]+aa[k].n[0]==1 && aa[i].n[1]+aa[k].n[1]==7)
-	  printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	//	if(aa[i].n[0]+aa[k].n[0]==7 && aa[i].n[1]+aa[k].n[1]==5)
-	//printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	    }
-      printf("\n");
-    }
-    //S[aa[i].n[0]][aa[i].n[1]]=;
-    //printf("%d %d\n",S[7][1],S[2][2]^8);
-        S[1][7]=4;
-    for(i=0;i<16;i++){
-      for(j=0;j<16;j++)
-	printf("%d ",S[i][j]);
-      printf("\n");
-    }
-    //    exit(1);
-
-    
-    //begin
-    for(a=0;a<10;a++){
-      for(b=0;b<15;b++){
-	if( S[a+I][b]==0 && U>(I-1)*(I-2)/2){
-	  S[a+I][b]=more(a,b,B);
-	  printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
-	  if(delta-2*I+2+ips>=0 && (S[I-1-ips][delta-I+1+ips]>0 && S[I-1-ips][delta-2*I+3+ips]>0)){
-	    S[2*I-1-ips][delta-2*I+2+ips]=S[I-1-ips][delta-I+1+ips]^S[I-1-ips][delta-2*I+3+ips];
-	    printf("Ha!\n");
-	    exit(1);
-	  }
-	}else{
-	  printf("baka\n");
-	  break;
-	  // exit(1);
-	}
-      }
-      if(S[a+I][b]!=0 || U<=(I-1)*(I-2)/2)
-	break;
-    }
-    
-    // exit(1);
-    
-    
-    for(i=0;i<16;i++){
-      for(j=0;j<16;j++)
-	printf("%d ",S[i][j]);
-      printf("\n");
-    }
-    printf("\n\n");
-    
-    //    exit(1);
-    
-    
-    for(i=0;i<35;i++){
-      for(k=0;k<35;k++)
-	SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-      
-    }
-    
-    // for(i-0;i<27;i++)
-    //printf("%d ",ss[i]);
-    //printf("\n\n");
-    //    exit(1);
-    for(i=0;i<35;i++){
-      for(j=0;j<35;j++){
-	//printf("%d ",SS[i][j]);
-	printf("%d ",SS[i][j]);
-      }
-      printf("\n");
-    }
-    //    exit(1);
-    //gauss    
-    for(i=0;i<35;i++){
-      printf("i=%d\n",i);
-      for(j=0;j<35;j++){
-	for(k=0;k<35;k++){
-	  printf("%d ",SS[j][k]);
-	}
-	printf("\n");
-      }
-      printf("\n");
-      for(k=i+1;k<35;k++){
-	/*
-	  if(SS[i][i]==0){
-	  printf("baka %d\n",i);
-	  exit(1);
-	  }
-	*/
-	b=inv2(SS[i][i],SS[i][k]);
-	for(j=0;j<35;j++)
-	  SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
-	
-      }
-    }
-    
-    printf("\n\n");
-    for(i=0;i<35;i++){
-      for(j=0;j<35;j++)
-	printf("%d ",SS[i][j]);
-      printf("\n");
-    }
-    
-    for(i=0;i<35;i++){
-      for(k=0;k<35;k++){
-	// SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	if(aa[i].n[0]+aa[k].n[0]==0 && aa[i].n[1]+aa[k].n[1]==8)
-	  printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-      }
-      printf("\n");
-    }
-
-    S[0][8]=5;
-    for(i=0;i<16;i++){
-      for(j=0;j<16;j++)
-	printf("%d ",S[i][j]);
-      printf("\n");
-    }
-
-
-        //begin
-      for(a=0;a<10;a++){
-	for(b=0;b<15;b++){
-	  if(S[a+I][b]==0 && U>(I-1)*(I-2)/2){
-	    S[a+I][b]=more(a,b,B);
-	    printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
-	    if(delta-2*I+2+ips>=0 && (S[I-1-ips][delta-I+1+ips]>0 && S[I-1-ips][delta-2*I+3+ips]>0)){
-	      S[2*I-1-ips][delta-2*I+2+ips]=S[I-1-ips][delta-I+1+ips]^S[I-1-ips][delta-2*I+3+ips];
-	      printf("Ha!\n");
-	      exit(1);
-	    }
-	  }else{
-	    printf("baka\n");
-	    break;
-	    // exit(1);
-	  }
-	}
-	if(S[a+I][b]!=0 || U<=(I-1)*(I-2)/2)
-	  break;
-      }
-      
-      // exit(1);
-      
-      
-      for(i=0;i<16;i++){
-	for(j=0;j<16;j++)
-	  printf("%d ",S[i][j]);
-	printf("\n");
-      }
-      printf("\n\n");
-      
-      //    exit(1);
-      
-      
-      for(i=0;i<36;i++){
-	for(k=0;k<36;k++){
-	  SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	  //  printf("%2d,%2d ",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1]);
-	}
-	//printf("\n");
-    }
-      
-      //exit(1);
-
-
-      // for(i-0;i<27;i++)
-    //printf("%d ",ss[i]);
-    //printf("\n\n");
-    //    exit(1);
-    for(i=0;i<36;i++){
-      for(j=0;j<36;j++){
-	//printf("%d ",SS[i][j]);
-	printf("%d ",SS[i][j]);
-      }
-      printf("\n");
-    }
-    //    exit(1);
-    //gauss    
-    for(i=0;i<36;i++){
-      printf("i=%d\n",i);
-      for(j=0;j<36;j++){
-	for(k=0;k<36;k++){
-	  printf("%d ",SS[j][k]);
-	}
-	printf("\n");
-      }
-      printf("\n");
-      for(k=i+1;k<36;k++){
-	/*
-	if(SS[i][i]==0){
-	  printf("baka %d\n",i);
-	  exit(1);
-	}
-	*/
-	b=inv2(SS[i][i],SS[i][k]);
-	for(j=0;j<36;j++)
-	  SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
-	
-      }
-    }
-    
-    printf("\n\n");
-    for(i=0;i<36;i++){
-      for(j=0;j<36;j++)
-	printf("%d ",SS[i][j]);
-      printf("\n");
-    }
-    
-    for(i=0;i<36;i++){
-      for(k=0;k<36;k++){
-	// SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	if(aa[i].n[0]+aa[k].n[0]==4 && aa[i].n[1]+aa[k].n[1]==5)
-	  printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	//	if(aa[i].n[0]+aa[k].n[0]==7 && aa[i].n[1]+aa[k].n[1]==5)
-	//printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	    }
-      printf("\n");
-    }
-    //S[aa[i].n[0]][aa[i].n[1]]=;
-    //printf("%d %d\n",S[7][1],S[2][2]^8);
-    S[4][5]=5;
-    for(i=0;i<16;i++){
-      for(j=0;j<16;j++)
-	printf("%d ",S[i][j]);
-      printf("\n");
-    }
-
-
-
-            //begin
-      for(a=0;a<10;a++){
-	for(b=0;b<15;b++){
-	  if(S[a+I][b]==0 && U>(I-1)*(I-2)/2){
-	    S[a+I][b]=more(a,b,B);
-	    printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
-	    if(delta-2*I+2+ips>=0 && (S[I-1-ips][delta-I+1+ips]>0 && S[I-1-ips][delta-2*I+3+ips]>0)){
-	      S[2*I-1-ips][delta-2*I+2+ips]=S[I-1-ips][delta-I+1+ips]^S[I-1-ips][delta-2*I+3+ips];
-	      printf("Ha!\n");
-	      exit(1);
-	    }
-	  }else{
-	    printf("baka\n");
-	    break;
-	    // exit(1);
-	  }
-	}
-	if(S[a+I][b]!=0 || U<=(I-1)*(I-2)/2)
-	  break;
-      }
-      
-      // exit(1);
-      
-      
-      for(i=0;i<16;i++){
-	for(j=0;j<16;j++)
-	  printf("%d ",S[i][j]);
-	printf("\n");
-      }
-      printf("\n\n");
-      
-      //    exit(1);
-      
-      
-      for(i=0;i<37;i++){
-	for(k=0;k<37;k++){
-	  SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	  //  printf("%2d,%2d ",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1]);
-	}
-	//printf("\n");
-    }
-      
-      //exit(1);
-
-
-      // for(i-0;i<27;i++)
-    //printf("%d ",ss[i]);
-    //printf("\n\n");
-    //    exit(1);
-    for(i=0;i<37;i++){
-      for(j=0;j<37;j++){
-	//printf("%d ",SS[i][j]);
-	printf("%d ",SS[i][j]);
-      }
-      printf("\n");
-    }
-    //    exit(1);
-    //gauss    
-    for(i=0;i<37;i++){
-      printf("i=%d\n",i);
-      for(j=0;j<37;j++){
-	for(k=0;k<37;k++){
-	  printf("%d ",SS[j][k]);
-	}
-	printf("\n");
-      }
-      printf("\n");
-      for(k=i+1;k<37;k++){
-	/*
-	if(SS[i][i]==0){
-	  printf("baka %d\n",i);
-	  exit(1);
-	}
-	*/
-	b=inv2(SS[i][i],SS[i][k]);
-	for(j=0;j<37;j++)
-	  SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
-	
-      }
-    }
-    
-    printf("\n\n");
-    for(i=0;i<37;i++){
-      for(j=0;j<37;j++)
-	printf("%d ",SS[i][j]);
-      printf("\n");
-    }
-    
-    for(i=0;i<37;i++){
-      for(k=0;k<37;k++){
-	// SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	if(aa[i].n[0]+aa[k].n[0]==3 && aa[i].n[1]+aa[k].n[1]==6)
-	  printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	//	if(aa[i].n[0]+aa[k].n[0]==7 && aa[i].n[1]+aa[k].n[1]==5)
-	//printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	    }
-      printf("\n");
-    }
-    S[3][6]=6;
-    S[8][2]=S[3][6]^S[3][3];
-    for(i=0;i<16;i++){
-      for(j=0;j<16;j++)
-	printf("%d ",S[i][j]);
-      printf("\n");
-    }
-
-
-
-    //begin
-      for(a=0;a<10;a++){
-	for(b=0;b<15;b++){
-	  if(S[a+I][b]==0 && U>(I-1)*(I-2)/2){
-	    S[a+I][b]=more(a,b,B);
-	    printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
-	    if(delta-2*I+2+ips>=0 && (S[I-1-ips][delta-I+1+ips]>0 && S[I-1-ips][delta-2*I+3+ips]>0)){
-	      S[2*I-1-ips][delta-2*I+2+ips]=S[I-1-ips][delta-I+1+ips]^S[I-1-ips][delta-2*I+3+ips];
-	      printf("Ha!\n");
-	      exit(1);
-	    }
-	  }else{
-	    printf("baka\n");
-	    break;
-	    // exit(1);
-	  }
-	}
-	if(S[a+I][b]!=0 || U<=(I-1)*(I-2)/2)
-	  break;
-      }
-      
-      // exit(1);
-      
-      
-      for(i=0;i<16;i++){
-	for(j=0;j<16;j++)
-	  printf("%d ",S[i][j]);
-	printf("\n");
-      }
-      printf("\n\n");
-      
-      //    exit(1);
-      
-      
-      for(i=0;i<38;i++){
-	for(k=0;k<38;k++){
-	  SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	  //  printf("%2d,%2d ",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1]);
-	}
-	//printf("\n");
-    }
-      
-      //exit(1);
-
-
-      // for(i-0;i<27;i++)
-    //printf("%d ",ss[i]);
-    //printf("\n\n");
-    //    exit(1);
-    for(i=0;i<38;i++){
-      for(j=0;j<38;j++){
-	//printf("%d ",SS[i][j]);
-	printf("%d ",SS[i][j]);
-      }
-      printf("\n");
-    }
-    //    exit(1);
-    //gauss    
-    for(i=0;i<38;i++){
-      printf("i=%d\n",i);
-      for(j=0;j<38;j++){
-	for(k=0;k<38;k++){
-	  printf("%d ",SS[j][k]);
-	}
-	printf("\n");
-      }
-      printf("\n");
-      for(k=i+1;k<38;k++){
-	/*
-	if(SS[i][i]==0){
-	  printf("baka %d\n",i);
-	  exit(1);
-	}
-	*/
-	b=inv2(SS[i][i],SS[i][k]);
-	for(j=0;j<38;j++)
-	  SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
-	
-      }
-    }
-    
-    printf("\n\n");
-    for(i=0;i<38;i++){
-      for(j=0;j<38;j++)
-	printf("%d ",SS[i][j]);
-      printf("\n");
-    }
-    
-    for(i=0;i<38;i++){
-      for(k=0;k<38;k++){
-	// SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	if(aa[i].n[0]+aa[k].n[0]==2 && aa[i].n[1]+aa[k].n[1]==7)
-	  printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	//	if(aa[i].n[0]+aa[k].n[0]==7 && aa[i].n[1]+aa[k].n[1]==5)
-	//printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	    }
-      printf("\n");
-    }
-     S[2][7]=10;
-    for(i=0;i<16;i++){
-      for(j=0;j<16;j++)
-	printf("%d ",S[i][j]);
-      printf("\n");
-    }
-
-
-                //begin
-      for(a=0;a<10;a++){
-	for(b=0;b<15;b++){
-	  if(S[a+I][b]==0 && U>(I-1)*(I-2)/2){
-	    S[a+I][b]=more(a,b,B);
-	    printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
-	    if(delta-2*I+2+ips>=0 && (S[I-1-ips][delta-I+1+ips]>0 && S[I-1-ips][delta-2*I+3+ips]>0)){
-	      S[2*I-1-ips][delta-2*I+2+ips]=S[I-1-ips][delta-I+1+ips]^S[I-1-ips][delta-2*I+3+ips];
-	      printf("Ha!\n");
-	      exit(1);
-	    }
-	  }else{
-	    printf("baka\n");
-	    break;
-	    // exit(1);
-	  }
-	}
-	if(S[a+I][b]!=0 || U<=(I-1)*(I-2)/2)
-	  break;
-      }
-      
-      // exit(1);
-      
-      
-      for(i=0;i<16;i++){
-	for(j=0;j<16;j++)
-	  printf("%d ",S[i][j]);
-	printf("\n");
-      }
-      printf("\n\n");
-      
-      //    exit(1);
-      
-      
-      for(i=0;i<39;i++){
-	for(k=0;k<39;k++){
-	  SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	  //  printf("%2d,%2d ",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1]);
-	}
-	//printf("\n");
-    }
-      
-      //exit(1);
-
-
-      // for(i-0;i<27;i++)
-    //printf("%d ",ss[i]);
-    //printf("\n\n");
-    //    exit(1);
-    for(i=0;i<39;i++){
-      for(j=0;j<39;j++){
-	//printf("%d ",SS[i][j]);
-	printf("%d ",SS[i][j]);
-      }
-      printf("\n");
-    }
-    //    exit(1);
-    //gauss    
-    for(i=0;i<39;i++){
-      printf("i=%d\n",i);
-      for(j=0;j<39;j++){
-	for(k=0;k<39;k++){
-	  printf("%d ",SS[j][k]);
-	}
-	printf("\n");
-      }
-      printf("\n");
-      for(k=i+1;k<39;k++){
-	/*
-	if(SS[i][i]==0){
-	  printf("baka %d\n",i);
-	  exit(1);
-	}
-	*/
-	b=inv2(SS[i][i],SS[i][k]);
-	for(j=0;j<39;j++)
-	  SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
-	
-      }
-    }
-    
-    printf("\n\n");
-    for(i=0;i<39;i++){
-      for(j=0;j<39;j++)
-	printf("%d ",SS[i][j]);
-      printf("\n");
-    }
-    
-    for(i=0;i<39;i++){
-      for(k=0;k<39;k++){
-	// SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	if(aa[i].n[0]+aa[k].n[0]==1 && aa[i].n[1]+aa[k].n[1]==8)
-	  printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	//	if(aa[i].n[0]+aa[k].n[0]==7 && aa[i].n[1]+aa[k].n[1]==5)
-	//printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	    }
-      printf("\n");
-    }
-    S[1][8]=5;
-    S[6][4]=S[1][8]^S[1][5];
-    for(i=0;i<16;i++){
-      for(j=0;j<16;j++)
-	printf("%d ",S[i][j]);
-      printf("\n");
-    }
-
-
-    //begin
-      for(a=0;a<5;a++){
-	for(b=0;b<16;b++){
-	  if(S[a+I][b]==0 && U>(I-1)*(I-2)/2){
-	    S[a+I][b]=more(a,b,B);
-	    printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
-	    if(delta-2*I+2+ips>=0 && (S[I-1-ips][delta-I+1+ips]>0 && S[I-1-ips][delta-2*I+3+ips]>0)){
-	      S[2*I-1-ips][delta-2*I+2+ips]=S[I-1-ips][delta-I+1+ips]^S[I-1-ips][delta-2*I+3+ips];
-	      printf("Ha!\n");
-	      exit(1);
-	    }
-	  }else{
-	    printf("baka\n");
-	    break;
-	    // exit(1);
-	  }
-	}
-	if(S[a+I][b]!=0 || U<=(I-1)*(I-2)/2)
-	  break;
-      }
-      
-      // exit(1);
-      
-      
-      for(i=0;i<16;i++){
-	for(j=0;j<16;j++)
-	  printf("%d ",S[i][j]);
-	printf("\n");
-      }
-      printf("\n\n");
-      
-      //    exit(1);
-      
-      
-      for(i=0;i<50;i++){
-	for(k=0;k<50;k++){
-	  SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	  //  printf("%2d,%2d ",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1]);
-	}
-	//printf("\n");
-    }
-      
-      //exit(1);
-
-
-      // for(i-0;i<27;i++)
-    //printf("%d ",ss[i]);
-    //printf("\n\n");
-    //    exit(1);
-    for(i=0;i<40;i++){
-      for(j=0;j<40;j++){
-	//printf("%d ",SS[i][j]);
-	printf("%d ",SS[i][j]);
-      }
-      printf("\n");
-    }
-    //    exit(1);
-    //gauss    
-    for(i=0;i<40;i++){
-      printf("i=%d\n",i);
-      for(j=0;j<40;j++){
-	for(k=0;k<40;k++){
-	  printf("%d ",SS[j][k]);
-	}
-	printf("\n");
-      }
-      printf("\n");
-      for(k=i+1;k<40;k++){
-	/*
-	if(SS[i][i]==0){
-	  printf("baka %d\n",i);
-	  exit(1);
-	}
-	*/
-	b=inv2(SS[i][i],SS[i][k]);
-	for(j=0;j<40;j++)
-	  SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
-	
-      }
-    }
-    
-    printf("\n\n");
-    for(i=0;i<40;i++){
-      for(j=0;j<40;j++)
-	printf("%d ",SS[i][j]);
-      printf("\n");
-    }
-    
-    for(i=0;i<40;i++){
-      for(k=0;k<40;k++){
-	// SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	if(aa[i].n[0]+aa[k].n[0]==0 && aa[i].n[1]+aa[k].n[1]==9)
-	  printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	//	if(aa[i].n[0]+aa[k].n[0]==7 && aa[i].n[1]+aa[k].n[1]==5)
-	//printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	    }
-      printf("\n");
-    }
-     S[0][9]=12;
-     S[5][5]=S[0][9]^S[0][6];
-    for(i=0;i<16;i++){
-      for(j=0;j<16;j++)
-	printf("%d ",S[i][j]);
-      printf("\n");
-    }
-
-
-    //begin
-    for(a=0;a<10;a++){
-      for(b=0;b<15;b++){
-	if( S[a+I][b]==0 && U>(I-1)*(I-2)/2){
-	  S[a+I][b]=more(a,b,B);
-	  printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
-	  if(delta-2*I+2+ips>=0 && (S[I-1-ips][delta-I+1+ips]>0 && S[I-1-ips][delta-2*I+3+ips]>0)){
-	    S[2*I-1-ips][delta-2*I+2+ips]=S[I-1-ips][delta-I+1+ips]^S[I-1-ips][delta-2*I+3+ips];
-	    printf("Ha!\n");
-	    exit(1);
-	  }
-	}else{
-	  printf("baka\n");
-	  break;
-	  // exit(1);
-	}
-      }
-      if(S[a+I][b]!=0 || U<=(I-1)*(I-2)/2)
-	break;
-    }
-    
-    // exit(1);
-    
-    
-    for(i=0;i<16;i++){
-      for(j=0;j<16;j++)
-	printf("%d ",S[i][j]);
-      printf("\n");
-    }
-    printf("\n\n");
-    
-    //     exit(1);
-    
-    
-      for(i=0;i<41;i++){
-	for(k=0;k<41;k++){
-	  SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	  //  printf("%2d,%2d ",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1]);
-	}
-	//printf("\n");
-    }
-      
-      //exit(1);
-
-
-      // for(i-0;i<27;i++)
-    //printf("%d ",ss[i]);
-    //printf("\n\n");
-    //    exit(1);
-    for(i=0;i<41;i++){
-      for(j=0;j<41;j++){
-	//printf("%d ",SS[i][j]);
-	printf("%d ",SS[i][j]);
-      }
-      printf("\n");
-    }
-    //    exit(1);
-    //gauss    
-    for(i=0;i<41;i++){
-      printf("i=%d\n",i);
-      for(j=0;j<41;j++){
-	for(k=0;k<41;k++){
-	  printf("%d ",SS[j][k]);
-	}
-	printf("\n");
-      }
-      printf("\n");
-      for(k=i+1;k<41;k++){
-	/*
-	if(SS[i][i]==0){
-	  printf("baka %d\n",i);
-	  exit(1);
-	}
-	*/
-	b=inv2(SS[i][i],SS[i][k]);
-	for(j=0;j<41;j++)
-	  SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
-	
-      }
-    }
-    
-    printf("\n\n");
-    for(i=0;i<41;i++){
-      for(j=0;j<41;j++)
-	printf("%d ",SS[i][j]);
-      printf("\n");
-    }
-    
-    for(i=0;i<41;i++){
-      for(k=0;k<41;k++){
-	// SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	if(aa[i].n[0]+aa[k].n[0]==4 && aa[i].n[1]+aa[k].n[1]==6)
-	  printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	//	if(aa[i].n[0]+aa[k].n[0]==7 && aa[i].n[1]+aa[k].n[1]==5)
-	//printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	    }
-      printf("\n");
-    }
-    S[4][6]=1;
-    S[9][2]=S[4][6]^S[4][2];
-    for(i=0;i<16;i++){
-      for(j=0;j<16;j++)
-	printf("%d ",S[i][j]);
-      printf("\n");
-    }
-
-    printf("S[10][0]=%d",S[5][4]^S[5][0]);
-    //    exit(1);
-
-
-    
-    //begin
-      for(a=0;a<10;a++){
-	for(b=0;b<15;b++){
-	  if(S[a+I][b]==0 && U>(I-1)*(I-2)/2){
-	    S[a+I][b]=more(a,b,B);
-	    printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
-	    if(delta-2*I+2+ips>=0 && (S[I-1-ips][delta-I+1+ips]>0 && S[I-1-ips][delta-2*I+3+ips]>0)){
-	      S[2*I-1-ips][delta-2*I+2+ips]=S[I-1-ips][delta-I+1+ips]^S[I-1-ips][delta-2*I+3+ips];
-	      printf("Ha!\n");
-	      exit(1);
-	    }
-	  }else{
-	    printf("baka\n");
-	    break;
-	    // exit(1);
-	  }
-	}
-	if(S[a+I][b]!=0 || U<=(I-1)*(I-2)/2)
-	  break;
-      }
-      
-      // exit(1);
-      
-      
-      for(i=0;i<16;i++){
-	for(j=0;j<16;j++)
-	  printf("%d ",S[i][j]);
-	printf("\n");
-      }
-      printf("\n\n");
-      
-      //    exit(1);
-      
-      
-      for(i=0;i<42;i++){
-	for(k=0;k<42;k++){
-	  SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	  //  printf("%2d,%2d ",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1]);
-	}
-	//printf("\n");
-    }
-      
-      //exit(1);
-
-
-      // for(i-0;i<27;i++)
-    //printf("%d ",ss[i]);
-    //printf("\n\n");
-    //    exit(1);
-    for(i=0;i<42;i++){
-      for(j=0;j<42;j++){
-	//printf("%d ",SS[i][j]);
-	printf("%d ",SS[i][j]);
-      }
-      printf("\n");
-    }
-    //    exit(1);
-    //gauss    
-    for(i=0;i<42;i++){
-      printf("i=%d\n",i);
-      for(j=0;j<42;j++){
-	for(k=0;k<42;k++){
-	  printf("%d ",SS[j][k]);
-	}
-	printf("\n");
-      }
-      printf("\n");
-      for(k=i+1;k<42;k++){
-	/*
-	if(SS[i][i]==0){
-	  printf("baka %d\n",i);
-	  exit(1);
-	}
-	*/
-	b=inv2(SS[i][i],SS[i][k]);
-	for(j=0;j<42;j++)
-	  SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
-	
-      }
-    }
-    
-    printf("\n\n");
-    for(i=0;i<42;i++){
-      for(j=0;j<42;j++)
-	printf("%d ",SS[i][j]);
-      printf("\n");
-    }
-    
-    for(i=0;i<42;i++){
-      for(k=0;k<42;k++){
-	// SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	if(aa[i].n[0]+aa[k].n[0]==3 && aa[i].n[1]+aa[k].n[1]==7){
-	  printf("%d %d\n",i,k);
-	  printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	}
-	//	if(aa[i].n[0]+aa[k].n[0]==7 && aa[i].n[1]+aa[k].n[1]==5)
-	//printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	    }
-      printf("\n");
-    }
-    exit(1);
-    
-    S[3][7]=5;
-    S[8][3]=S[3][7]^S[3][3];
-    for(i=0;i<16;i++){
-      for(j=0;j<16;j++)
-	printf("%d ",S[i][j]);
-      printf("\n");
-    }
-
-    
-    exit(1);
-
-    
     /*
-10 7 10 3 14 13 13 0 0 0 0 0 0 0 0 0 
-4 15 8 12 10 2 0 0 0 0 0 0 0 0 0 0 
-3 14 7 12 7 0 0 0 0 0 0 0 0 0 0 0 
-0 10 1 8 13 0 0 0 0 0 0 0 0 0 0 0 
-12 1 1 2 0 0 0 0 0 0 0 0 0 0 0 0 
-9 7 14 14 13 3 0 13 0 0 0 0 0 0 0 0 
-5 10 12 10 6 8 2 0 0 0 0 0 0 0 0 0 
-9 7 12 7 11 7 0 0 0 0 0 0 0 0 0 0 
-7 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+10 7 10 3 14 13 13 15 5 12 12 4 8 10 6 
+4 15 8 12 10 2 1 4 5 6 9 11 15 8 4 
+3 14 7 12 7 8 6 10 1 2 12 2 11 15 12 
+0 10 1 8 13 10 6 5 10 6 4 1 8 6 //15 0 
+12 1 1 2 8 5 1 7 8 8 12 3 7 2 //0 0 
+9 7 14 14 13 3 0 0 2 10 9 0 8 12 2 12 
+5 10 12 10 6 8 8 3 5 1 3 15 2 4 7 12 
+9 7 12 7 11 11 15 14 12 11 3 14 14 9 4 3 
+7 11 14 8 0 5 7 12 3 15 12 2 5 9 14 0 
+9 4 3 15 3 10 13 4 6 15 0 4 15 4 0 0 
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
@@ -2531,24 +1134,66 @@ int main(void){
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
 
-10 7 10 3 14 13 13 0 0 0 0 0 0 0 0 0 
-4 15 8 12 10 2 0 0 0 0 0 0 0 0 0 0 
-3 14 7 12 7 8 0 0 0 0 0 0 0 0 0 0 
-0 10 1 8 13 0 0 0 0 0 0 0 0 0 0 0 
-12 1 1 2 0 0 0 0 0 0 0 0 0 0 0 0 
-9 7 14 14 13 3 0 13 0 0 0 0 0 0 0 0 
-5 10 12 10 6 8 2 0 0 0 0 0 0 0 0 0 
-9 7 12 7 11 7 0 0 0 0 0 0 0 0 0 0 
-7 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+
+10 7 10 3 14 13 13 15 5 12 12 4 8 10 6 10 
+4 15 8 12 10 2 1 4 5 6 9 11 15 8 4 4 
+3 14 7 12 7 8 6 10 1 2 12 2 11 15 12 3 
+0 10 1 8 13 10 6 5 10 6 4 1 8 6 15 10 
+12 1 1 2 8 5 1 7 8 8 12 3 7 2 10 0 
+9 7 14 14 13 3 0 0 2 10 9 0 8 12 2 12 
+5 10 12 10 6 8 8 3 5 1 3 15 2 4 7 12 
+9 7 12 7 11 11 15 14 12 11 3 14 14 9 4 3 
+7 11 14 8 0 5 7 12 3 15 12 2 5 9 14 9 
+9 4 3 15 3 10 13 4 6 15 0 4 15 4 5 0 
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+
+10 7 10 3 14 13 13 15 5 12 12 4 8 10 6 10 
+4 15 8 12 10 2 1 4 5 6 9 11 15 8 4 4 
+3 14 7 12 7 8 6 10 1 2 12 2 11 15 12 3 
+0 10 1 8 13 10 6 5 10 6 4 1 8 6 0 
+12 1 1 2 8 5 1 7 8 8 12 3 7 2 15 0 
+9 7 14 //14 13 3 0 0 2 10 9 0 8 12 2 12 
+5 10 //12 10 6 8 8 3 5 1 3 15 2 4 7 12 
+9 //7 12 7 11 11 15 14 12 11 3 14 14 9 4 3 
+7 11 14 8 0 //5 7 12 3 15 12 2 5 9 14 6 
+9 4 3 15 13 9 11 11 15 14 12 //4 15 4 5 0 
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+
+
+
+
+
+
+10 7 10 3 14 13 13 15 5 12 12 4 8 10 6 10 
+4 15 8 12 10 2 1 4 5 6 9 11 15 8 4 4 
+3 14 7 12 7 8 6 10 1 2 12 2 11 15 12 3 
+0 10 1 8 13 10 6 5 10 6 4 1 8 6 0 0 
+12 1 1 2 8 5 1 7 8 8 12 3 7 2 15 0 
+9 7 14 1 13 3 0 2 10 9 0 8 12 2 12 12 
+5 10 13 14 6 8 3 5 1 3 15 2 4 7 12 12 
+9 15 10 11 11 15 14 12 11 3 14 14 9 4 4 3 
+7 11 14 8 0 7 12 3 15 12 2 5 9 9 14 6 
+9 4 3 15 13 9 11 11 15 14 12 15 15 4 5 0 
+10 13 1 15 12 14 3 2 8 3 9 8 4 14 14 0 
+12 5 13 3 8 14 11 6 4 2 12 13 6 3 11 0 
+4 5 5 7 0 4 1 2 7 8 13 0 7 13 11 0 
+14 9 4 6 13 2 11 15 12 3 14 7 12 1 8 0 
+14 14 11 12 5 7 9 2 9 15 4 11 12 3 0 0 
+1 15 12 14 3 2 13 1 10 11 10 1 12 10 0 0 
 
     */
+    
+
     
 
     for(j=0;j<64;j++){
@@ -2621,3 +1266,21 @@ int main(void){
   
   return 0;
 }
+/*
+10 7 10 3 14 13 13 15 5 12 12 4 8 10 6 10 
+4 15 8 12 10 2 1 4 5 6 9 11 15 8 4 4 
+3 14 7 12 7 8 6 10 1 2 12 2 11 15 12 3 
+0 10 1 8 13 10 6 5 10 6 4 1 8 6 0 0 
+12 1 1 2 8 5 1 7 8 8 12 3 7 2 15 0 
+9 7 14 1 8 1 3 1 4 6 2 //0 8 12 2 12 
+5 10 13 14 7 7 13 14 9 1 15 //15 2 4 7 12 
+9 15 10 //0 3 3 8 7 13 6 7 14 14 9 4 3 
+7 11 14 8 0 //5 7 12 3 15 12 2 5 9 14 6 
+9 4 3 15 13 9 11 11 15 14 12 //15 15 4 5 0 
+10 14 14 13 3 0 0 0 0 0 0 0 0 0 0 0 
+12 12 10 6 12 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+*/
