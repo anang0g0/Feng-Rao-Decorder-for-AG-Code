@@ -537,7 +537,7 @@ int mkbase(mterm *aa){
 
 count=1;
 
-  for(i=0;i<16;i++){
+  for(i=0;i<30;i++){
     k=0;
     j=i;
     while((d[i][0]+d[i][1])<i && i<5){
@@ -576,12 +576,12 @@ count=1;
     
   }
     
-  for(i=0;i<40;i++)
+  for(i=0;i<60;i++)
     printf("d=%d %d\n",bb[i][0],bb[i][1]);
-  //  exit(1);
+  // exit(1);
 
   
-  for(i=0;i<40;i++){
+  for(i=0;i<66;i++){
     printf("%d %d\n",bb[i][0],bb[i][1]);
     //for(j=0;j<N-1;j++){
     //  if(bb[i][0]+bb[i][1]<10){
@@ -590,7 +590,7 @@ count=1;
       //      }
       // }
   }
-  //  exit(1);
+  // exit(1);
   
   return count;
 }
@@ -676,7 +676,7 @@ MP set_curve(unsigned short a[9][4],int x){
 
 
 int main(void){
-  int i,j,k=0,a,b,count=0,x,y,z,g;
+  int i,j,k=0,a,b,count=0,x,y,z,g,n;
   unsigned int u=0,v=0,U=26,delta=7,ips=1;
   MP s={0};
   unsigned char **HH;
@@ -765,7 +765,7 @@ int main(void){
   */
   //  exit(1);
 
-  //v=mkbase(aa);
+  v=mkbase(aa);
 
   for(i=0;i<u;i++){
     printf("%d,%d %d\n",gf[p.z[0][i]],gf[p.z[1][i]],gf[p.z[2][i]]);
@@ -776,14 +776,14 @@ int main(void){
   //  exit(1);
 
   
-    v=bases(2*N);
+  //    v=bases(2*N);
   printf("bases=%d\n",v);
 
   //  exit(1);
 
-  
+    
   for(i=0;i<v;i++){
-     printf("%d %d\n",base[i].n[0],base[i].n[1]);
+    //   printf("%d %d\n",base[i].n[0],base[i].n[1]);
     base[i].a=1;
   }
   
@@ -792,35 +792,35 @@ int main(void){
   
   //exit(1);
   
-  for(i=0;i<225;i++){
+  for(i=0;i<66;i++){
 #pragma omp parallel for
     for(j=0;j<u;j++){
       //      if(p.z[0][j]>0)
-      HH[i][j]=fg[otrace(base[i],p.z[0][j],p.z[1][j],1)];
+      HH[i][j]=fg[otrace(aa[i],p.z[0][j],p.z[1][j],1)];
     }
   }
   
-  for(i=0;i<50;i++){
-    printf("(%d,%d): ",base[i].n[0],base[i].n[1]);
+  for(i=0;i<90;i++){
+    printf("(%d,%d): ",aa[i].n[0],aa[i].n[1]);
     for(j=0;j<u;j++)
       printf("%d ",HH[i][j]);
     printf("\n");
   }
-  //  exit(1);
+  //   exit(1);
   //
-  for(i=0;i<225;i++){
+  for(i=0;i<26;i++){
     ss[i]=0;
     //#pragma omp parallel for
         for(j=0;j<u;j++){
       ss[i]^=gf[mlt(fg[ee[j]],HH[i][j])];
           }
 	//    if(ss[i]>0)
-	printf("syn[%d,%d]=%d\n",base[i].n[0],base[i].n[1],ss[i]);
+	printf("syn[%d,%d]=%d\n",aa[i].n[0],aa[i].n[1],ss[i]);
     
   }
     printf("\n");
-    printf("6=%d\n",13^4);
-    exit(1);
+    //    printf("6=%d\n",13^4);
+    //     exit(1);
 
     //    a=0;
     x=0;
@@ -833,7 +833,7 @@ int main(void){
     
     //    exit(1);
 
-    for(i=0;i<35;i++){
+    for(i=0;i<30;i++){
     S[aa[i].n[0]][aa[i].n[1]]=ss[i];
     //    for(j=0;j<2;j++)
           printf("%d",ss[i]);
@@ -845,7 +845,7 @@ int main(void){
       printf("\n");
     }
     printf("\n\n");
-    // exit(1);
+    //exit(1);
     
     for(i=0;i<28;i++){
       for(k=0;k<28;k++){
@@ -916,6 +916,11 @@ int main(void){
     
     for (i=0;i<256;i++) B[i] = S[i];
 
+    
+    count=26;
+    for(l=0;l<20;l++){
+      count++;
+      
     //begin
     for(a=0;a<10;a++){
       for(b=0;b<15;b++){
@@ -950,8 +955,8 @@ int main(void){
     //    exit(1);
     
     
-    for(i=0;i<28;i++){
-      for(k=0;k<28;k++)
+    for(i=0;i<28+l;i++){
+      for(k=0;k<28+l;k++)
 	SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
       
     }
@@ -960,8 +965,8 @@ int main(void){
     //printf("%d ",ss[i]);
     //printf("\n\n");
     //    exit(1);
-    for(i=0;i<28;i++){
-      for(j=0;j<28;j++){
+    for(i=0;i<28+l;i++){
+      for(j=0;j<28+l;j++){
 	//printf("%d ",SS[i][j]);
 	printf("%d ",SS[i][j]);
       }
@@ -969,16 +974,16 @@ int main(void){
     }
     //    exit(1);
     //gauss    
-    for(i=0;i<28;i++){
+    for(i=0;i<28+l;i++){
       printf("i=%d\n",i);
-      for(j=0;j<28;j++){
-	for(k=0;k<28;k++){
+      for(j=0;j<28+l;j++){
+	for(k=0;k<28+l;k++){
 	  printf("%d ",SS[j][k]);
 	}
 	printf("\n");
       }
       printf("\n");
-      for(k=i+1;k<28;k++){
+      for(k=i+1;k<28+l;k++){
 	/*
 	if(SS[i][i]==0){
 	  printf("baka %d\n",i);
@@ -986,30 +991,31 @@ int main(void){
 	}
 	*/
 	b=inv2(SS[i][i],SS[i][k]);
-	for(j=0;j<28;j++)
+	for(j=0;j<28+l;j++)
 	  SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
 	
       }
     }
     
     printf("\n\n");
-    for(i=0;i<28;i++){
-      for(j=0;j<28;j++)
+    for(i=0;i<28+l;i++){
+      for(j=0;j<28+l;j++)
 	printf("%d ",SS[i][j]);
       printf("\n");
     }
-    
-    for(i=0;i<28;i++){
-      for(k=0;k<28;k++){
+    //    count=27;
+    for(i=0;i<28+l;i++){
+      for(k=0;k<28+l;k++){
 	// SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	if(aa[i].n[0]+aa[k].n[0]==2 && aa[i].n[1]+aa[k].n[1]==5)
+	if(aa[i].n[0]+aa[k].n[0]==aa[count].n[0] /*2*/ && aa[i].n[1]+aa[k].n[1]==aa[count].n[1]/* 5 */)
 	  printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
 	//	if(aa[i].n[0]+aa[k].n[0]==7 && aa[i].n[1]+aa[k].n[1]==5)
 	//printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
 	    }
       printf("\n");
     }
-    //    S[2][5]=8;
+    scanf("%d",&n);
+    S[aa[count].n[0]][aa[count].n[1]]=n;
     printf("%d %d\n",S[7][1],S[2][2]^8);
     //    S[7][5]=15;
     for(i=0;i<16;i++){
@@ -1017,8 +1023,11 @@ int main(void){
 	printf("%d ",S[i][j]);
       printf("\n");
     }
+    //if(aa[count].n[0]==0 && aa[count].n[1]==9)
+    //break;
+    }
+    exit(1);
 
-    //exit(1);
     
     //begin
     for(a=0;a<10;a++){
@@ -2206,8 +2215,8 @@ int main(void){
       //    exit(1);
       
       
-      for(i=0;i<40;i++){
-	for(k=0;k<40;k++){
+      for(i=0;i<50;i++){
+	for(k=0;k<50;k++){
 	  SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
 	  //  printf("%2d,%2d ",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1]);
 	}
@@ -2481,13 +2490,17 @@ int main(void){
     for(i=0;i<42;i++){
       for(k=0;k<42;k++){
 	// SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	if(aa[i].n[0]+aa[k].n[0]==3 && aa[i].n[1]+aa[k].n[1]==7)
+	if(aa[i].n[0]+aa[k].n[0]==3 && aa[i].n[1]+aa[k].n[1]==7){
+	  printf("%d %d\n",i,k);
 	  printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
+	}
 	//	if(aa[i].n[0]+aa[k].n[0]==7 && aa[i].n[1]+aa[k].n[1]==5)
 	//printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
 	    }
       printf("\n");
     }
+    exit(1);
+    
     S[3][7]=5;
     S[8][3]=S[3][7]^S[3][3];
     for(i=0;i<16;i++){
