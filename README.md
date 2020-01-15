@@ -98,7 +98,7 @@ x^8*y^16 + x^12*y^8 + x^14*y^4 + x^15*y^2 + x^16 + y
 あとパラメータを選択したときにも復号できるようにもっと便利にしたい。暗号より符号の研究者のほうが遥かに多いみたいだ。
 そんなわけでもうしばらくこのプロジェクトは動くかも。
 
-
+スズキ曲線と、文献6の曲線を追加しました。
 
 参考文献は以下のとおりです。
 
@@ -111,3 +111,5 @@ x^8*y^16 + x^12*y^8 + x^14*y^4 + x^15*y^2 + x^16 + y
 4.Construction and Decoding of a Class of Algebraic Geometry Codes 1989 IEEE
 
 5.Explicit Construction of AG Codes from Generalized Hermitian Curves arXiv
+
+6.ONE- AND TWO-POINT CODES OVER KUMMER EXTENSIONS 2016 arXiv
