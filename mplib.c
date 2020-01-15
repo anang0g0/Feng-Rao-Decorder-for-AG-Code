@@ -9,10 +9,7 @@
 #define Q 4 //基礎体
 #define N Q*Q //定義体
 #define I Q+1 //曲線の次数
-#define J 3
 #define K I-2 //number h
-#define H (K+1)*(K+2)/2 //シンドローム行列の横ベクトルの長さ
-#define F (J-K+1)*(J-K+2)/2 //シンドローム行列の縦ベクトル
 
 
 
@@ -31,7 +28,7 @@ mterm x[P];
 
 typedef struct {
 
-  unsigned char z[V][150000];
+  unsigned char z[V][300000];
 
 } PO;
 
@@ -596,18 +593,23 @@ count=1;
   return count;
 }
 
-int test(unsigned short x,unsigned short y){
-  int count=0,f1,f2,f3;
+int test(){
+  int count=0,f1,f2,f3,x,y;
 
-  f1=gf[mlt(x,x)];
-  f2=gf[mlt(3,x)];
-  f3=gf[mlt(6,y)];
+for(x=0;x<N;x++){
+  for(y=0;y<N;y++){
+  f1=gf[mltn(9,y)];
+  f2=gf[mlt(2,x)];
+  f3=gf[mlt(1,x)];
 
   if((f1^f2^f3)==0){
     printf("%d %d\n",gf[x],gf[y]);
     count++;
   }
-    
+  }
+}
+printf("count=%d",count);
+
   return count;
 }
 
@@ -682,49 +684,57 @@ int main(void){
   unsigned char **HH;
   unsigned short tmp[256][1]={0};
   
-  //gfQ*Q
-  unsigned short hl[3][4]={{Q+1,0,0,1},{0,Q+1,0,1},{0,0,Q+1,1}};
-  //gf256 g=1
+  //gf256 g=1 elliptic
   unsigned short el[4][4]={{0,2,1,1},{1,1,1,1},{3,0,0,1},{0,0,3,1}};
-  //gf256 g=1
+  //gf256 g=1 elloptic
   unsigned short el2[5][4]={{0,2,1,1},{1,1,1,1},{3,0,0,1},{0,0,3,1},{2,0,1,1}};
-  //gf8 g=6
+  //gf8 g=6 Generalized Hermitian
   unsigned short sc[4][4]={{3,2,0,1},{2,4,0,1},{0,1,0,1},{4,0,0,1}};
-  //gf8 g=3
-  unsigned short kl[3][4]={{3,1,0,1},{0,3,1,1},{1,0,3,1}};
-  //gfQ*Q
+  //gf8 g=3 klein
+  unsigned short kl[3][4]={{3,1,0,1},{0,3,0,1},{1,0,0,1}};
+  //gfQ*Q Hermitian
   unsigned short he[3][4]={{Q+1,0,0,1},{0,Q,0,1},{0,1,0,1}};
-  //gf16 g=21 #N=121
+  //gf16 g=21 #N=121 Generalized Hermitian
   unsigned short gu[5][4]={{7,4,0,1},{6,8,0,1},{4,1,0,1},{0,2,0,1},{8,0,0,1}};
-  //gf32 g=75 #N=497
+  //gf32 g=75 #N=497 Generalized Hermitian
   unsigned short ge[6][4]={{15,8,0,1},{14,16,0,1},{12,1,0,1},{8,2,0,1},{0,4,0,1},{16,0,0,1}};
-  //gf64 g=212 #N=
+  //gf64 g=212 #N=2017 Generalized Hermitian
   unsigned short gg[7][4]={{31,8,0,1},{30,16,0,1},{28,32,0,1},{24,1,0,1},{16,2,0,1},{0,4,0,1},{32,0,0,1}};
-  //gf256 g=2413
+  //gf256 g=2413 Generalized Hermitian
   unsigned short gd[9][4]={{127,8,0,1},{126,16,0,1},{124,32,0,1},{120,64,0,1},{112,128,0,1},{96,1,0,1},{64,2,0,1},{0,4,0,1},{128,0,0,1}};
-  //gf128 g=315
+  //gf128 g=315 Generalized Hermitian
   unsigned short cc[8][4]={{63,8,0,1},{62,16,0,1},{60,32,0,1},{56,64,0,1},{48,1,0,1},{32,2,0,1},{0,4,0,1},{64,0,0,1}};
-
+  //gf256 y^(Q+1)=X^8+x^4+x^2+x kummer
+  unsigned short ku[5][4]={{0,17,0,1},{8,0,0,1},{4,0,0,1},{2,0,0,1},{1,0,0,1}};
+  //gf16 kummer
+  unsigned short ku3[5][4]={{0,5,0,1},{12,0,0,1},{9,0,0,1},{6,0,0,1},{3,0,0,1}};
+  //gf64 kummer g=56
+  unsigned short ku4[5][4]={{0,9,0,1},{40,0,0,1},{33,0,0,1},{12,0,0,1},{5,0,0,1}};
   unsigned short lo[3][4]={{2,0,0,1},{1,0,0,3},{0,1,0,6}};
   unsigned short lk[6][4]={{0,2,0,1},{0,1,0,3},{0,0,1,6},{3,1,0,1},{0,3,1,1},{1,0,3,1}};
   //gf32 g=26 #N=157
   unsigned short ts[3][4]={{2,2,5,1},{7,0,2,1},{0,9,0,1}};
   //gf128 g=78 #N=891
   unsigned short tt[3][4]={{3,1,0,1},{13,0,0,1},{0,14,0,1}};
-  //gf512
+  //gf512 Generalized Hermitian
   unsigned short gt[10][4]={{255,16,0,1},{254,32,0,1},{252,64,0,1},{248,128,0,1},{240,256,0,1},{224,1,0,1},{192,2,0,1},{128,4,0,1},{0,8,0,1},{256,0,0,1}};
-
+  //over gf128 suzuki #N=16384
+  unsigned short su[4][4]={{0,128,0,1},{0,1,0,1},{136,0,0,1},{9,0,0,1}};
+  //gf32 suzuki #N=1024
+  unsigned short s2[4][4]={{0,32,0,1},{0,1,0,1},{36,0,0,1},{5,0,0,1}};
+  //y9 = x4 + x2 + x gf64 kummer
+  unsigned short ku2[4][4]={{0,9,0,1},{4,0,0,1},{2,0,0,1},{1,0,0,1}};
   unsigned int bb[256][2]={0};//{{0,0},{1,0},{0,1},{2,0},{1,1},{0,2},{3,0},{2,1},{1,2},{0,3},{4,0},{3,1},{2,2},{1,3},{0,4},{5,0},{4,1},{3,2},{2,3},{1,4},{6,0},{5,1},{4,2},{3,3},{2,4},{7,0},{6,1},{5,2},{4,3},{3,4}};
-  mterm aa[1256]={0};
+  mterm aa[256]={0};
   unsigned int d[256][2]={0};
   unsigned char e[64]={0,0,0,0,0,2,0,0,0,4,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 		       
   unsigned char ee[64]={0,0,0,0,12,0,0,0,0,11,0,0,2,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0};
-  PO t={0};
-  unsigned short ss[N*N]={0};
+
+  unsigned short *ss;
   unsigned short M[K][K]={0};
   
-  unsigned short sy[N*N]={0};
+  unsigned short *sy;
   unsigned short SS[256][256]={0};
   unsigned short dd[30][2]={0};
   int l;
@@ -744,15 +754,22 @@ int main(void){
   
   //s=define_curve();
 
-  HH=malloc(sizeof(unsigned short *)*1000);
-  for(i=0;i<N*N;i++)
-    HH[i]=malloc(sizeof(unsigned short)*150000);
   
-  s=set_curve(he,3);
+  s=set_curve(ku3,5);
 
   u=mtrace(s);
   //  v=u;
   printf("count=%d\n\n",u);
+   exit(1);
+
+
+  
+  HH=malloc(sizeof(unsigned short *)*1000);
+  for(i=0;i<N*N;i++)
+    HH[i]=malloc(sizeof(unsigned short)*50000);
+  ss=malloc(sizeof(unsigned short *)*N*N);
+  sy=malloc(sizeof(unsigned short *)*N*N);
+  
   /*
   for(i=0;i<20;i++){
     for(j=0;j<2;j++){
@@ -765,9 +782,6 @@ int main(void){
   */
   //  exit(1);
 
-  v=mkbase(aa);
-  printf("mkcount=%d\n",v);
-  //  exit(1);
   
   for(i=0;i<u;i++){
     printf("%d,%d %d\n",gf[p.z[0][i]],gf[p.z[1][i]],gf[p.z[2][i]]);
@@ -775,6 +789,12 @@ int main(void){
     //t.z[1][i]=p.z[1][i];
     //t.z[2][i]=p.z[2][i];
   }
+//  test();
+    exit(1);
+
+
+  v=mkbase(aa);
+  printf("mkcount=%d\n",v);
   //  exit(1);
 
 
@@ -1037,13 +1057,13 @@ int main(void){
     }
 
     
-    for(i=5;i<15;i++){
-      for(j=0;j<15;j++)
-	S[i][j]=S[(i-5)%15][(j+4)%15]^S[(i-5)%15][(j+1)%15];
+    for(i=I;i<N-1;i++){
+      for(j=0;j<N-1;j++)
+	S[i][j]=S[(i-I)%(N-1)][(j+4)%(N-1)]^S[(i-I)%(N-1)][(j+1)%15];
     }
     printf("\n\ncomplete table\n\n");
-        for(i=0;i<16;i++){
-      for(j=0;j<16;j++)
+        for(i=0;i<N;i++){
+      for(j=0;j<N;j++)
 	printf("%d ",S[i][j]);
       printf("\n");
 	}
