@@ -6,8 +6,8 @@
 
 #define V 3 //変数の数
 #define P 1024
-#define Q 2 //基礎体
-#define N Q*Q*Q //定義体
+#define Q 4 //基礎体
+#define N Q*Q //定義体
 #define I Q+1 //曲線の次数
 #define K I-2 //number h
 
@@ -33,12 +33,12 @@ typedef struct {
 } PO;
 
 
-unsigned short gf[8]={0,1,2,4,3,6,7,5};
-unsigned short fg[8]={0,1,2,4,3,7,5,6};
+//unsigned short gf[8]={0,1,2,4,3,6,7,5};
+//unsigned short fg[8]={0,1,2,4,3,7,5,6};
 
 //nomal
-//unsigned char gf[N]={0,1,2,4,8,9,11,15,7,14,5,10,13,3,6,12};
-//unsigned char fg[N]={0,1,2,13,3,10,14,8,4,5,11,6,15,12,9,7};
+unsigned char gf[N]={0,1,2,4,8,9,11,15,7,14,5,10,13,3,6,12};
+unsigned char fg[N]={0,1,2,13,3,10,14,8,4,5,11,6,15,12,9,7};
 /*
 unsigned char gf[32]={
 0,1,2,4,8,16,23,25,5,10,20,
@@ -443,7 +443,6 @@ mterm o[4];
    p.z[2][count]=k;
    
    count++;
-
  }
  */
  /* 
@@ -727,7 +726,7 @@ int main(void){
   //y9 = x4 + x2 + x gf64 kummer
   unsigned short ku2[4][4]={{0,9,0,1},{4,0,0,1},{2,0,0,1},{1,0,0,1}};
   //y^9=x^2+x gf64 g=4
-  unsigned short ku3[3][4]={{0,9,0,1},{2,0,0,1},{1,0,0,1}};
+  unsigned short ku5[3][4]={{0,9,0,1},{2,0,0,1},{1,0,0,1}};
   unsigned int bb[256][2]={0};//{{0,0},{1,0},{0,1},{2,0},{1,1},{0,2},{3,0},{2,1},{1,2},{0,3},{4,0},{3,1},{2,2},{1,3},{0,4},{5,0},{4,1},{3,2},{2,3},{1,4},{6,0},{5,1},{4,2},{3,3},{2,4},{7,0},{6,1},{5,2},{4,3},{3,4}};
   mterm aa[256]={0};
   unsigned int d[256][2]={0};
@@ -759,12 +758,12 @@ int main(void){
   //s=define_curve();
 
   
-  s=set_curve(s3,4);
+  s=set_curve(he,3);
 
   u=mtrace(s);
   //  v=u;
   printf("count=%d\n\n",u);
-   exit(1);
+  //   exit(1);
 
 
   
@@ -794,7 +793,7 @@ int main(void){
     //t.z[2][i]=p.z[2][i];
   }
 //  test();
-    exit(1);
+//    exit(1);
 
 
   v=mkbase(aa);
@@ -1143,15 +1142,11 @@ int main(void){
   */
   /*
   s=set_curve(lo,3);
-
   u=mtrace(s);
-
   printf("count=%d\n\n",u);
   //    exit(1);
-
   for(i=0;i<u;i++)
     printf("%d,%d %d\n",gf[p.z[0][i]],gf[p.z[1][i]],gf[p.z[2][i]]);
-
   count=0;
   for(i=0;i<v;i++){
     for(j=0;j<u;j++){
