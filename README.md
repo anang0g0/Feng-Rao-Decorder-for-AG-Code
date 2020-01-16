@@ -110,6 +110,6 @@ x^8*y^16 + x^12*y^8 + x^14*y^4 + x^15*y^2 + x^16 + y
 
 4.Construction and Decoding of a Class of Algebraic Geometry Codes 1989 IEEE
 
-5.Explicit Construction of AG Codes from Generalized Hermitian Curves arXiv
+5.Explicit Construction of AG Codes from Generalized Hermitian Curves 2015 arXiv
 
 6.ONE- AND TWO-POINT CODES OVER KUMMER EXTENSIONS 2016 arXiv
