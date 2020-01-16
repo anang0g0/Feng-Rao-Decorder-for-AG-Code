@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//#include "gf256.h"
+//#include "gf1024.h"
 
 
 #define V 3 //変数の数
 #define P 1024
-#define Q 4 //基礎体
-#define N Q*Q //定義体
+#define Q 2 //基礎体
+#define N Q*Q*Q //定義体
 #define I Q+1 //曲線の次数
 #define K I-2 //number h
 
@@ -33,12 +33,12 @@ typedef struct {
 } PO;
 
 
-//unsigned short gf[8]={0,1,2,4,3,6,7,5};
-//unsigned short fg[8]={0,1,2,4,3,7,5,6};
+unsigned short gf[8]={0,1,2,4,3,6,7,5};
+unsigned short fg[8]={0,1,2,4,3,7,5,6};
 
 //nomal
-unsigned char gf[N]={0,1,2,4,8,9,11,15,7,14,5,10,13,3,6,12};
-unsigned char fg[N]={0,1,2,13,3,10,14,8,4,5,11,6,15,12,9,7};
+//unsigned char gf[N]={0,1,2,4,8,9,11,15,7,14,5,10,13,3,6,12};
+//unsigned char fg[N]={0,1,2,13,3,10,14,8,4,5,11,6,15,12,9,7};
 /*
 unsigned char gf[32]={
 0,1,2,4,8,16,23,25,5,10,20,
@@ -722,8 +722,12 @@ int main(void){
   unsigned short su[4][4]={{0,128,0,1},{0,1,0,1},{136,0,0,1},{9,0,0,1}};
   //gf32 suzuki #N=1024
   unsigned short s2[4][4]={{0,32,0,1},{0,1,0,1},{36,0,0,1},{5,0,0,1}};
+  //gf8 suzuki 
+  unsigned short s3[4][4]={{0,8,0,1},{0,1,0,1},{10,0,0,1},{3,0,0,1}};
   //y9 = x4 + x2 + x gf64 kummer
   unsigned short ku2[4][4]={{0,9,0,1},{4,0,0,1},{2,0,0,1},{1,0,0,1}};
+  //y^9=x^2+x gf64 g=4
+  unsigned short ku3[3][4]={{0,9,0,1},{2,0,0,1},{1,0,0,1}};
   unsigned int bb[256][2]={0};//{{0,0},{1,0},{0,1},{2,0},{1,1},{0,2},{3,0},{2,1},{1,2},{0,3},{4,0},{3,1},{2,2},{1,3},{0,4},{5,0},{4,1},{3,2},{2,3},{1,4},{6,0},{5,1},{4,2},{3,3},{2,4},{7,0},{6,1},{5,2},{4,3},{3,4}};
   mterm aa[256]={0};
   unsigned int d[256][2]={0};
@@ -755,7 +759,7 @@ int main(void){
   //s=define_curve();
 
   
-  s=set_curve(ku3,5);
+  s=set_curve(s3,4);
 
   u=mtrace(s);
   //  v=u;
