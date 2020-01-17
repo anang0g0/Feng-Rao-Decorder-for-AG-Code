@@ -13,7 +13,7 @@
 #define K I-2 //number h
 #define H (K+1)*(K+2)/2 //シンドローム行列の横ベクトルの長さ
 #define F (J-K+1)*(J-K+2)/2 //シンドローム行列の縦ベクトル
-
+#define U 26
 
 
 typedef struct  {
@@ -114,7 +114,7 @@ int inv2(int a,int b){
 }
 
 void param(int n,int g){
-  int i,j,h,ij,t;
+  int i,j,h,ij,t,delta,ips;
 
   //  g=6;
   j=I-2;
@@ -122,20 +122,21 @@ void param(int n,int g){
   //  ij=1;
   //  exit(1);
   //    n-=4;
-    for(j=I-2;I*j<n-1;j++){
-      printf("h=%d~%d\n",I-2,j-I+2);
       printf("n=%d ",n);
-      printf("j=%d\n",j);
-      printf("k=%d\n",(I*j-g+1));
-      //printf("k=%d\n",ij);
-      printf("d=%d\n",I*j-2*g+2);
-      //printf("d=%d\n",n-ij);
-      printf("t=%d~%d\n",((I-2)*I-g+1)-1,((j-I+2)*I-g+1)-1);
-      //  printf("t=%d\n",t);
-      //      }
-      //    j++;
-      //    ij++;
+      printf("k=%d\n",U);
+      printf("d=%d\n",U-g+1);
+      printf("t=%d~%d\n",(U-g)/2);
+
+    delta=1;ips=0;
+    while(delta*I<Q*Q*Q){
+      for(ips=0;ips<I;ips++){
+	if(U+((I*(I-1))/2)==delta*I+ips)
+	  printf("ips=%d delta=%d\n",ips,delta);
+      }
+      delta++;
+      
     }
+      
 }  
 
 
@@ -414,8 +415,8 @@ MP mtermul(MP f,mterm o){
 unsigned short otrace(mterm a,int i,int j,int k){
     unsigned short u;
 
-    if(i==0 && j==0)
-      return 0;
+    if(i==0 || j==0)
+      return a.a;
       
     u=mlt(mlt(mltn(a.n[0],i),mltn(a.n[1],j)),mlt(mltn(a.n[2],k),a.a));
 
@@ -556,7 +557,7 @@ count=1;
     if(i>4){
       l=i-4;
       j=4;
-      while(d[i][0]+d[i][1]<i && l<16){
+      while(d[i][0]+d[i][1]<i && l<N-1){
 	d[k][0]=j;
 	d[k][1]=l;
 	k++;
@@ -676,7 +677,7 @@ MP set_curve(unsigned short a[9][4],int x){
 
 int main(void){
   int i,j,k=0,a,b,count=0,x,y,z,g,n;
-  unsigned int u=0,v=0,U=26,delta=7,ips=1;
+  unsigned int u=0,v=0,delta=7,ips=1;
   MP s={0};
   unsigned char **HH;
   unsigned short tmp[256][1]={0};
@@ -717,8 +718,13 @@ int main(void){
   mterm aa[1256]={0};
   unsigned int d[256][2]={0};
   unsigned char e[64]={0,0,0,0,0,2,0,0,0,4,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-		       
-  unsigned char ee[64]={0,11,0,0,0,0,0,0,0,11,0,0,2,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0};
+
+  //   unsigned char ee[64]={1,2,3,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+unsigned char ee[64]={4,0,0,0,0,0,0,0,0,11,0,0,2,0,0,0,0,0,6,0,0,0,0,0,12,0,0,0,0,0,9,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,3,0,0,0,0,7,0,0,0};
+
+
+
+  
   PO t={0};
   unsigned short ss[N*N]={0};
   unsigned short M[K][K]={0};
@@ -836,6 +842,7 @@ int main(void){
     }
     printf("\n\n");
 
+    //param(U,6);
     //  exit(1);
 
 
@@ -882,8 +889,7 @@ int main(void){
     //S[8][0]=7;
     //      exit(1);
 
-    printf("%d %d %d %d %d\n",S[3][4],S[8][0],S[2][5],SS[14][6],SS[10][10]);
-    // exit(1);
+
 
     
     for(i=0;i<16;i++){
@@ -893,9 +899,11 @@ int main(void){
     }
     //exit(1);
 
+
+    /*    
  for(a=0;a<15;a++){
       for(b=0;b<15;b++){
-	if(U>(I-1)*(I-2)/2){
+	if(U>((I-1)*(I-2))/2 && S[a+I][b]==0){
 	    S[a+I][b]=more(a,b);
 	  printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
 	  if(delta-2*I+2+ips>=0 && (S[I-1-ips][delta-I+1+ips]>0 && S[I-1-ips][delta-2*I+3+ips]>0)){
@@ -909,9 +917,11 @@ int main(void){
 	  // exit(1);
 	}
       }
+      
       if(S[a+I][b]!=0 || U<=(I-1)*(I-2)/2)
 	break;
-    }
+ }
+ */
  // exit(1);
     
     for(i=0;i<256;i++){
@@ -919,24 +929,31 @@ int main(void){
 	G[i][j]=SS[i][j];
     }
 
+    for(i=0;i<N-1;i++){
+      for(j=0;j<N-1;j++)
+	printf("%d,",S[i][j]);
+      printf("\n");
+      
+    }
+    //exit(1);
     
-
     
     for (i=0;i<256;i++) B[i] = S[i];
 
     
     count=25;
-    for(l=0;l<52;l++){
+    for(l=0;l<49;l++){
       count++;
       
     //begin
       // for(a=0;a<15;a++){
       //for(b=0;b<15;b++){
-      a=aa[count].n[0];
-      b=aa[count].n[1];
+      i=aa[count].n[0];
+      j=aa[count].n[1];
+      
       for(a=0;a<15;a++){
         for(b=0;b<15;b++){
-	if(S[a+I][b]==0 && U>(I-1)*(I-2)/2){
+	  if(S[a+I][b]==0 && U>((I-1)*(I-2))/2){
 	  S[a+I][b]=more(a,b);
 	  printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
 	  if(delta-2*I+2+ips>=0 && (S[I-1-ips][delta-I+1+ips]>0 && S[I-1-ips][delta-2*I+3+ips]>0)){
@@ -953,6 +970,7 @@ int main(void){
       if(S[a+I][b]!=0 || U<=(I-1)*(I-2)/2)
 	      break;
 	}
+      
     
     
     // exit(1);
