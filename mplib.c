@@ -412,18 +412,28 @@ MP mtermul(MP f,mterm o){
 }
 
 
+
+
 unsigned short otrace(mterm a,int i,int j,int k){
     unsigned short u;
 
-    if(i==0 || j==0)
-      return a.a;
-      
-    u=mlt(mlt(mltn(a.n[0],i),mltn(a.n[1],j)),mlt(mltn(a.n[2],k),a.a));
+    if(i==0 && j==0)
+      return 0;
+
+    
+      u=mlt(mlt(mltn(a.n[0],i),mltn(a.n[1],j)),mlt(mltn(a.n[2],k),a.a));
 
 return gf[u];
 }
 
 
+unsigned short itrace(mterm a,int i,int j,int k){
+    unsigned short u;
+
+    u=mlt(mlt(oinv(mltn(a.n[0],i)),oinv(mltn(a.n[1],j))),mlt(mltn(a.n[2],k),a.a));
+
+return u;
+}
 
 unsigned int mtrace(MP f){
   int i,j,k,ii;
@@ -432,42 +442,6 @@ mterm o[4];
 
  u=0;
  n=terms(f);
-
-
- /*
- i=0;j=1;k=0;
- for(ii=0;ii<n;ii++)
-   u^=otrace(f.x[ii],i,j,k);
- //u^=1;
- if(u==0){
-   //   printf("%d %d %d\n",i,j,k);
-   
-   p.z[0][count]=i;
-   p.z[1][count]=j;
-   p.z[2][count]=k;
-   
-   count++;
- }
- */
- /* 
- k=0;i=1;u=0;
-   for(j=0;j<N;j++){
-   for(ii=0;ii<n;ii++)
-   u^=otrace(f.x[ii],i,j,k);
-   //u^=1;
-   if(u==0){
-     printf("%d %d %d\n",i,j,k);
-     
-     p.z[0][count]=i;
-     p.z[1][count]=j;
-     p.z[2][count]=k;
-     
-     count++;
-   }
-   u=0;
-   }
- */ 
-   
 
  
  
@@ -501,11 +475,11 @@ mterm obase(int a,int b){
 
   c.n[0]=a;
   c.n[1]=b;
-
   
   return c;
-}
 
+
+}
 
 int bases(int a){
   int i=0,j=0,count=0;
@@ -529,6 +503,7 @@ int bases(int a){
     
     return count;
 }
+
 
 int mkbase(mterm *aa){
   int i,j,k,l,count;
@@ -674,7 +649,6 @@ MP set_curve(unsigned short a[9][4],int x){
 
 
 
-
 int main(void){
   int i,j,k=0,a,b,count=0,x,y,z,g,n;
   unsigned int u=0,v=0,delta=7,ips=1;
@@ -717,12 +691,13 @@ int main(void){
   unsigned int bb[256][2]={0};//{{0,0},{1,0},{0,1},{2,0},{1,1},{0,2},{3,0},{2,1},{1,2},{0,3},{4,0},{3,1},{2,2},{1,3},{0,4},{5,0},{4,1},{3,2},{2,3},{1,4},{6,0},{5,1},{4,2},{3,3},{2,4},{7,0},{6,1},{5,2},{4,3},{3,4}};
   mterm aa[1256]={0};
   unsigned int d[256][2]={0};
-  unsigned char e[64]={0,0,0,0,0,2,0,0,0,4,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-
-  //   unsigned char ee[64]={1,2,3,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 
-unsigned char ee[64]={3,0,0,0,0,0,0,0,0,11,0,0,2,0,0,0,0,0,14,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,7,0,0,0,0,0,0,0,0};
+
+
+ unsigned char ee[64]={0,0,0,0,12,0,0,0,0,11,0,0,2,0,0,0,0,0,8,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,9,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0};
+   
+//  unsigned char ee[64]={3,0,0,0,0,0,0,0,0,11,0,0,2,0,0,0,0,0,14,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,7,0,0,0,0,0,0,0,0};
 
 
 
@@ -738,7 +713,9 @@ unsigned char ee[64]={3,0,0,0,0,0,0,0,0,11,0,0,2,0,0,0,0,0,14,0,0,0,0,0,12,0,0,0
   unsigned short *B[256];
   unsigned short G[256][256]={0};
     
-    
+
+
+  
   memset(S,0,sizeof(S));
   //    memset(SS,0,sizeof(SS));
   
@@ -760,21 +737,12 @@ unsigned char ee[64]={3,0,0,0,0,0,0,0,0,11,0,0,2,0,0,0,0,0,14,0,0,0,0,0,12,0,0,0
   u=mtrace(s);
   //  v=u;
   printf("count=%d\n\n",u);
-  /*
-  for(i=0;i<20;i++){
-    for(j=0;j<2;j++){
-      dd[i][j]=bb[i][j];
-    printf("%d ",dd[i][j]);
-    }
-    printf("\n");
-  }
-  printf("\n");
-  */
   //  exit(1);
 
   v=mkbase(aa);
   printf("mkcount=%d\n",v);
   //  exit(1);
+
   
   for(i=0;i<u;i++){
     printf("%d,%d %d\n",gf[p.z[0][i]],gf[p.z[1][i]],gf[p.z[2][i]]);
@@ -801,7 +769,7 @@ unsigned char ee[64]={3,0,0,0,0,0,0,0,0,11,0,0,2,0,0,0,0,0,14,0,0,0,0,0,12,0,0,0
   }
     //exit(1);
   //
-  for(i=0;i<26;i++){
+  for(i=0;i<U;i++){
     ss[i]=0;
     //#pragma omp parallel for
         for(j=0;j<u;j++){
@@ -831,7 +799,7 @@ unsigned char ee[64]={3,0,0,0,0,0,0,0,0,11,0,0,2,0,0,0,0,0,14,0,0,0,0,0,12,0,0,0
     
     //    exit(1);
 
-    for(i=0;i<26;i++){
+    for(i=0;i<U;i++){
     S[aa[i].n[0]][aa[i].n[1]]=ss[i];
     //    for(j=0;j<2;j++)
           printf("%d",ss[i]);
@@ -849,8 +817,8 @@ unsigned char ee[64]={3,0,0,0,0,0,0,0,0,11,0,0,2,0,0,0,0,0,14,0,0,0,0,0,12,0,0,0
 
 
     
-    for(i=0;i<26;i++){
-      for(k=0;k<26;k++){
+    for(i=0;i<U;i++){
+      for(k=0;k<U;k++){
 	SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
 	//printf("%d %d %d %d|",i,k,aa[i].n[i]+aa[k].n[0],aa[i].n[1]+aa[k].n[1]);
 	printf("%2d,%2d ",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1]);
@@ -861,10 +829,10 @@ unsigned char ee[64]={3,0,0,0,0,0,0,0,0,11,0,0,2,0,0,0,0,0,14,0,0,0,0,0,12,0,0,0
 
     
     //gauss    
-    for(i=0;i<26;i++){
+    for(i=0;i<U;i++){
       printf("i=%d\n",i);
-      for(j=0;j<26;j++){
-	for(k=0;k<26;k++){
+      for(j=0;j<U;j++){
+	for(k=0;k<U;k++){
 	  printf("%d ",SS[j][k]);
 	}
 	printf("\n");
@@ -873,15 +841,15 @@ unsigned char ee[64]={3,0,0,0,0,0,0,0,0,11,0,0,2,0,0,0,0,0,14,0,0,0,0,0,12,0,0,0
       for(k=i+1;k<49;k++){
 
 	b=inv2(SS[i][i],SS[i][k]);
-	for(j=0;j<26;j++)
+	for(j=0;j<U;j++)
 	  SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
 	
       }
     }
     
     printf("\n\n");
-    for(i=0;i<26;i++){
-      for(j=0;j<26;j++)
+    for(i=0;i<U;i++){
+      for(j=0;j<U;j++)
 	printf("%d ",SS[i][j]);
       printf("\n");
     }
@@ -902,28 +870,6 @@ unsigned char ee[64]={3,0,0,0,0,0,0,0,0,11,0,0,2,0,0,0,0,0,14,0,0,0,0,0,12,0,0,0
     //exit(1);
 
 
-    /*    
- for(a=0;a<15;a++){
-      for(b=0;b<15;b++){
-	if(U>((I-1)*(I-2))/2 && S[a+I][b]==0){
-	    S[a+I][b]=more(a,b);
-	  printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
-	  if(delta-2*I+2+ips>=0 && (S[I-1-ips][delta-I+1+ips]>0 && S[I-1-ips][delta-2*I+3+ips]>0)){
-	    S[2*I-1-ips][delta-2*I+2+ips]=S[I-1-ips][delta-I+1+ips]^S[I-1-ips][delta-2*I+3+ips];
-	    printf("Ha!\n");
-	    //exit(1);
-	  }
-	}else{
-	  printf("baka\n");
-	  break;
-	  // exit(1);
-	}
-      }
-      
-      if(S[a+I][b]!=0 || U<=(I-1)*(I-2)/2)
-	break;
- }
- */
  // exit(1);
     
     for(i=0;i<256;i++){
@@ -943,8 +889,8 @@ unsigned char ee[64]={3,0,0,0,0,0,0,0,0,11,0,0,2,0,0,0,0,0,14,0,0,0,0,0,12,0,0,0
     for (i=0;i<256;i++) B[i] = S[i];
 
     
-    count=25;
-    for(l=0;l<49;l++){
+    count=U-1;
+    for(l=0;l<Q*Q*Q-U+1;l++){
       count++;
       
     //begin
@@ -1066,47 +1012,67 @@ unsigned char ee[64]={3,0,0,0,0,0,0,0,0,11,0,0,2,0,0,0,0,0,14,0,0,0,0,0,12,0,0,0
 	printf("%d ",S[i][j]);
       printf("\n");
 	}
+  
 
-	  
-  int vv;  
-   vv=bases(2*N);
-  printf("bases=%d\n",vv);
-
+  v=bases(2*N);
+  printf("bases=%d\n",v);
   //  exit(1);
-
     
-  for(i=0;i<vv;i++){
-    printf("%d %d\n",base[i].n[0],base[i].n[1]);
+  for(i=0;i<v;i++){
+     printf("%d %d\n",base[i].n[0],base[i].n[1]);
     base[i].a=1;
   }
+  //  u=count;
   
-
-	
-	for(i=0;i<15*15;i++){
-	  ss[i]=S[base[i].n[0]][base[i].n[1]];
-	  printf("syn[%d,%d]=%d\n",base[i].n[0],base[i].n[1],ss[i]);
-	}
-	//exit(1);
-
-
   
+  //for(i=0;i<30;i++){
+    //printf("(%d,%d)\n",aa[i].n[0],aa[i].n[1]);
+    //aa[i].a=1;
+  //}
+  
+  //exit(1);
+  for(i=0;i<v;i++){
+#pragma omp parallel for
+    for(j=0;j<u;j++){
+      //      if(p.z[0][j]>0)
+      HH[i][j]=fg[otrace(base[i],p.z[0][j],p.z[1][j],1)];
+    }
+  }
+  //  HH[0][0]=1;
+  for(i=0;i<v;i++){
+    // printf("(%d,%d): ",aa[i].n[0],aa[i].n[1]);
+    for(j=0;j<u;j++)
+      printf("%d ",HH[i][j]);
+    printf("\n");
+  }
+  
+  //
+  for(i=0;i<v;i++){
+    ss[i]=0;
+    //#pragma omp parallel for
+        for(j=0;j<u;j++){
+      ss[i]^=gf[mlt(fg[ee[j]],HH[i][j])];
+          }
+	//    if(ss[i]>0)
+    printf("syn[%d,%d]=%d\n",base[i].n[0],base[i].n[1],ss[i]);
+    
+  }
+    printf("\n");
+    //exit(1);
+    //    a=0;
     x=0;
     j=0;
     printf("%d %d\n",p.z[0][0],p.z[1][0]);
     printf("v=%d\n",v);
     //    exit(1);
-       
-	for(j=0;j<64;j++){
-	  sy[j]=0;
+    
+    for(j=0;j<64;j++){
+      sy[j]=0;
       x=0;
-      for(i=0;i<15*15;i++){
+      for(i=0;i<v;i++){
 
 	x^=gf[mlt(fg[ss[i]],oinv(otrace(base[i], p.z[0][j],p.z[1][j],1)))];
 	      
-	//sy[i]=mlt(mlt(base[i].n[0],p.z[0][4]),
-	//	  mlt(base[i].n[1],p.z[1][4]));
-	//	printf("ss=%d\n",ss[i]);
-	//printf("e=%d %d %d %d %d %d\n",x,j,otrace(base[i],p.z[0][j],p.z[1][j],1),ss[i],base[i].n[0],base[i].n[1]);
       }
       printf("e=%d %d %d %d\n",x,j,otrace(base[i],p.z[0][j],p.z[1][j],1),ss[i]);
     }
