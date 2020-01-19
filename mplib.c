@@ -731,6 +731,7 @@ int main(void){
  
   unsigned int bb[256][2]={0};//{{0,0},{1,0},{0,1},{2,0},{1,1},{0,2},{3,0},{2,1},{1,2},{0,3},{4,0},{3,1},{2,2},{1,3},{0,4},{5,0},{4,1},{3,2},{2,3},{1,4},{6,0},{5,1},{4,2},{3,3},{2,4},{7,0},{6,1},{5,2},{4,3},{3,4}};
   mterm aa[1256]={0};
+  mterm oo={0};
   unsigned int d[256][2]={0};
   unsigned char e[64]={0,0,0,0,0,2,0,0,0,4,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
@@ -769,7 +770,7 @@ int main(void){
 
   srand(clock()+time(&pp));
   i=0;
-  while(i<5){
+  while(i<6){
     ii=rand()%16;
     jj=rand()%63;
     if(ii>0 && ee[jj]==0){
@@ -814,6 +815,10 @@ int main(void){
   //  exit(1);
 
 
+  
+  unsigned short sk[256]={0};
+
+
   for(i=0;i<100;i++){
 #pragma omp parallel for
     for(j=0;j<u;j++){
@@ -828,6 +833,20 @@ int main(void){
       printf("%d ",HH[i][j]);
     printf("\n");
   }
+
+
+  for(i=0;i<225;i++){
+    sk[i]=0;
+    //#pragma omp parallel for
+        for(j=0;j<64;j++){
+      sk[i]^=gf[mlt(fg[ee[j]],HH[i][j])];
+          }
+	//    if(ss[i]>0)
+    
+  }
+    printf("\n");
+
+  
     //exit(1);
   //
   for(i=0;i<U;i++){
@@ -987,6 +1006,10 @@ int main(void){
     
     for (i=0;i<256;i++) B[i] = S[i];
 
+    bases(2*N);
+    for(i=0;i<225;i++)
+      base[i].a=1;
+
     
     count=U-1;
     for(l=0;l<75-U;l++){
@@ -1103,6 +1126,19 @@ int main(void){
       }
     }
     printf("max=%d %d\n",n,jj);
+    for(kk=0;kk<225;kk++){
+    if(base[kk].n[0]==4 && base[kk].n[1]==14)
+      printf("syn[%d,%d]=%d\n",base[kk].n[0],base[kk].n[1],sk[kk]);
+    }
+    for(kk=0;kk<225;kk++){
+    if(base[kk].n[0]==3 && base[kk].n[1]==14)
+      printf("syn[%d,%d]=%d\n",base[kk].n[0],base[kk].n[1],sk[kk]);
+    }
+    for(kk=0;kk<225;kk++){
+    if(base[kk].n[0]==4 && base[kk].n[1]==13)
+      printf("syn[%d,%d]=%d\n",base[kk].n[0],base[kk].n[1],sk[kk]);
+    }
+
     scanf("%d",&n);
     for(ii=0;ii<16;ii++)
       sy[ii]=0;
