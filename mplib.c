@@ -965,31 +965,6 @@ int main(void){
     }
     //exit(1);
 
-
-    /*    
- for(a=0;a<15;a++){
-      for(b=0;b<15;b++){
-	if(U>((I-1)*(I-2))/2 && S[a+I][b]==0){
-	    S[a+I][b]=more(a,b);
-	  printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
-	  if(delta-2*I+2+ips>=0 && (S[I-1-ips][delta-I+1+ips]>0 && S[I-1-ips][delta-2*I+3+ips]>0)){
-	    S[2*I-1-ips][delta-2*I+2+ips]=S[I-1-ips][delta-I+1+ips]^S[I-1-ips][delta-2*I+3+ips];
-	    printf("Ha!\n");
-	    //exit(1);
-	  }
-	}else{
-	  printf("baka\n");
-	  break;
-	  // exit(1);
-	}
-      }
-      
-      if(S[a+I][b]!=0 || U<=(I-1)*(I-2)/2)
-	break;
- }
- */
- // exit(1);
-    
     for(i=0;i<256;i++){
       for(j=0;j<256;j++)
 	G[i][j]=SS[i][j];
@@ -1098,7 +1073,7 @@ int main(void){
 	printf("%d ",SS[i][j]);
       printf("\n");
     }
-    //    count=27;
+
     for(i=0;i<16;i++){
       for(j=0;j<16;j++)
 	printf("%d ",S[i][j]);
@@ -1108,7 +1083,7 @@ int main(void){
       for(k=0;k<28+l;k++){
 	// SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
 	if(aa[i].n[0]+aa[k].n[0]==aa[count].n[0] && aa[i].n[1]+aa[k].n[1]==aa[count].n[1]){
-	  printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
+	  printf("SS[%2d][%2d]=%2d %d%",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k],sk[count]);
 	sy[SS[i][k]]++;
 	}
 	//	if(aa[i].n[0]+aa[k].n[0]==7 && aa[i].n[1]+aa[k].n[1]==5)
@@ -1126,19 +1101,12 @@ int main(void){
       }
     }
     printf("max=%d %d\n",n,jj);
+    /*
     for(kk=0;kk<225;kk++){
-    if(base[kk].n[0]==4 && base[kk].n[1]==14)
-      printf("syn[%d,%d]=%d\n",base[kk].n[0],base[kk].n[1],sk[kk]);
+      if((base[kk].n[0]==4 && base[kk].n[1]==14) || (base[kk].n[0]==4 && base[kk].n[1]==13) || (base[kk].n[0]==3 && base[kk].n[1]==14))
+	printf("syn[%d,%d]=%d\n",base[kk].n[0],base[kk].n[1],sk[kk]);
     }
-    for(kk=0;kk<225;kk++){
-    if(base[kk].n[0]==3 && base[kk].n[1]==14)
-      printf("syn[%d,%d]=%d\n",base[kk].n[0],base[kk].n[1],sk[kk]);
-    }
-    for(kk=0;kk<225;kk++){
-    if(base[kk].n[0]==4 && base[kk].n[1]==13)
-      printf("syn[%d,%d]=%d\n",base[kk].n[0],base[kk].n[1],sk[kk]);
-    }
-
+    */
     scanf("%d",&n);
     for(ii=0;ii<16;ii++)
       sy[ii]=0;
