@@ -740,7 +740,7 @@ int main(void){
   //unsigned char ee[150000]={0,0,0,0,12,0,0,0,0,11,0,0,2,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0};
 
 
-  unsigned char ee[64]={0}; //{0,0,11,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,13,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+  unsigned char ee[64]={0};
 
 
   
@@ -769,6 +769,7 @@ int main(void){
   }
 
   srand(clock()+time(&pp));
+  
   i=0;
   while(i<6){
     ii=rand()%16;
@@ -790,16 +791,6 @@ int main(void){
   u=mtrace(s);
   //  v=u;
   printf("count=%d\n\n",u);
-  /*
-  for(i=0;i<20;i++){
-    for(j=0;j<2;j++){
-      dd[i][j]=bb[i][j];
-    printf("%d ",dd[i][j]);
-    }
-    printf("\n");
-  }
-  printf("\n");
-  */
   //  exit(1);
 
   v=mkbase(aa);
@@ -808,9 +799,6 @@ int main(void){
   
   for(i=0;i<u;i++){
     printf("%d,%d %d\n",gf[p.z[0][i]],gf[p.z[1][i]],gf[p.z[2][i]]);
-    //    t.z[0][i]=p.z[0][i];
-    //t.z[1][i]=p.z[1][i];
-    //t.z[2][i]=p.z[2][i];
   }
   //  exit(1);
 
@@ -1083,7 +1071,7 @@ int main(void){
       for(k=0;k<28+l;k++){
 	// SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
 	if(aa[i].n[0]+aa[k].n[0]==aa[count].n[0] && aa[i].n[1]+aa[k].n[1]==aa[count].n[1]){
-	  printf("SS[%2d][%2d]=%2d %d%",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k],sk[count]);
+	  printf("SS[%2d][%2d]=%2d %d:(%d,%d)%",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k],sk[count],i,k);
 	sy[SS[i][k]]++;
 	}
 	//	if(aa[i].n[0]+aa[k].n[0]==7 && aa[i].n[1]+aa[k].n[1]==5)
@@ -1101,6 +1089,9 @@ int main(void){
       }
     }
     printf("max=%d %d\n",n,jj);
+    for(kk=0;kk<64;kk++)
+      printf("%d,",ee[kk]);
+    printf("\n");
     /*
     for(kk=0;kk<225;kk++){
       if((base[kk].n[0]==4 && base[kk].n[1]==14) || (base[kk].n[0]==4 && base[kk].n[1]==13) || (base[kk].n[0]==3 && base[kk].n[1]==14))
