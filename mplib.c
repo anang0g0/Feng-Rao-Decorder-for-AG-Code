@@ -1,8 +1,8 @@
-
- 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+
 //#include "gf256.h"
 
 
@@ -739,7 +739,7 @@ int main(void){
   //unsigned char ee[150000]={0,0,0,0,12,0,0,0,0,11,0,0,2,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0};
 
 
-  unsigned char ee[64]={0,0,11,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,13,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+  unsigned char ee[64]={0}; //{0,0,11,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,13,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 
   
@@ -754,7 +754,9 @@ int main(void){
   unsigned short *B[256];
   unsigned short G[256][256]={0};
   int ii,jj,kk;
-    
+  time_t pp;
+  
+  
   memset(S,0,sizeof(S));
   //    memset(SS,0,sizeof(SS));
   
@@ -763,6 +765,17 @@ int main(void){
       SS[i][j]=0;
       S[i][j]=0;
       }
+  }
+
+  srand(clock()+time(&pp));
+  i=0;
+  while(i<5){
+    ii=rand()%16;
+    jj=rand()%63;
+    if(ii>0 && ee[jj]==0){
+      ee[jj]=ii;
+      i++;
+    }
   }
   
   //s=define_curve();
@@ -1080,8 +1093,16 @@ int main(void){
 	    }
       printf("\n");
     }
-    for(ii=0;ii<16;ii++)
-      printf("SS=%d %d\n",ii,sy[ii]);
+    ii=0;
+    jj=0;
+    for(ii=0;ii<16;ii++){
+      //      printf("SS=%d %d\n",ii,sy[ii]);
+      if(jj<sy[ii] && ii>0){
+	jj=sy[ii];
+	n=ii;
+      }
+    }
+    printf("max=%d %d\n",n,jj);
     scanf("%d",&n);
     for(ii=0;ii<16;ii++)
       sy[ii]=0;
