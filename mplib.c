@@ -1,3 +1,5 @@
+
+ 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -732,10 +734,12 @@ int main(void){
   unsigned int d[256][2]={0};
   unsigned char e[64]={0,0,0,0,0,2,0,0,0,4,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
-  // unsigned char ee[64]={0,1,2,3,4,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+  //unsigned char ee[64]={0,1,2,3,4,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
-  unsigned char ee[150000]={0,0,0,0,12,0,0,0,0,11,0,0,2,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0};
+  //unsigned char ee[150000]={0,0,0,0,12,0,0,0,0,11,0,0,2,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0};
 
+
+  unsigned char ee[64]={0,0,11,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,13,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 
   
@@ -749,7 +753,7 @@ int main(void){
   int l;
   unsigned short *B[256];
   unsigned short G[256][256]={0};
-    
+  int ii,jj,kk;
     
   memset(S,0,sizeof(S));
   //    memset(SS,0,sizeof(SS));
@@ -882,14 +886,30 @@ int main(void){
 	printf("\n");
       }
       printf("\n");
-      for(k=i+1;k<49;k++){
-
+      for(k=i+1;k<75-U;k++){
+	if(SS[i][i]>0){
 	b=inv2(SS[i][i],SS[i][k]);
 	for(j=0;j<U;j++)
 	  SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
-	
+	}else{
+	  j=i;
+	  while(SS[i][j]==0){
+	    j++;
+	    if(j==U){
+	      i++;
+	      j=i;
+	      break;
+	    }
+	      
+	  } 
+	  if(SS[i][j]>0){
+	    for(ii=i;ii<U;ii++)
+	      SS[ii][i]^=SS[ii][j];
+	  }
+	}
       }
     }
+
     
     printf("\n\n");
     for(i=0;i<U;i++){
@@ -956,7 +976,7 @@ int main(void){
 
     
     count=U-1;
-    for(l=0;l<49;l++){
+    for(l=0;l<75-U;l++){
       count++;
       
     //begin
@@ -1051,14 +1071,20 @@ int main(void){
     for(i=0;i<28+l;i++){
       for(k=0;k<28+l;k++){
 	// SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	if(aa[i].n[0]+aa[k].n[0]==aa[count].n[0] && aa[i].n[1]+aa[k].n[1]==aa[count].n[1])
+	if(aa[i].n[0]+aa[k].n[0]==aa[count].n[0] && aa[i].n[1]+aa[k].n[1]==aa[count].n[1]){
 	  printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
+	sy[SS[i][k]]++;
+	}
 	//	if(aa[i].n[0]+aa[k].n[0]==7 && aa[i].n[1]+aa[k].n[1]==5)
 	//printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
 	    }
       printf("\n");
     }
+    for(ii=0;ii<16;ii++)
+      printf("SS=%d %d\n",ii,sy[ii]);
     scanf("%d",&n);
+    for(ii=0;ii<16;ii++)
+      sy[ii]=0;
     S[aa[count].n[0]][aa[count].n[1]]=n;
     S[aa[count].n[0]+I][aa[count].n[1]]=S[aa[count].n[0]][aa[count].n[1]-I+1]^S[aa[count].n[0]][aa[count].n[1]-I+2];
     printf("S=%d\n",S[aa[count].n[0]+I][aa[count].n[1]]);
