@@ -737,7 +737,7 @@ int main(void){
 
   //unsigned char ee[64]={0,1,2,3,4,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
-  //unsigned char ee[150000]={0,0,0,0,12,0,0,0,0,11,0,0,2,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0};
+  //  unsigned char ee[150000]={0,0,0,0,12,0,0,0,0,11,0,0,2,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0};
 
 
   unsigned char ee[64]={0};
@@ -769,33 +769,35 @@ int main(void){
   }
 
   srand(clock()+time(&pp));
+
   
   i=0;
-  while(i<6){
+  while(i<3){
     ii=rand()%16;
     jj=rand()%63;
-    if(ii>0 && ee[jj]==0){
-      ee[jj]=ii;
+    if(ii>0 && ee[jj]==0 && jj>0){
+         ee[jj]=ii;
       i++;
     }
   }
   
+  
   //s=define_curve();
 
-  HH=malloc(sizeof(unsigned short *)*1000);
+  HH=malloc(sizeof(unsigned short *)*500);
   for(i=0;i<N*N;i++)
-    HH[i]=malloc(sizeof(unsigned short)*150000);
+    HH[i]=malloc(sizeof(unsigned short)*15000);
   
   s=set_curve(he,3);
 
   u=mtrace(s);
   //  v=u;
   printf("count=%d\n\n",u);
-  //  exit(1);
+  //   exit(1);
 
   v=mkbase(aa);
   printf("mkcount=%d\n",v);
-  //  exit(1);
+  //    exit(1);
   
   for(i=0;i<u;i++){
     printf("%d,%d %d\n",gf[p.z[0][i]],gf[p.z[1][i]],gf[p.z[2][i]]);
@@ -807,7 +809,7 @@ int main(void){
   unsigned short sk[256]={0};
 
 
-  for(i=0;i<100;i++){
+  for(i=0;i<v;i++){
 #pragma omp parallel for
     for(j=0;j<u;j++){
       //      if(p.z[0][j]>0)
@@ -815,7 +817,7 @@ int main(void){
     }
   }
   
-  for(i=0;i<80;i++){
+  for(i=0;i<v;i++){
     printf("(%d,%d): ",aa[i].n[0],aa[i].n[1]);
     for(j=0;j<u;j++)
       printf("%d ",HH[i][j]);
@@ -826,7 +828,7 @@ int main(void){
   for(i=0;i<225;i++){
     sk[i]=0;
     //#pragma omp parallel for
-        for(j=0;j<64;j++){
+        for(j=0;j<Q*Q*Q;j++){
       sk[i]^=gf[mlt(fg[ee[j]],HH[i][j])];
           }
 	//    if(ss[i]>0)
@@ -1025,10 +1027,7 @@ int main(void){
       
     }
 
-    // for(i-0;i<27;i++)
-    //printf("%d ",ss[i]);
-    //printf("\n\n");
-    //    exit(1);
+
     for(i=0;i<28+l;i++){
       for(j=0;j<28+l;j++){
 	//printf("%d ",SS[i][j]);
@@ -1037,7 +1036,42 @@ int main(void){
       printf("\n");
     }
     //    exit(1);
-    //gauss    
+    
+    //gauss
+    /*
+    for(i=0;i<U+l;i++){
+      printf("i=%d\n",i);
+      for(j=0;j<U+l;j++){
+	for(k=0;k<U+l;k++){
+	  printf("%d ",SS[j][k]);
+	}
+	printf("\n");
+      }
+      printf("\n");
+      if(SS[i][i]>0){
+	for(k=i+1;k<U+l;k++){
+	  b=inv2(SS[i][i],SS[i][k]);
+	  for(j=0;j<U+l;j++)
+	    SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
+	}
+      }
+      if(SS[i][i]==0){
+	for(j=i;j<U+l;j++){
+	  if(SS[i][j]>0)
+	    break;
+	}
+	for(jj=j+1;jj<U+l;jj++){
+	  b=inv2(SS[i][j],SS[i][jj]);
+	  for(ii=0;ii<U+l;ii++)
+	    SS[ii][jj]^=gf[mltn(fg[SS[i][ii]],b)];
+	}
+      }
+    }
+    */
+
+
+    //gauss
+        
     for(i=0;i<28+l;i++){
       printf("i=%d\n",i);
       for(j=0;j<28+l;j++){
@@ -1054,51 +1088,81 @@ int main(void){
 	
       }
     }
-    
+
+
+    int nn=0;
+
     printf("\n\n");
     for(i=0;i<28+l;i++){
       for(j=0;j<28+l;j++)
 	printf("%d ",SS[i][j]);
       printf("\n");
     }
-
+    
     for(i=0;i<16;i++){
       for(j=0;j<16;j++)
 	printf("%d ",S[i][j]);
       printf("\n");
     }
+    for(i=0;i<16;i++)
+      sy[i]=0;
+    nn=-1;
     for(i=0;i<28+l;i++){
+      //      nn=0;
       for(k=0;k<28+l;k++){
 	// SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
 	if(aa[i].n[0]+aa[k].n[0]==aa[count].n[0] && aa[i].n[1]+aa[k].n[1]==aa[count].n[1]){
 	  printf("SS[%2d][%2d]=%2d %d:(%d,%d)%",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k],sk[count],i,k);
-	sy[SS[i][k]]++;
+	  //  nn=0;
+	  
+	  if(k>5 && k<21){
+	    if(SS[i][k]==SS[i-1][k+1])
+	      nn=SS[i][k];
+	    printf("NN=%d %d %d,%d %d\n",nn,SS[i][k],SS[i-1][k+1],i,k);
+	    // nn=n;
+	     sy[SS[i][k]]++;
+	    
+	  }
+	  //sy[SS[i][k]]++;
 	}
 	//	if(aa[i].n[0]+aa[k].n[0]==7 && aa[i].n[1]+aa[k].n[1]==5)
 	//printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	    }
+      }
       printf("\n");
     }
+
     ii=0;
     jj=0;
+    kk=0;
+
+ for(ii=0;ii<16;ii++)
+      kk+=sy[ii];
+ 
     for(ii=0;ii<16;ii++){
+      if(nn==-1){
       //      printf("SS=%d %d\n",ii,sy[ii]);
       if(jj<sy[ii] && ii>0){
+	if(sy[ii]>0){
 	jj=sy[ii];
 	n=ii;
+	}
+	//}
+      }else if(sy[0]>kk/2){
+	jj=sy[0];
+	n=0;
       }
+      }else if(nn>=0){n=nn;}
     }
-    printf("max=%d %d\n",n,jj);
-    for(kk=0;kk<64;kk++)
-      printf("%d,",ee[kk]);
+
+    
+    printf("max=%d %d nn=%d\n",n,jj,nn);
+    for(k=0;k<64;k++)
+      printf("%d,",ee[k]);
     printf("\n");
-    /*
-    for(kk=0;kk<225;kk++){
-      if((base[kk].n[0]==4 && base[kk].n[1]==14) || (base[kk].n[0]==4 && base[kk].n[1]==13) || (base[kk].n[0]==3 && base[kk].n[1]==14))
-	printf("syn[%d,%d]=%d\n",base[kk].n[0],base[kk].n[1],sk[kk]);
-    }
-    */
-    scanf("%d",&n);
+
+    
+    //scanf("%d",&n);
+
     for(ii=0;ii<16;ii++)
       sy[ii]=0;
     S[aa[count].n[0]][aa[count].n[1]]=n;
@@ -1164,7 +1228,9 @@ int main(void){
       }
       printf("e=%d %d %d %d\n",x,j,otrace(base[i],p.z[0][j],p.z[1][j],1),ss[i]);
     }
-
+	for(i=0;i<64;i++)
+	  printf("%d ",ee[i]);
+	printf("\n");
       exit(1);
       //printf("e=%d %d\n",x,j);
       //    }
