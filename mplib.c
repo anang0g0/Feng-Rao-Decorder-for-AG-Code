@@ -772,7 +772,7 @@ int main(void){
 
   
   i=0;
-  while(i<3){
+  while(i<5){
     ii=rand()%16;
     jj=rand()%63;
     if(ii>0 && ee[jj]==0 && jj>0){
@@ -1106,6 +1106,7 @@ int main(void){
     }
     for(i=0;i<16;i++)
       sy[i]=0;
+    
     nn=-1;
     for(i=0;i<28+l;i++){
       //      nn=0;
@@ -1115,11 +1116,14 @@ int main(void){
 	  printf("SS[%2d][%2d]=%2d %d:(%d,%d)%",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k],sk[count],i,k);
 	  //  nn=0;
 	  
-	  if(k>5 && k<21){
-	    if(SS[i][k]==SS[i-1][k+1])
-	      nn=SS[i][k];
+	  if(k>5 && k<15){
+	    if(SS[i][k]==SS[i-1][k+1]){
+	     nn=SS[i][k];
 	    printf("NN=%d %d %d,%d %d\n",nn,SS[i][k],SS[i-1][k+1],i,k);
 	    // nn=n;
+	    }//else{
+	    //nn=SS[i][7];
+	    //}
 	     sy[SS[i][k]]++;
 	    
 	  }
@@ -1135,9 +1139,11 @@ int main(void){
     jj=0;
     kk=0;
 
- for(ii=0;ii<16;ii++)
+    for(ii=0;ii<16;ii++){
       kk+=sy[ii];
- 
+      printf("%d %d,",sy[ii],ii);
+     }
+    printf("\n");
     for(ii=0;ii<16;ii++){
       if(nn==-1){
       //      printf("SS=%d %d\n",ii,sy[ii]);
@@ -1146,23 +1152,27 @@ int main(void){
 	jj=sy[ii];
 	n=ii;
 	}
-	//}
       }else if(sy[0]>kk/2){
 	jj=sy[0];
 	n=0;
       }
       }else if(nn>=0){n=nn;}
+            
     }
-
     
-    printf("max=%d %d nn=%d\n",n,jj,nn);
+    
+    
+    
+    printf("max=%d %d %d\n",n,sy[n],sk[count]);
     for(k=0;k<64;k++)
       printf("%d,",ee[k]);
     printf("\n");
 
+    if(n!=sk[count]){
+      //    scanf("%d",&n);
+    n=SS[67][7];
+    }
     
-    //scanf("%d",&n);
-
     for(ii=0;ii<16;ii++)
       sy[ii]=0;
     S[aa[count].n[0]][aa[count].n[1]]=n;
