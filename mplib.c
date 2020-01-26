@@ -16,7 +16,7 @@
 #define H (K+1)*(K+2)/2 //シンドローム行列の横ベクトルの長さ
 #define F (J-K+1)*(J-K+2)/2 //シンドローム行列の縦ベクトル
 #define U 26
-
+#define E 8
 
 typedef struct  {
 
@@ -678,7 +678,7 @@ MP set_curve(unsigned short a[9][4],int x){
 
 
 int main(void){
-  int i,j,k=0,a,b,count=0,x,y,z,g,n;
+  int i,j,k=0,a,b,c,count=0,x,y,z,g,n;
   unsigned int u=0,v=0,delta=7,ips=1;
   MP s={0};
   unsigned char **HH;
@@ -739,6 +739,8 @@ int main(void){
 
   //  unsigned char ee[150000]={0,0,0,0,12,0,0,0,0,11,0,0,2,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0};
 
+  //  unsigned short ee[64]={0,0,0,0,0,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,4,0,0,0,0,0,0,0,0,0,0};
+
 
   unsigned char ee[64]={0};
 
@@ -772,7 +774,7 @@ int main(void){
 
   
   i=0;
-  while(i<5){
+  while(i<E){
     ii=rand()%16;
     jj=rand()%63;
     if(ii>0 && ee[jj]==0 && jj>0){
@@ -1081,6 +1083,7 @@ int main(void){
 	printf("\n");
       }
       printf("\n");
+      if(SS[i][i]>0){
       for(k=i+1;k<28+l;k++){
 	b=inv2(SS[i][i],SS[i][k]);
 	for(j=0;j<28+l;j++)
@@ -1088,9 +1091,9 @@ int main(void){
 	
       }
     }
+    }
 
-
-    int nn=0;
+    int nn=0,d,e,f,x0,x1,x2,x3;
 
     printf("\n\n");
     for(i=0;i<28+l;i++){
@@ -1115,6 +1118,29 @@ int main(void){
 	if(aa[i].n[0]+aa[k].n[0]==aa[count].n[0] && aa[i].n[1]+aa[k].n[1]==aa[count].n[1]){
 	  printf("SS[%2d][%2d]=%2d %d:(%d,%d)%",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k],sk[count],i,k);
 	  //  nn=0;
+	  if(k==7)
+	    x=SS[i][k];
+	  if(k==10)
+	    y=SS[i][k];
+	  if(k==32)
+	    z=SS[i][k];
+	  if(k==22)
+	    a=SS[i][k];
+	  if(k==17)
+	    b=SS[i][k];
+	  if(k==8)
+	    c=SS[i][k];
+	  if(k==13)
+	    d=SS[i][k];
+	  if(k==31)
+	    e=SS[i][k];
+	  if(k==33)
+	    f=SS[i][k];
+	  if(k==30)
+	    x0=SS[i][k];
+	  if(k==9)
+	    x1=SS[i][k];
+
 	  
 	  if(k>5 && k<15){
 	    if(SS[i][k]==SS[i-1][k+1]){
@@ -1124,14 +1150,16 @@ int main(void){
 	    }//else{
 	    //nn=SS[i][7];
 	    //}
-	     sy[SS[i][k]]++;
+	    sy[SS[i][k]]++;
 	    
 	  }
 	  //sy[SS[i][k]]++;
 	}
 	//	if(aa[i].n[0]+aa[k].n[0]==7 && aa[i].n[1]+aa[k].n[1]==5)
 	//printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
+   
       }
+   
       printf("\n");
     }
 
@@ -1169,8 +1197,45 @@ int main(void){
     printf("\n");
 
     if(n!=sk[count]){
-      //    scanf("%d",&n);
-    n=SS[67][7];
+      //n=SS[67][7];
+      //printf("x=%d\n",x);
+      // scanf("%d",&n);
+      n=a;
+    }
+    if(n!=sk[count]){
+        n=y;
+      }
+    if(n!=sk[count]){
+        n=x;
+    }
+    if(n!=sk[count]){
+        n=z;
+    }
+    if(n!=sk[count]){
+        n=b;
+    }
+    if(n!=sk[count]){
+        n=c;
+    }
+    if(n!=sk[count]){
+      n=d;
+    }
+    if(n!=sk[count]){
+        n=e;
+    }
+    if(n!=sk[count]){
+        n=f;
+    }
+    if(n!=sk[count]){
+        n=x0;
+    }
+    if(n!=sk[count]){
+        n=x1;
+    }
+
+    if(n!=sk[count]){
+      exit(1);
+      //scanf("%d",&n);
     }
     
     for(ii=0;ii<16;ii++)
