@@ -1,5 +1,8 @@
 # Feng-Rao-Decorder-for-AG-Code
 
+20200724
+
+このリポジトリは「GitHub Arctic Code Vault」に選ばれました。
 
 20200706
 
