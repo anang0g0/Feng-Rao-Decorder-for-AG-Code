@@ -1,9 +1,5 @@
 # Feng-Rao-Decorder-for-AG-Code
 
-20200724
-
-このリポジトリは「GitHub Arctic Code Vault」に選ばれました。
-
 20200706
 
 プログラム解説的なこと：メインはmplib.cです。8エラー訂正できます。GF16上でのエルミート曲線符号を使っています。
