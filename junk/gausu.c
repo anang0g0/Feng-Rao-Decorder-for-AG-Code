@@ -43,39 +43,29 @@ int Inv(unsigned char b){
     }
 
 
-#define N 10  /* 行列の大きさ */
+#define N 9  /* 行列の大きさ */
 int main()
 {
    int i, j, k, p;
    int a[N][N] =   {
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-     
-     {gf[11], gf[0] ,gf[2], gf[9], gf[1], gf[0], gf[10], gf[3], gf[1], gf[5]},
-     {gf[0], gf[9], gf[1], gf[10], gf[3], gf[1], gf[2], gf[15], gf[10], gf[5]},
-     {gf[2],gf[1], gf[0], gf[3], gf[1], gf[5], gf[15], gf[10], gf[5], gf[13]},
-     {gf[9],gf[10], gf[3], gf[2], gf[15], gf[10], gf[11], gf[15], gf[9], gf[2]},
-     {gf[1],gf[3], gf[1], gf[15], gf[10], gf[5], gf[15], gf[9], gf[2], gf[6]},
-     {gf[0],gf[1], gf[5], gf[10], gf[5], gf[13], gf[9], gf[2], gf[6], gf[0]},
-     {gf[10],gf[2], gf[15], gf[11], gf[15], gf[9], gf[3], gf[4], gf[3], gf[15]},
-     {gf[3],gf[15], gf[10], gf[15], gf[9], gf[14], gf[3], gf[15], gf[8]},
-     {gf[1],gf[10], gf[5], gf[9], gf[2], gf[6], gf[3], gf[15],gf[8], gf[3]},
-     {gf[5],gf[5],gf[13],gf[2],gf[6],gf[0],gf[15],gf[8],gf[3],gf[10]}};
-unsigned char b[N] ={0}, w[N];
+     { gf[0] ,gf[2], gf[9], gf[1], gf[0], gf[10], gf[3], gf[1], gf[5]},
+     { gf[9], gf[1], gf[10], gf[3], gf[1], gf[2], gf[15], gf[10], gf[5]},
+     {gf[1], gf[0], gf[3], gf[1], gf[5], gf[15], gf[10], gf[5], gf[13]},
+     {gf[10], gf[3], gf[2], gf[15], gf[10], gf[11], gf[15], gf[9], gf[2]},
+     {gf[3], gf[1], gf[15], gf[10], gf[5], gf[15], gf[9], gf[2], gf[6]},
+     {gf[1], gf[5], gf[10], gf[5], gf[13], gf[9], gf[2], gf[6], gf[0]},
+     {gf[2], gf[15], gf[11], gf[15], gf[9], gf[3], gf[4], gf[3], gf[15]},
+     {gf[15], gf[10], gf[15], gf[9], gf[14], gf[3], gf[15], gf[8]},
+     {gf[10], gf[5], gf[9], gf[2], gf[6], gf[3], gf[15],gf[8], gf[3]}},
+     b[N] = {gf[11],gf[0],gf[2],gf[9],gf[1],gf[0],gf[10],gf[3],gf[1]}, w[N];
      int pmax, s;
      
 /* 前進消去（ピボット選択）*/
 
-   for(k = 0; k < N-2; k++){  /* 第ｋステップ */
+   for(k = 0; k < N-1; k++){  /* 第ｋステップ */
       p = k;
       pmax = a[k][k];
-      for(i = k+1; i < N-1; i++){  /* ピボット選択 */
+      for(i = k+1; i < N; i++){  /* ピボット選択 */
          if(a[i][k] > pmax){
             p = i;
             pmax = a[i][k];
@@ -88,7 +78,7 @@ unsigned char b[N] ={0}, w[N];
          return(0);
       }
       if(p != k){  /* 第ｋ行と第ｐ行の交換　*/
-         for(i = k; i < N-1; i++){
+         for(i = k; i < N; i++){
             /* 係数行列　*/
             s = a[k][i];
             a[k][i] = a[p][i];
@@ -100,7 +90,7 @@ unsigned char b[N] ={0}, w[N];
          b[p] = s;
       }
 /* 前進消去 */
-      for(i = k +1; i < N-1; i++){ /* 第ｉ行 */
+      for(i = k +1; i < N; i++){ /* 第ｉ行 */
 	w[i] = gf[mlt(fg[a[i][k]] , Inv(fg[a[k][k]]))];
          a[i][k] = 0;
          /* 第ｋ行を-a[i][k]/a[k][k]倍して、第ｉ行に加える */
@@ -112,7 +102,7 @@ unsigned char b[N] ={0}, w[N];
    }
 /* 後退代入 */
       for(i = N - 1; i >= 0; i--){
-         for(j = i + 1; j < N-1; j++){
+         for(j = i + 1; j < N; j++){
 	   b[i] = b[i] ^ gf[mlt(fg[a[i][j]] , fg[b[j]])];
             a[i][j] = 0;
          }

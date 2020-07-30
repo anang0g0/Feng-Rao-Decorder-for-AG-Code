@@ -16,7 +16,7 @@
 #define H (K+1)*(K+2)/2 //シンドローム行列の横ベクトルの長さ
 #define F (J-K+1)*(J-K+2)/2 //シンドローム行列の縦ベクトル
 #define U 6
-#define E 2
+
 
 typedef struct  {
 
@@ -743,8 +743,8 @@ int main(void){
   //unsigned char ee[150000]={0,0,0,0,12,0,0,0,0,11,0,0,2,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0};
 
   
-  //unsigned char ee[8]={0,3,0,0,0,1,0,0}; 
-unsigned char ee[64]={0};
+unsigned char ee[8]={0,3,0,0,0,1,0,0}; 
+//  unsigned char ee[64]={0};
 
 
   
@@ -773,17 +773,17 @@ unsigned char ee[64]={0};
   }
 
   srand(clock()+time(&pp));
-  
+  /*
   i=0;
-  while(i<E){
-    ii=rand()%4;
-    jj=rand()%8;
-    if(ii>0 && ee[jj]==0 && jj>1){
+  while(i<6){
+    ii=rand()%16;
+    jj=rand()%63;
+    if(ii>0 && ee[jj]==0){
       ee[jj]=ii;
       i++;
     }
   }
-  
+  */
   //s=define_curve();
 
   HH=malloc(sizeof(unsigned short *)*1000);
@@ -811,7 +811,7 @@ unsigned char ee[64]={0};
   unsigned short sk[256]={0};
 
 
-  for(i=0;i<N*N;i++){
+  for(i=0;i<16;i++){
 #pragma omp parallel for
     for(j=0;j<u;j++){
       //      if(p.z[0][j]>0)
@@ -819,7 +819,7 @@ unsigned char ee[64]={0};
     }
   }
   
-  for(i=0;i<N*N;i++){
+  for(i=0;i<16;i++){
     printf("(%d,%d): ",aa[i].n[0],aa[i].n[1]);
     for(j=0;j<u;j++)
       printf("%d ",HH[i][j]);
@@ -827,10 +827,10 @@ unsigned char ee[64]={0};
   }
 
 
-  for(i=0;i<N*N;i++){
+  for(i=0;i<14;i++){
     sk[i]=0;
     //#pragma omp parallel for
-        for(j=0;j<Q*Q*Q;j++){
+        for(j=0;j<8;j++){
       sk[i]^=gf[mlt(fg[ee[j]],HH[i][j])];
           }
 	printf("sk=%d %d\n",sk[i],i);
@@ -870,7 +870,7 @@ unsigned char ee[64]={0};
 
 
     
-   
+    //    exit(1);
 
     for(i=0;i<U;i++){
     S[aa[i].n[0]][aa[i].n[1]]=ss[i];
@@ -901,12 +901,58 @@ unsigned char ee[64]={0};
     //exit(1);
 
     
+    //gauss    
+    for(i=0;i<U;i++){
+      printf("i=%d\n",i);
+      for(j=0;j<U;j++){
+	for(k=0;k<U;k++){
+	  printf("%d ",SS[j][k]);
+	}
+	printf("\n");
+      }
+      printf("\n");
+      for(k=i+1;k<16-U;k++){
+	if(SS[i][i]>0){
+	b=inv2(SS[i][i],SS[i][k]);
+	for(j=0;j<U;j++)
+	  SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
+	}else{
+	  j=i;
+	  while(SS[i][j]==0){
+	    j++;
+	    if(j==U){
+	      i++;
+	      j=i;
+	      break;
+	    }
+	      
+	  } 
+	  if(SS[i][j]>0){
+	    for(ii=i;ii<U;ii++)
+	      SS[ii][i]^=SS[ii][j];
+	  }
+	}
+      }
+    }
+
+    
+    printf("\n\n");
+    for(i=0;i<U;i++){
+      for(j=0;j<U;j++)
+	printf("%d ",SS[i][j]);
+      printf("\n");
+    }
+
+    printf("(8,0)=%d\n",S[3][1]^13);
+    //    S[3][4]=13;
+    //S[8][0]=7;
+    //      exit(1);
 
 
 
     
-    for(i=0;i<N;i++){
-      for(j=0;j<N;j++)
+    for(i=0;i<16;i++){
+      for(j=0;j<16;j++)
 	printf("%d ",S[i][j]);
       printf("\n");
     }
@@ -917,124 +963,14 @@ unsigned char ee[64]={0};
 	G[i][j]=SS[i][j];
     }
 
-
-    //gauss
-    /*
-    for(i=0;i<U;i++){
-      printf("i=%d %d\n",i,SS[i][i]);
-      for(jj=0;jj<U;jj++){
-	for(k=0;k<U;k++){
-	  printf("%d ",SS[jj][k]);
-	}
-	printf("\n");
-      }
-      printf("\n");
-
-      if(SS[i][i]==0){
-	j=i;
-	printf("SS[%d][%d]=%d\n",i,i,SS[i][i]);
-	while(SS[i][j]==0){
-	  j++;
-	  printf("(i,j)=%d %d %d\n",i,j,SS[i][j]);
-	  if(j==U){
-	    //  i++;
-	    
-	    break;
-	  }
-	}
-	//for(ii=0;ii<U;ii++)
-	// SS[ii][i]^=SS[ii][j];
-	for(jj=j+1;jj<U;jj++){
-	  b=inv2(SS[i][j],SS[i][jj]);
-	  for(ii=0;ii<U;ii++){	
-	    SS[ii][jj]^=gf[mlt(fg[SS[ii][j]],b)];
-	    
-	  }
-	}
-	for(ii=0;ii<U;ii++){
-	  for(jj=0;jj<U;jj++)
-	    printf("%d ",SS[ii][jj]);
-	  printf("\n");
-	}
-      }
- 
-      if(SS[i][i]>0){
-	printf("i>=%d\n",i);    
-	for(j=i+1;j<U;j++){
-	  b=inv2(SS[i][i],SS[i][j]);
-	  for(ii=i;ii<U;ii++)
-	    SS[ii][j]^=gf[mlt(fg[SS[ii][i]],b)];
-	}
-      }
-      for(j=0;j<U;j++){
-	for(k=0;k<U;k++){
-	  printf("%d ",SS[j][k]);
-	}
-	printf("\n");
-      }
-      printf("\n");
-      //   exit(1);
-      */
-      /*
-      for(k=i+1;k<13-U;k++){
-	if(SS[k][k]==0){
-	  j=k;
-	  while(SS[k][j]==0){
-	    j++;
-	    if(j==U){
-	      //    k++;
-	      //j=k;
-	      break;
-	    }
-	  }    
-	  if(SS[k][j]>0){
-	    //for(ii=k;ii<U;ii++)
-	    //SS[ii][i]^=SS[ii][j];
-	    
-	    b=inv2(SS[k][i],SS[k][j]);
-	    for(ii=k;ii<U;ii++)
-	      SS[ii][j]^=gf[mlt(fg[SS[ii][i]],b)];
-	  }
-	}
-      }
-      */
-      //    }
-    for(i=0;i<U;i++){
-      if(SS[i][i]>0){
-	printf("i=%d\n",i);
-	for(j=0;j<U;j++){
-	  for(k=0;k<U;k++){
-	    printf("%d ",SS[j][k]);
-	  }
-	  printf("\n");
-	}
-	printf("\n");
-	for(k=i+1;k<U;k++){
-	  b=inv2(SS[i][i],SS[i][k]);
-	  for(j=0;j<U;j++)
-	    SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];	
-	}
-      }
-    }		
-
-    
-    printf("\n\n");
-    for(i=0;i<U;i++){
-      for(j=0;j<U;j++)
-	printf("%d ",SS[i][j]);
-      printf("\n");
-    }
-
-    
-    for(i=0;i<N;i++){
-      for(j=0;j<N;j++)
+    for(i=0;i<N-1;i++){
+      for(j=0;j<N-1;j++)
 	printf("%d,",S[i][j]);
       printf("\n");
       
     }
     //exit(1);
     
-
     
     for (i=0;i<256;i++) B[i] = S[i];
 
@@ -1046,17 +982,15 @@ unsigned char ee[64]={0};
     count=U-1;
     for(l=0;l<13-U;l++){
       count++;
-    
-
-    
+      
     //begin
       // for(a=0;a<15;a++){
       //for(b=0;b<15;b++){
       i=aa[count].n[0];
       j=aa[count].n[1];
       
-      for(a=0;a<N;a++){
-        for(b=0;b<N;b++){
+      for(a=0;a<15;a++){
+        for(b=0;b<15;b++){
 	  if(S[a+I][b]==0 && U>((I-1)*(I-2))/2){
 	  S[a+I][b]=more(a,b);
 	  printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
@@ -1096,6 +1030,10 @@ unsigned char ee[64]={0};
       
     }
 
+    // for(i-0;i<27;i++)
+    //printf("%d ",ss[i]);
+    //printf("\n\n");
+    //    exit(1);
     for(i=0;i<U+l;i++){
       for(j=0;j<U+l;j++){
 	//printf("%d ",SS[i][j]);
@@ -1104,7 +1042,6 @@ unsigned char ee[64]={0};
       printf("\n");
     }
     //    exit(1);
-
     //gauss    
     for(i=0;i<U+l;i++){
       printf("i=%d\n",i);
@@ -1115,27 +1052,13 @@ unsigned char ee[64]={0};
 	printf("\n");
       }
       printf("\n");
-      if(SS[i][i]>0){
-	for(k=i+1;k<U+l;k++){
-	  b=inv2(SS[i][i],SS[i][k]);
-	  for(j=0;j<U+l;j++)
-	    SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
-	}
-      }
-      if(SS[i][i]==0){
-	for(j=i;j<U;j++){
-	  if(SS[i][j]>0)
-	    break;
-	}
-	for(jj=j+1;jj<U;jj++){
-	  b=inv2(SS[i][j],SS[i][jj]);
-	  for(ii=0;ii<U;ii++)
-	    SS[ii][jj]^=gf[mltn(fg[SS[i][ii]],b)];
-	}
+      for(k=i+1;k<U+l;k++){
+	b=inv2(SS[i][i],SS[i][k]);
+	for(j=0;j<U+l;j++)
+	  SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
+	
       }
     }
-    
-      
     
     printf("\n\n");
     for(i=0;i<U+l;i++){
@@ -1143,7 +1066,7 @@ unsigned char ee[64]={0};
 	printf("%d ",SS[i][j]);
       printf("\n");
     }
-    
+
     for(i=0;i<N;i++){
       for(j=0;j<N;j++)
 	printf("%d ",S[i][j]);
@@ -1163,42 +1086,42 @@ unsigned char ee[64]={0};
     }
     ii=0;
     jj=0;
-    kk=0;
-    for(i=0;i<N;i++)
-      kk+=sy[i];
     for(ii=0;ii<N;ii++){
       //      printf("SS=%d %d\n",ii,sy[ii]);
       if(jj<sy[ii] && ii>0){
 	jj=sy[ii];
 	n=ii;
       }
-      if(sy[0]>kk/2){
-	n=0;
-      } 
     }
     printf("max=%d %d\n",n,jj);
     for(kk=0;kk<8;kk++)
       printf("%d,",ee[kk]);
     printf("\n");
-
-    if(n!=sk[count])
-      exit(1);
+    /*
+    for(kk=0;kk<225;kk++){
+      if((base[kk].n[0]==4 && base[kk].n[1]==14) || (base[kk].n[0]==4 && base[kk].n[1]==13) || (base[kk].n[0]==3 && base[kk].n[1]==14))
+	printf("syn[%d,%d]=%d\n",base[kk].n[0],base[kk].n[1],sk[kk]);
+    }
+    */
+    scanf("%d",&n);
     for(ii=0;ii<N;ii++)
       sy[ii]=0;
     S[aa[count].n[0]][aa[count].n[1]]=n;
     S[aa[count].n[0]+I][aa[count].n[1]]=S[aa[count].n[0]][aa[count].n[1]-I+1]^S[aa[count].n[0]][aa[count].n[1]-I+2];
     printf("S=%d\n",S[aa[count].n[0]+I][aa[count].n[1]]);
+    printf("%d %d\n",S[7][1],S[2][2]^8);
+    //    S[7][5]=15;
 
     }
 
     
-    for(i=I;i<N;i++){
-      for(j=0;j<N;j++)
+    for(i=I;i<N-1;i++){
+      for(j=0;j<N-1;j++)
 	S[i][j]=S[(i-5)%15][(j+4)%15]^S[(i-5)%15][(j+1)%15];
     }
     printf("\n\ncomplete table\n\n");
-        for(i=0;i<N;i++){
-      for(j=0;j<N;j++)
+        for(i=0;i<N-1;i++){
+      for(j=0;j<N-1;j++)
 	printf("%d ",S[i][j]);
       printf("\n");
 	}
@@ -1233,21 +1156,21 @@ unsigned char ee[64]={0};
     printf("v=%d\n",v);
     //    exit(1);
        
-    for(j=0;j<8;j++){
+	for(j=0;j<8;j++){
 	  sy[j]=0;
       x=0;
       for(i=0;i<N*N;i++){
 
 	x^=gf[mlt(fg[ss[i]],oinv(otrace(base[i], p.z[0][j],p.z[1][j],1)))];
 	      
+	//sy[i]=mlt(mlt(base[i].n[0],p.z[0][4]),
+	//	  mlt(base[i].n[1],p.z[1][4]));
+	//	printf("ss=%d\n",ss[i]);
+	//printf("e=%d %d %d %d %d %d\n",x,j,otrace(base[i],p.z[0][j],p.z[1][j],1),ss[i],base[i].n[0],base[i].n[1]);
       }
-      printf("e=%d %d %d %d\n",x,j,otrace(base[j],p.z[0][j],p.z[1][j],1),ss[j]);
+      printf("e=%d %d %d %d\n",x,j,otrace(base[i],p.z[0][j],p.z[1][j],1),ss[i]);
     }
-    
-    for(i=0;i<8;i++)
-      printf("%d ",ee[i]);
-    printf("\n");
-    
+
       exit(1);
       //printf("e=%d %d\n",x,j);
       //    }
@@ -1266,6 +1189,36 @@ unsigned char ee[64]={0};
   //  g=2413;
   param(u,g);
 
+  //exit(1);
+  /*
+  for(i=0;i<3;i++){
+    for(j=0;j<u;j++)
+      p.z[i][j]=0;
+  }
+  */
+  /*
+  s=set_curve(lo,3);
+  u=mtrace(s);
+  printf("count=%d\n\n",u);
+  //    exit(1);
+  for(i=0;i<u;i++)
+    printf("%d,%d %d\n",gf[p.z[0][i]],gf[p.z[1][i]],gf[p.z[2][i]]);
+  count=0;
+  for(i=0;i<v;i++){
+    for(j=0;j<u;j++){
+      if(t.z[0][i]==p.z[0][j] && t.z[1][i]==p.z[1][j] && t.z[2][i]==p.z[2][j]){
+	printf("intersection points=%d %d %d\n",gf[t.z[0][i]],gf[t.z[1][i]],gf[t.z[2][i]]);
+	  count++;
+      }
+    }
+  }
+  printf("%d\n",count);
+  exit(1);
+  */
+
+  
+
+  //  printf("%d\n",fg[gf[5]^gf[2]^gf[6]]);
   
   return 0;
 }

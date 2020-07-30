@@ -1,4 +1,3 @@
- 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,7 +13,7 @@
 #define K I-2 //number h
 #define H (K+1)*(K+2)/2 //シンドローム行列の横ベクトルの長さ
 #define F (J-K+1)*(J-K+2)/2 //シンドローム行列の縦ベクトル
-#define U 26
+
 
 
 typedef struct  {
@@ -115,7 +114,7 @@ int inv2(int a,int b){
 }
 
 void param(int n,int g){
-  int i,j,h,ij,t,delta,ips;
+  int i,j,h,ij,t;
 
   //  g=6;
   j=I-2;
@@ -123,21 +122,20 @@ void param(int n,int g){
   //  ij=1;
   //  exit(1);
   //    n-=4;
+    for(j=I-2;I*j<n-1;j++){
+      printf("h=%d~%d\n",I-2,j-I+2);
       printf("n=%d ",n);
-      printf("k=%d\n",U);
-      printf("d=%d\n",U-g+1);
-      printf("t=%d~%d\n",(U-g)/2);
-
-    delta=1;ips=0;
-    while(delta*I<Q*Q*Q){
-      for(ips=0;ips<I;ips++){
-	if(U+((I*(I-1))/2)==delta*I+ips)
-	  printf("ips=%d delta=%d\n",ips,delta);
-      }
-      delta++;
-      
+      printf("j=%d\n",j);
+      printf("k=%d\n",(I*j-g+1));
+      //printf("k=%d\n",ij);
+      printf("d=%d\n",I*j-2*g+2);
+      //printf("d=%d\n",n-ij);
+      printf("t=%d~%d\n",((I-2)*I-g+1)-1,((j-I+2)*I-g+1)-1);
+      //  printf("t=%d\n",t);
+      //      }
+      //    j++;
+      //    ij++;
     }
-      
 }  
 
 
@@ -558,7 +556,7 @@ count=1;
     if(i>4){
       l=i-4;
       j=4;
-      while(d[i][0]+d[i][1]<i && l<N-1){
+      while(d[i][0]+d[i][1]<i && l<16){
 	d[k][0]=j;
 	d[k][1]=l;
 	k++;
@@ -678,70 +676,49 @@ MP set_curve(unsigned short a[9][4],int x){
 
 int main(void){
   int i,j,k=0,a,b,count=0,x,y,z,g,n;
-  unsigned int u=0,v=0,delta=7,ips=1;
+  unsigned int u=0,v=0,U=26,delta=7,ips=1;
   MP s={0};
   unsigned char **HH;
   unsigned short tmp[256][1]={0};
   
- //gf256 g=1 elliptic
+  //gfQ*Q
+  unsigned short hl[3][4]={{Q+1,0,0,1},{0,Q+1,0,1},{0,0,Q+1,1}};
+  //gf256 g=1
   unsigned short el[4][4]={{0,2,1,1},{1,1,1,1},{3,0,0,1},{0,0,3,1}};
-  //gf256 g=1 elloptic
+  //gf256 g=1
   unsigned short el2[5][4]={{0,2,1,1},{1,1,1,1},{3,0,0,1},{0,0,3,1},{2,0,1,1}};
-  //gf8 g=6 Generalized Hermitian
+  //gf8 g=6
   unsigned short sc[4][4]={{3,2,0,1},{2,4,0,1},{0,1,0,1},{4,0,0,1}};
-  //gf8 g=3 klein
-  unsigned short kl[3][4]={{3,1,0,1},{0,3,0,1},{1,0,0,1}};
-  //gfQ*Q Hermitian
+  //gf8 g=3
+  unsigned short kl[3][4]={{3,1,0,1},{0,3,1,1},{1,0,3,1}};
+  //gfQ*Q
   unsigned short he[3][4]={{Q+1,0,0,1},{0,Q,0,1},{0,1,0,1}};
-  //gf16 g=21 #N=121 Generalized Hermitian
+  //gf16 g=21 #N=121
   unsigned short gu[5][4]={{7,4,0,1},{6,8,0,1},{4,1,0,1},{0,2,0,1},{8,0,0,1}};
-  //gf32 g=75 #N=497 Generalized Hermitian
+  //gf32 g=75 #N=497
   unsigned short ge[6][4]={{15,8,0,1},{14,16,0,1},{12,1,0,1},{8,2,0,1},{0,4,0,1},{16,0,0,1}};
-  //gf64 g=212 #N=2017 Generalized Hermitian
+  //gf64 g=212 #N=
   unsigned short gg[7][4]={{31,8,0,1},{30,16,0,1},{28,32,0,1},{24,1,0,1},{16,2,0,1},{0,4,0,1},{32,0,0,1}};
-  //gf256 g=2413 Generalized Hermitian
+  //gf256 g=2413
   unsigned short gd[9][4]={{127,8,0,1},{126,16,0,1},{124,32,0,1},{120,64,0,1},{112,128,0,1},{96,1,0,1},{64,2,0,1},{0,4,0,1},{128,0,0,1}};
-  //gf128 g=315 Generalized Hermitian
+  //gf128 g=315
   unsigned short cc[8][4]={{63,8,0,1},{62,16,0,1},{60,32,0,1},{56,64,0,1},{48,1,0,1},{32,2,0,1},{0,4,0,1},{64,0,0,1}};
-  //gf256 y^(Q+1)=X^8+x^4+x^2+x kummer
-  unsigned short ku[5][4]={{0,17,0,1},{8,0,0,1},{4,0,0,1},{2,0,0,1},{1,0,0,1}};
-  //gf16 kummer
-  unsigned short ku3[5][4]={{0,5,0,1},{12,0,0,1},{9,0,0,1},{6,0,0,1},{3,0,0,1}};
-  //gf64 kummer g=56
-  unsigned short ku4[5][4]={{0,9,0,1},{40,0,0,1},{33,0,0,1},{12,0,0,1},{5,0,0,1}};
+
   unsigned short lo[3][4]={{2,0,0,1},{1,0,0,3},{0,1,0,6}};
   unsigned short lk[6][4]={{0,2,0,1},{0,1,0,3},{0,0,1,6},{3,1,0,1},{0,3,1,1},{1,0,3,1}};
   //gf32 g=26 #N=157
   unsigned short ts[3][4]={{2,2,5,1},{7,0,2,1},{0,9,0,1}};
   //gf128 g=78 #N=891
   unsigned short tt[3][4]={{3,1,0,1},{13,0,0,1},{0,14,0,1}};
-  //gf512 Generalized Hermitian
+  //gf512
   unsigned short gt[10][4]={{255,16,0,1},{254,32,0,1},{252,64,0,1},{248,128,0,1},{240,256,0,1},{224,1,0,1},{192,2,0,1},{128,4,0,1},{0,8,0,1},{256,0,0,1}};
-  //over gf128 suzuki #N=16384
-  unsigned short su[4][4]={{0,128,0,1},{0,1,0,1},{136,0,0,1},{9,0,0,1}};
-  //gf32 suzuki #N=1024
-  unsigned short s2[4][4]={{0,32,0,1},{0,1,0,1},{36,0,0,1},{5,0,0,1}};
-  //gf8 suzuki 
-  unsigned short s3[4][4]={{0,8,0,1},{0,1,0,1},{10,0,0,1},{3,0,0,1}};
-  //y9 = x4 + x2 + x gf64 kummer
-  unsigned short ku2[4][4]={{0,9,0,1},{4,0,0,1},{2,0,0,1},{1,0,0,1}};
-  //y^9=x^2+x gf64 g=4
-  unsigned short ku5[3][4]={{0,9,0,1},{2,0,0,1},{1,0,0,1}};
- 
+
   unsigned int bb[256][2]={0};//{{0,0},{1,0},{0,1},{2,0},{1,1},{0,2},{3,0},{2,1},{1,2},{0,3},{4,0},{3,1},{2,2},{1,3},{0,4},{5,0},{4,1},{3,2},{2,3},{1,4},{6,0},{5,1},{4,2},{3,3},{2,4},{7,0},{6,1},{5,2},{4,3},{3,4}};
   mterm aa[1256]={0};
   unsigned int d[256][2]={0};
   unsigned char e[64]={0,0,0,0,0,2,0,0,0,4,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-
-  //unsigned char ee[64]={0,1,2,3,4,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-
-  //unsigned char ee[150000]={0,0,0,0,12,0,0,0,0,11,0,0,2,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0};
-
-
-  unsigned char ee[64]={0,0,11,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,13,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-
-
-  
+		       
+  unsigned char ee[64]={0,11,0,0,0,0,0,0,0,11,0,0,2,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0};
   PO t={0};
   unsigned short ss[N*N]={0};
   unsigned short M[K][K]={0};
@@ -752,7 +729,7 @@ int main(void){
   int l;
   unsigned short *B[256];
   unsigned short G[256][256]={0};
-  int ii,jj,kk;
+    
     
   memset(S,0,sizeof(S));
   //    memset(SS,0,sizeof(SS));
@@ -816,7 +793,7 @@ int main(void){
   }
     //exit(1);
   //
-  for(i=0;i<U;i++){
+  for(i=0;i<26;i++){
     ss[i]=0;
     //#pragma omp parallel for
         for(j=0;j<u;j++){
@@ -824,14 +801,14 @@ int main(void){
           }
 	//    if(ss[i]>0)
 	printf("syn[%d,%d]=%d\n",aa[i].n[0],aa[i].n[1],ss[i]);
-	//	if(aa[i].n[0]==4){
+	if(aa[i].n[0]==4){
 	  S[aa[i].n[0]+I][aa[i].n[1]]=S[aa[i].n[0]][aa[i].n[1]-I+1]^S[aa[i].n[0]][aa[i].n[1]-I+2];
 	  //  printf("S[%d,%d]=%d\n",aa[i].n[0],aa[i].n[1],S[aa[i].n[0]][aa[i].n[1]]);
-	  //	}
+	}
   }
     printf("\n");
     //    printf("6=%d\n",13^4);
-    //  exit(1);
+    exit(1);
 
 
 	 
@@ -846,7 +823,7 @@ int main(void){
     
     //    exit(1);
 
-    for(i=0;i<U;i++){
+    for(i=0;i<26;i++){
     S[aa[i].n[0]][aa[i].n[1]]=ss[i];
     //    for(j=0;j<2;j++)
           printf("%d",ss[i]);
@@ -859,13 +836,12 @@ int main(void){
     }
     printf("\n\n");
 
-    //param(U,6);
-    //  exit(1);
+    //   exit(1);
 
 
     
-    for(i=0;i<U;i++){
-      for(k=0;k<U;k++){
+    for(i=0;i<26;i++){
+      for(k=0;k<26;k++){
 	SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
 	//printf("%d %d %d %d|",i,k,aa[i].n[i]+aa[k].n[0],aa[i].n[1]+aa[k].n[1]);
 	printf("%2d,%2d ",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1]);
@@ -876,53 +852,38 @@ int main(void){
 
     
     //gauss    
-    for(i=0;i<U;i++){
+    for(i=0;i<26;i++){
       printf("i=%d\n",i);
-      for(j=0;j<U;j++){
-	for(k=0;k<U;k++){
+      for(j=0;j<26;j++){
+	for(k=0;k<26;k++){
 	  printf("%d ",SS[j][k]);
 	}
 	printf("\n");
       }
       printf("\n");
-      for(k=i+1;k<75-U;k++){
-	if(SS[i][i]>0){
+      for(k=i+1;k<49;k++){
+
 	b=inv2(SS[i][i],SS[i][k]);
-	for(j=0;j<U;j++)
+	for(j=0;j<26;j++)
 	  SS[j][k]^=gf[mlt(fg[SS[j][i]],b)];
-	}else{
-	  j=i;
-	  while(SS[i][j]==0){
-	    j++;
-	    if(j==U){
-	      i++;
-	      j=i;
-	      break;
-	    }
-	      
-	  } 
-	  if(SS[i][j]>0){
-	    for(ii=i;ii<U;ii++)
-	      SS[ii][i]^=SS[ii][j];
-	  }
-	}
+	
       }
     }
-
     
     printf("\n\n");
-    for(i=0;i<U;i++){
-      for(j=0;j<U;j++)
+    for(i=0;i<26;i++){
+      for(j=0;j<26;j++)
 	printf("%d ",SS[i][j]);
       printf("\n");
     }
 
     printf("(8,0)=%d\n",S[3][1]^13);
-    //    S[3][4]=13;
-    //S[8][0]=7;
+    S[3][4]=13;
+    S[8][0]=7;
     //      exit(1);
 
-
+    printf("%d %d %d %d %d\n",S[3][4],S[8][0],S[2][5],SS[14][6],SS[10][10]);
+    // exit(1);
 
     
     for(i=0;i<16;i++){
@@ -932,11 +893,9 @@ int main(void){
     }
     //exit(1);
 
-
-    /*    
  for(a=0;a<15;a++){
       for(b=0;b<15;b++){
-	if(U>((I-1)*(I-2))/2 && S[a+I][b]==0){
+	if(U>(I-1)*(I-2)/2){
 	    S[a+I][b]=more(a,b);
 	  printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
 	  if(delta-2*I+2+ips>=0 && (S[I-1-ips][delta-I+1+ips]>0 && S[I-1-ips][delta-2*I+3+ips]>0)){
@@ -950,11 +909,9 @@ int main(void){
 	  // exit(1);
 	}
       }
-      
       if(S[a+I][b]!=0 || U<=(I-1)*(I-2)/2)
 	break;
- }
- */
+    }
  // exit(1);
     
     for(i=0;i<256;i++){
@@ -962,31 +919,24 @@ int main(void){
 	G[i][j]=SS[i][j];
     }
 
-    for(i=0;i<N-1;i++){
-      for(j=0;j<N-1;j++)
-	printf("%d,",S[i][j]);
-      printf("\n");
-      
-    }
-    //exit(1);
     
+
     
     for (i=0;i<256;i++) B[i] = S[i];
 
     
-    count=U-1;
-    for(l=0;l<75-U;l++){
+    count=26;
+    for(l=0;l<52;l++){
       count++;
       
     //begin
       // for(a=0;a<15;a++){
       //for(b=0;b<15;b++){
-      i=aa[count].n[0];
-      j=aa[count].n[1];
-      
+      a=aa[count].n[0];
+      b=aa[count].n[1];
       for(a=0;a<15;a++){
         for(b=0;b<15;b++){
-	  if(S[a+I][b]==0 && U>((I-1)*(I-2))/2){
+	if(S[a+I][b]==0 && U>(I-1)*(I-2)/2){
 	  S[a+I][b]=more(a,b);
 	  printf("S=%d %d %d %d\n",S[a+I][b],a+I,a,b);
 	  if(delta-2*I+2+ips>=0 && (S[I-1-ips][delta-I+1+ips]>0 && S[I-1-ips][delta-2*I+3+ips]>0)){
@@ -1003,7 +953,6 @@ int main(void){
       if(S[a+I][b]!=0 || U<=(I-1)*(I-2)/2)
 	      break;
 	}
-      
     
     
     // exit(1);
@@ -1070,20 +1019,14 @@ int main(void){
     for(i=0;i<28+l;i++){
       for(k=0;k<28+l;k++){
 	// SS[i][k]=S[aa[i].n[0]+aa[k].n[0]][aa[i].n[1]+aa[k].n[1]];
-	if(aa[i].n[0]+aa[k].n[0]==aa[count].n[0] && aa[i].n[1]+aa[k].n[1]==aa[count].n[1]){
+	if(aa[i].n[0]+aa[k].n[0]==aa[count].n[0] && aa[i].n[1]+aa[k].n[1]==aa[count].n[1])
 	  printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
-	sy[SS[i][k]]++;
-	}
 	//	if(aa[i].n[0]+aa[k].n[0]==7 && aa[i].n[1]+aa[k].n[1]==5)
 	//printf("SS[%2d][%2d]=%2d %",aa[i].n[0]+aa[k].n[0],aa[i].n[1]+aa[k].n[1],SS[i][k]);
 	    }
       printf("\n");
     }
-    for(ii=0;ii<16;ii++)
-      printf("SS=%d %d\n",ii,sy[ii]);
     scanf("%d",&n);
-    for(ii=0;ii<16;ii++)
-      sy[ii]=0;
     S[aa[count].n[0]][aa[count].n[1]]=n;
     S[aa[count].n[0]+I][aa[count].n[1]]=S[aa[count].n[0]][aa[count].n[1]-I+1]^S[aa[count].n[0]][aa[count].n[1]-I+2];
     printf("S=%d\n",S[aa[count].n[0]+I][aa[count].n[1]]);
@@ -1098,8 +1041,8 @@ int main(void){
 	S[i][j]=S[(i-5)%15][(j+4)%15]^S[(i-5)%15][(j+1)%15];
     }
     printf("\n\ncomplete table\n\n");
-        for(i=0;i<15;i++){
-      for(j=0;j<15;j++)
+        for(i=0;i<16;i++){
+      for(j=0;j<16;j++)
 	printf("%d ",S[i][j]);
       printf("\n");
 	}
