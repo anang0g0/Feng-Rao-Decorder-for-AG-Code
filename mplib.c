@@ -17,7 +17,7 @@
 #define H (K+1)*(K+2)/2 //シンドローム行列の横ベクトルの長さ
 #define F (J-K+1)*(J-K+2)/2 //シンドローム行列の縦ベクトル
 #define U 26
-#define E 4
+#define E 5
 
 typedef struct  {
 
