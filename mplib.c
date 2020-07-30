@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <assert.h>
 
 //#include "gf256.h"
 
@@ -16,7 +17,7 @@
 #define H (K+1)*(K+2)/2 //シンドローム行列の横ベクトルの長さ
 #define F (J-K+1)*(J-K+2)/2 //シンドローム行列の縦ベクトル
 #define U 26
-#define E 8
+#define E 4
 
 typedef struct  {
 
@@ -1192,10 +1193,11 @@ int main(void){
     
     
     printf("max=%d %d %d\n",n,sy[n],sk[count]);
+    /*
     for(k=0;k<64;k++)
       printf("%d,",ee[k]);
     printf("\n");
-
+    */
     if(n!=sk[count]){
       //n=SS[67][7];
       //printf("x=%d\n",x);
@@ -1233,10 +1235,11 @@ int main(void){
         n=x1;
     }
 
-    if(n!=sk[count]){
-      exit(1);
+    assert(n==sk[count]);
+      //exit(1);
+
       //scanf("%d",&n);
-    }
+    
     
     for(ii=0;ii<16;ii++)
       sy[ii]=0;
@@ -1303,9 +1306,12 @@ int main(void){
       }
       printf("e=%d %d %d %d\n",x,j,otrace(base[i],p.z[0][j],p.z[1][j],1),ss[i]);
     }
+	printf("print error\n");
+	exit(1);
 	for(i=0;i<64;i++)
 	  printf("%d ",ee[i]);
 	printf("\n");
+	printf("answer\n");
       exit(1);
       //printf("e=%d %d\n",x,j);
       //    }
