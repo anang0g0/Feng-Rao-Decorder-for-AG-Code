@@ -42,6 +42,14 @@ typedef struct
 } PO;
 
 
+#define DEG 100
+//4-dimension,100000000-terms,100-degree
+typedef struct {
+
+  unsigned char m[DEG][DEG][DEG][DEG];
+
+} mvx;
+
 //unsigned short gf[8]={0,1,2,4,3,6,7,5};
 //unsigned short fg[8]={0,1,2,4,3,7,5,6};
 
@@ -940,6 +948,25 @@ main (void)
   time_t pp;
 
 
+    mvx F[100]={0};
+  
+  //  F=calloc(sizeof(mvx),1);
+  //F->m=(unsigned short*)malloc(sizeof(unsigned short)*100000000);
+    for(i=0;i<100;i++){
+      for(j=0;j<100;j++){
+	for(k=0;k<100;k++){
+	  for(ii=0;ii<1;ii++){
+	    if((F[0].m[i][j][k][ii])==0)
+	    printf("%d,",F[0].m[i][j][k][ii]);
+	  }
+	}
+      }
+    }
+    
+    //free(F);    
+    exit(1);
+
+    
   memset (S, 0, sizeof (S));
   //    memset(SS,0,sizeof(SS));
 
