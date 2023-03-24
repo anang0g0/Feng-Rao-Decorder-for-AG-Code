@@ -8,6 +8,9 @@
 
 ３．Explicit Construction of AG Codes from a curve in the tower of Bassa-Beelen-Garcia-Stichtenoth. C.Hu
 
+４．Multi-point Codes from Generalized Hermitian Curves. C.Hu et,al.
+
+
 # 20230324
 
 BBGS曲線を拡大次数と基礎体をパラメータとして自動的に生成する関数を追加。
@@ -21,8 +24,6 @@ Classic Goppa Codesにも未解決な問題はあるんですが、リスト復�
 
 引き続きbbgs曲線の一般化を行った。
 bbgsは標数と拡大次数によって決まるので、いろんな拡大体で最大曲線になる。
-
-参考文献６：Multi-point Codes from Generalized Hermitian Curves. C.Hu et,al.
 
 また代数幾何符号に帰ってきそうな予感。
 蛇足でプログラムなんかいじるから、余興のつもりがハマってしまった。
