@@ -39,8 +39,8 @@ typedef struct
 
 } PO;
 
-// unsigned short gf[8]={0,1,2,4,3,6,7,5};
-// unsigned short fg[8]={0,1,2,4,3,7,5,6};
+ static unsigned short gf[8]={0,1,2,4,3,6,7,5};
+ static unsigned short fg[8]={0,1,2,4,3,7,5,6};
 /*
 //nomal
 unsigned char gf[N] =
@@ -716,8 +716,14 @@ mtrace(MP f)
         for (j = 0; j < O; j++)
         {
             u = 0;
-            for (ii = 0; ii < n; ii++)
+            for (ii = 0; ii < n; ii++){
+                
+                if(Pr!=2)
                 u = plus(u, otrace(f.x[ii], i, j, 1));
+                if(Pr==2)
+                u ^= otrace(f.x[ii], i, j, 1);
+
+                }
             // u^=1;
             if (u % O == 0)
             {
@@ -1712,11 +1718,11 @@ int main(void)
     MP curve = {0};
     curve = bbgs(E);
     printm(curve);
-    exit(1);
+    //exit(1);
 
-    mkmf();
-    makefg();
-    de();
+    //mkmf();
+    //makefg();
+    //de();
     // exit(1);
 
     PO t = {0};
