@@ -39,8 +39,8 @@ typedef struct
 
 } PO;
 
- static unsigned short gf[8]={0,1,2,4,3,6,7,5};
- static unsigned short fg[8]={0,1,2,4,3,7,5,6};
+// static unsigned short gf[8]={0,1,2,4,3,6,7,5};
+// static unsigned short fg[8]={0,1,2,4,3,7,5,6};
 /*
 //nomal
 unsigned char gf[N] =
@@ -48,14 +48,13 @@ unsigned char gf[N] =
 unsigned char fg[N] =
   { 0, 1, 2, 13, 3, 10, 14, 8, 4, 5, 11, 6, 15, 12, 9, 7 };
 
-unsigned char gf[32]={
-0,1,2,4,8,16,23,25,5,10,20,
-31,9,18,19,17,21,29,13,26,3,
-6,12,24,7,14,28,15,30,11,22,
-27};
-unsigned char fg[32]={0,1,2,20,3,8,21,24,4,12,9,29,22,18,25,27,5,15,13,14,10,16,30,6,23,7,19,31,26,17,28,11};
+static unsigned char gf[32] = {
+    0, 1, 2, 4, 8, 16, 23, 25, 5, 10, 20,
+    31, 9, 18, 19, 17, 21, 29, 13, 26, 3,
+    6, 12, 24, 7, 14, 28, 15, 30, 11, 22,
+    27};
+static unsigned char fg[32] = {0, 1, 2, 20, 3, 8, 21, 24, 4, 12, 9, 29, 22, 18, 25, 27, 5, 15, 13, 14, 10, 16, 30, 6, 23, 7, 19, 31, 26, 17, 28, 11};
 */
-
 // unsigned char gf[64] = {0, 1, 2, 4, 8, 16, 32, 33, 35, 39, 47, 63, 31, 62, 29, 58, 21, 42, 53, 11, 22, 44, 57, 19, 38, 45, 59, 23, 46, 61, 27, 54, 13, 26, 52, 9, 18, 36, 41, 51, 7, 14, 28, 56, 17, 34, 37, 43, 55, 15, 30, 60, 25, 50, 5, 10, 20, 40, 49, 3, 6, 12, 24, 48};
 // unsigned char fg[64] = {0, 1, 2, 59, 3, 54, 60, 40, 4, 35, 55, 19, 61, 32, 41, 49, 5, 44, 36, 23, 56, 16, 20, 27, 62, 52, 33, 30, 42, 14, 50, 12, 6, 7, 45, 8, 37, 46, 24, 9, 57, 38, 17, 47, 21, 25, 28, 10, 63, 58, 53, 39, 34, 18, 31, 48, 43, 22, 15, 26, 51, 29, 13, 11};
 
@@ -716,14 +715,14 @@ mtrace(MP f)
         for (j = 0; j < O; j++)
         {
             u = 0;
-            for (ii = 0; ii < n; ii++){
-                
-                if(Pr!=2)
-                u = plus(u, otrace(f.x[ii], i, j, 1));
-                if(Pr==2)
-                u ^= otrace(f.x[ii], i, j, 1);
+            for (ii = 0; ii < n; ii++)
+            {
 
-                }
+                if (Pr != 2)
+                    u = plus(u, otrace(f.x[ii], i, j, 1));
+                if (Pr == 2)
+                    u ^= otrace(f.x[ii], i, j, 1);
+            }
             // u^=1;
             if (u % O == 0)
             {
@@ -1563,7 +1562,7 @@ void mkmf()
 
 MP bbgs(int n)
 {
-    int x, y, z = 1, w=1, u = 0, count = 0, zz = 1;
+    int x, y, z = 1, w = 1, u = 0, count = 0, zz = 1;
     MP bbgs = {0};
     for (int i = 0; i < n - 1; i++)
         zz *= Pr;
@@ -1718,11 +1717,14 @@ int main(void)
     MP curve = {0};
     curve = bbgs(E);
     printm(curve);
-    //exit(1);
+    // exit(1);
 
-    //mkmf();
-    //makefg();
-    //de();
+    if (Pr > 2)
+    {
+        mkmf();
+        makefg();
+        de();
+    }
     // exit(1);
 
     PO t = {0};
@@ -1767,7 +1769,7 @@ int main(void)
     // s=define_curve();
 
     // s = set_curve (he, 3);
-    // s = set_curve(hq, 4);
+    // s = set_curve(ge, 6);
 
     s = bbgs(E);
     printm(s);
