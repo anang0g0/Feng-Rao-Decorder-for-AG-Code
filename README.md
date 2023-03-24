@@ -1,5 +1,13 @@
 # Feng-Rao-Decorder-for-Class-of-AG-Codes 
 
+参考文献
+
+１． The Key Equation for One-Point Codes. M.E.O'Sullivan et al. 2008
+
+２．Cryptanalysis of McEliece Cryptosystem Based on Algebraic Geometry Codes and their Subcodes. Alain Couvreur, Irene Márquez-Corbella, and Ruud Pellikaan
+
+３．Explicit Construction of AG Codes from a curve in the tower of Bassa-Beelen-Garcia-Stichtenoth. C.Hu
+
 # 20230324
 
 BBGS曲線を拡大次数と基礎体をパラメータとして自動的に生成する関数を追加。
