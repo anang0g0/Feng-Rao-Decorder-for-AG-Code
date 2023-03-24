@@ -22,7 +22,7 @@
 #define U 26
 // #define E 6
 
-#define O 27 // 1331,2197,4913,6859,3125,2187,19683
+#define O 9 // 1331,2197,4913,6859,3125,2187,19683
 //#define EXP 6
 //#define Pr 2
 
@@ -1586,7 +1586,7 @@ int main(void)
     mkmf();
     makefg();
     de();
-    exit(1);
+    //exit(1);
 
     PO t = {0};
     unsigned short ss[N * N] = {0};
@@ -1629,13 +1629,13 @@ int main(void)
 
     // s=define_curve();
 
-    // s = set_curve (he, 3);
-    s = set_curve(hq, 4);
+     s = set_curve (he, 3);
+    //s = set_curve(hq, 4);
 
     u = mtrace(s);
     //  v=u;
     printf("count=%d\n\n", u);
-    exit(1);
+    //exit(1);
 
     v = mkbase(aa);
     printf("mkcount=%d\n", v);
