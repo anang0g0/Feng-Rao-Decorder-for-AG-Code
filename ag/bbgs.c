@@ -1710,9 +1710,9 @@ int main(void)
     unsigned short e1[27] = {0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0};
     unsigned char ee[64] = {0};
     MP curve = {0};
-    curve = bbgs(4);
+    curve = bbgs(E);
     printm(curve);
-    //exit(1);
+    exit(1);
 
     mkmf();
     makefg();
