@@ -10,12 +10,11 @@
 // #include "oplib.c"
 // 5-error-correction
 
-
- #define O 125 // 1331,2197,4913,6859,3125,2187,19683
+// #define O 49 // 1331,2197,4913,6859,3125,2187,19683
 // #define EXP 6
- #define Pr 5
+// #define Pr 7
 
-unsigned short pp[14][4] = {{0, 0, 9, 2}, {0, 0, 11, 2}, {0, 0, 16, 3}, {0, 0, 15, 2}, {0, 0, 1, 2}, {0, 1, 0, 2}, {0, 0, 1, 1}, {0, 0, 1, 2}, {1, 1, 2, 2}, {0, 0, 1, 2}, {0, 0, 21, 5}, {0, 0, 30, 3}, {0, 0, 1, 4},{0,0,2,2}};
+unsigned short pp[16][4] = {{0, 0, 9, 2}, {0, 0, 11, 2}, {0, 0, 16, 3}, {0, 0, 15, 2}, {0, 0, 1, 2}, {0, 1, 0, 2}, {0, 0, 1, 1}, {0, 0, 1, 2}, {1, 1, 2, 2}, {0, 0, 1, 2}, {0, 0, 21, 5}, {0, 0, 30, 3}, {0, 0, 1, 4}, {0, 0, 2, 2}, {0, 0, 1, 2}, {0, 1, 0, 3}};
 unsigned short HH[1024][1024] = {0};
 
 typedef struct
@@ -473,6 +472,18 @@ OP v2o(vec a)
     }
 
     return f;
+}
+
+void printm(MP f)
+{
+    int n = mdeg(f);
+    int u = terms(f);
+
+    for (int i = 0; i < u; i++)
+    {
+        printf("x^%d*y^%d+", f.x[i].n[0], f.x[i].n[1]);
+    }
+    printf("\n");
 }
 
 // 多項式を項ずつ掛ける
@@ -1435,6 +1446,16 @@ void mkmf()
         for (int i = 0; i < 4; i++)
             ccp[i] = pp[13][i];
     }
+    if (O == 729)
+    {
+        for (int i = 0; i < 4; i++)
+            ccp[i] = pp[14][i];
+    }
+    if (O == 343)
+    {
+        for (int i = 0; i < 4; i++)
+            ccp[i] = pp[15][i];
+    }
 
     g = (setpol(ccp, 4));
     for (int i = 0; i < 4; i++)
@@ -1534,69 +1555,59 @@ void mkmf()
     printf("\n");
 }
 
-void printm(MP f){
-int n=mdeg(f);
-int u=terms(f);
-
-for(int i=0;i<u;i++){
-printf("x^%d*y^%d+",f.x[i].n[0],f.x[i].n[1]);
-}
-printf("\n");
-
-
-}
-
 MP bbgs(int n)
 {
-    int x, y, z = 1, w = 1, u = 0,count=0,zz=1;
+    int x, y, z = 1, w=1, u = 0, count = 0, zz = 1;
     MP bbgs = {0};
-    for(int i=0;i<n-1;i++)
-    zz*=Pr;
-    //for (int i = 0; i < O; i++)
+    for (int i = 0; i < n - 1; i++)
+        zz *= Pr;
+    // for (int i = 0; i < O; i++)
     {
-        //for (int j = 0; j < O; j++)
+        // for (int j = 0; j < O; j++)
         {
-        u=0;
+            u = 0;
+            if (n == 2)
+                w = 1;
+            if (n > 2)
+                w = Pr;
             for (int i = 0; i < n; i++)
             {
                 w *= Pr;
                 u = plus(u, plus(gf[mlt(mltn(z, y), oinv(mltn(w, x)))], 1));
-                if(i==n-1)
-                w=1;
-                printf("y^%d/x^%d+",w,z);
-                z*=Pr;
+                if (i == 1)
+                    w = 1;
+                printf("y^%d/x^%d+", w, z);
+                z *= Pr;
             }
             printf("1\n");
-            w=1;
-            z=1;
+            z = 1;
             for (int i = 0; i < n; i++)
             {
                 w *= Pr;
                 u = plus(u, plus(gf[mlt(mltn(z, y), oinv(mltn(w, x)))], 1));
-                if(i==n-1)
-                w=1;
-                if(i==n)
-                w=0;
-                //printf("y^%d*x^%d+",w,zz-z);
-                if(i<n){
-                bbgs.x[i].n[0]=zz-z;
-                bbgs.x[i].n[1]=w;
-                bbgs.x[i].a=1;
-                z*=Pr;
+                // printf("y^%d*x^%d+",w,zz-z);
+                if (i < n)
+                {
+                    if (i == 1)
+                        w = 1;
+                    bbgs.x[i].n[0] = zz - z;
+                    bbgs.x[i].n[1] = w;
+                    bbgs.x[i].a = 1;
+                    z *= Pr;
                 }
             }
-            
-            w=0;
-            
-            bbgs.x[n].n[0]=zz;
-            bbgs.x[n].n[1]=w;
-            bbgs.x[n].a=1;
-            
-            //printf("x^%d*y^%d\n",zz,w);
+
+            w = 0;
+
+            bbgs.x[n].n[0] = zz;
+            bbgs.x[n].n[1] = w;
+            bbgs.x[n].a = 1;
+
+            // printf("x^%d*y^%d\n",zz,w);
         }
     }
 
-return bbgs;
+    return bbgs;
 }
 
 int main(void)
@@ -1625,7 +1636,7 @@ int main(void)
     // g=6 GF(8)
     unsigned short g6[4][4] = {{4, 3, 0, 1}, {0, 4, 0, 1}, {1, 2, 0, 1}, {2, 0, 0, 1}};
     // gfQ*Q Hermitian
-    unsigned short he[3][4] = {{Q + 1, 0, 0, 1}, {0, Q, 0, 1}, {0, 1, 0, 1}};
+    unsigned short he[3][4] = {{Pr + 1, 0, 0, 1}, {0, Pr, 0, 1}, {0, 1, 0, 1}};
     // extention 3
     unsigned short hq[4][4] = {{Pr * Pr - 1, Pr, 0, 1}, {Pr * Pr - Pr, Pr * Pr, 0, 1}, {0, 1, 0, 1}, {Pr * Pr, 0, 0, 1}};
     // extention 4
@@ -1698,15 +1709,15 @@ int main(void)
 
     unsigned short e1[27] = {0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0};
     unsigned char ee[64] = {0};
-    MP curve={0};
-    curve=bbgs(3);
+    MP curve = {0};
+    curve = bbgs(4);
     printm(curve);
     //exit(1);
 
     mkmf();
     makefg();
     de();
-    //exit(1);
+    // exit(1);
 
     PO t = {0};
     unsigned short ss[N * N] = {0};
@@ -1750,11 +1761,11 @@ int main(void)
     // s=define_curve();
 
     // s = set_curve (he, 3);
-    //s = set_curve(hq, 4);
+    // s = set_curve(hq, 4);
 
-    s=bbgs(3);
-    printm(curve);
-    //exit(1);
+    s = bbgs(E);
+    printm(s);
+    // exit(1);
     u = mtrace(s);
     //  v=u;
     printf("count=%d\n\n", u);
